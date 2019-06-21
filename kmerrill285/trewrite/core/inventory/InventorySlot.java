@@ -1,0 +1,92 @@
+package kmerrill285.trewrite.core.inventory;
+
+import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.items.accessories.Accessory;
+
+public class InventorySlot {
+	
+	
+	
+	public ItemStackT stack;
+	public ItemType itemType;
+	
+	
+	public int x, y, area, id;
+	
+	public boolean isTrashSlot = false;
+	
+	public InventorySlot(ItemType itemType, int x, int y, int area, int id) {
+		this.itemType = itemType;
+		this.x = x;
+		this.y = y;
+		this.area = area;
+		this.id = id;
+	}
+	
+	public void swapStacks(InventorySlot slot) {
+		if (stack != null)
+		if (this.canInteractWith(slot)) {
+			ItemStackT stack = new ItemStackT(this.stack.item, this.stack.size);
+			this.stack = slot.stack;
+			slot.stack = stack;
+		}
+	}
+	
+	public void takeFromStack(InventorySlot slot) {
+		if (canInteractWith(slot)) {
+			if (stack == null) {
+				ItemStackT stack = new ItemStackT(slot.stack.item, slot.stack.size);
+				this.stack = stack;
+				slot.stack = null;
+				return;
+			}
+			
+			if (stack.size == stack.item.maxStack || stack.item != slot.stack.item) {
+				swapStacks(slot);
+			} else {
+				stack.size += slot.stack.size;
+				if (stack.size > stack.item.maxStack) {
+					slot.stack.size = stack.size - stack.item.maxStack;
+					stack.size = stack.item.maxStack;
+				} else {
+					slot.stack = null;
+				}
+			}
+		}
+	}
+	
+	public void decrementStack(int i) {
+		if (this.stack != null) {
+			this.stack.size -= 1;
+			if (this.stack.size <= 0) {
+				this.stack = null;
+			}
+		}
+	}
+	
+	
+	public boolean canInteractWith(InventorySlot slot) {
+		if (this.itemType == ItemType.ANY) return true; 
+		if (this.itemType == ItemType.ACCESSORY) {
+			if (slot.stack.item instanceof Accessory) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void update() {
+		if (this.stack != null) {
+			if (this.stack.size <= 0) {
+				this.stack = null;
+			}
+			if (this.stack.size > this.stack.item.maxStack) {
+				this.stack.size = this.stack.item.maxStack;
+			}
+		}
+	}
+	
+	public enum ItemType {
+		ANY, HEAD, CHESTPLATE, LEGGINGS, DYE, ACCESSORY
+	}
+}
