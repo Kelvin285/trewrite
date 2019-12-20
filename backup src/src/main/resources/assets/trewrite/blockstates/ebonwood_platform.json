@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "type=bottom": { "model": "trewrite:block/ebonwood_platform" },
+        "type=top": { "model": "trewrite:block/ebonwood_platform_top" },
+        "type=double": { "model": "trewrite:block/ebonwood" }
+    }
+}

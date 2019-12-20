@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=south": { "model": "trewrite:block/iron_anvil" },
+        "facing=west": { "model": "trewrite:block/iron_anvil", "y": 90 },
+        "facing=north": { "model": "trewrite:block/iron_anvil", "y": 180 },
+        "facing=east": { "model": "trewrite:block/iron_anvil", "y": 270 }
+    }
+}

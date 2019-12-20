@@ -1,0 +1,16 @@
+[
+{
+  "modid": "trewrite",
+  "name": "Trewrite",
+  "description": "A mod that aims to re-write Minecraft into a 3D Terraria (Note: playing this mod is not a substitute for playing Terraria, as it offers it's own individual game experience)",
+  "version": "${1.0}",
+  "mcversion": "${1.14.4}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Kelvin"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

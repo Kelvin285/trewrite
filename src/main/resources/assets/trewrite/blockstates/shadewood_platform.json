@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "type=bottom": { "model": "trewrite:block/shadewood_platform" },
+        "type=top": { "model": "trewrite:block/shadewood_platform_top" },
+        "type=double": { "model": "trewrite:block/shadewood" }
+    }
+}
