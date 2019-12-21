@@ -6,6 +6,7 @@ public class Arrow extends ItemT {
 	
 	public float recovery = 0.5f;
 	public float dropRegular = -1.0f;
+	public int piercing;
 	
 	public Arrow (Properties properties, String name, int damage) {
 		super(properties, name);

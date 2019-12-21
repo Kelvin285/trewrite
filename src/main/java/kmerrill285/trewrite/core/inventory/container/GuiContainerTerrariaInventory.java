@@ -94,7 +94,8 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         trashSlot = inventory.trash;
         this.resetRecipes();
     }
-
+    
+    
     public  void resetRecipes() {
     	
     	ArrayList<BlockT> blocks = new ArrayList<BlockT>();
@@ -153,6 +154,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		availableRecipes.add(recipe);
         		}
         }
+    	
     }
     
     public boolean hasItems(ItemStackT item) {
@@ -593,6 +595,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     	}
     }
     
+    
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
@@ -600,7 +603,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
     	
     	this.resetRecipes();
-
+    	
     	InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
     	if (inventory.holdingSlot != null && inventory.holdingSlot.stack != null)
         	if (mouseX < this.guiLeft || mouseY < this.guiTop || mouseX > this.guiLeft + this.WIDTH || mouseY > this.guiTop + this.HEIGHT) {

@@ -53,6 +53,15 @@ public class Bow extends ItemT {
 	      float speed = 1.0f;
 	      float dmg = 1.0f;
 	      float crit = 1.0f;
+	      
+	      if (bowSlot == null) {
+	    	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+	      }
+	      
+	      if (bowSlot.stack == null) {
+	    	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+	      }
+	      
 	      if (bowSlot.stack != null) {
 	    	  if (bowSlot.stack.item instanceof Bow) {
 	    		  velocity += velocity * (ItemModifier.getModifier(bowSlot.stack.modifier).velocity / 100.0);
@@ -62,8 +71,7 @@ public class Bow extends ItemT {
 	    	  speed = (float) (ItemModifier.getModifier(bowSlot.stack.modifier).speed / 100.0f);
 	    	  dmg = (float) (ItemModifier.getModifier(bowSlot.stack.modifier).damage / 100.0f);
 	      }
-	      
-		  playerIn.getCooldownTracker().setCooldown(this, (int) (this.useTime / 3 - ((this.useTime / 3) * speed)));
+		  playerIn.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
 		  
 	      
 	      Arrow arrow = (Arrow) ItemsT.WOODEN_ARROW;
@@ -132,12 +140,15 @@ public class Bow extends ItemT {
 //	 	         snowballentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
 	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
 	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
-	 	         arrowentity.setDamage(this.damage + this.damage * dmg + (random.nextDouble() * 0.25 * this.damage + this.damage * dmg));
+	 	         arrowentity.setDamage((arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f));
 	 	         if (random.nextInt(100) <= this.critChance + crit) {
 	 	        	arrowentity.setDamage(this.damage + this.damage * dmg * 2);
 	 	         }
 	 	         arrowentity.setKnockbackStrength((int) (this.knockback + arrow.knockback) + (int) ((this.knockback + arrow.knockback) * kb));
 	 	         arrowentity.arrow = arrow;
+	 	         if (arrow.piercing > 0) {
+	 	        	arrowentity.func_213872_b((byte)arrow.piercing);
+	 	         }
 	 	         arrow.onArrowShoot(arrowentity);
 	 	         worldIn.addEntity(arrowentity);
 	 	         

@@ -55,6 +55,7 @@ public class EntitySpawner {
 		if (world.getBlockState(pos).getMaterial() == Material.WATER) {
 			list = EntitySpawner.skyWaterEntities;
 		}
+		if (list == null) return false;
 		if (list.length == 0) return false;
 		EntityType e = list[world.rand.nextInt(list.length)];
 		if (e == null)
@@ -79,6 +80,7 @@ public class EntitySpawner {
 				list = EntitySpawner.groundWaterDaytime;
 			}
 		}
+		if (list == null) return false;
 		if (list.length == 0) return false;
 		EntityType e = list[world.rand.nextInt(list.length)];
 		if (e == null)
@@ -94,6 +96,7 @@ public class EntitySpawner {
 		if (world.getBlockState(spawnpoint).getMaterial() == Material.WATER) {
 			list = EntitySpawner.caveWaterEntities;
 		}
+		if (list == null) return false;
 		if (list.length == 0) return false;
 		EntityType e = list[world.rand.nextInt(list.length)];
 		if (e == null)
@@ -106,6 +109,7 @@ public class EntitySpawner {
 		BlockPos spawnpoint = getSuitableEntitySpawnpoint(world, x, y, z);
 		if (spawnpoint == null) return false;
 		EntityType[] list = EntitySpawner.underworldEntities;
+		if (list == null) return false;
 		if (list.length == 0) return false;
 		EntityType e = list[world.rand.nextInt(list.length)];
 		

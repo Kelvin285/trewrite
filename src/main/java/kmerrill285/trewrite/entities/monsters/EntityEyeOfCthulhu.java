@@ -6,6 +6,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.ILivingEntityData;
@@ -89,7 +90,8 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     @Nullable
     public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
     	 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(2800 + (500 * (worldIn.getPlayers().size() - 1)));
-    	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2);
+    	 this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1000);
+
     	 this.maxHealth = 2800 + (500 * (worldIn.getPlayers().size() - 1));
  	     this.bosshealth = maxHealth;
  	    this.setHealth(maxHealth);
@@ -207,6 +209,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 										eye.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(12);
 										world.addEntity(eye);
 										eye.money = 0;
+										eye.noClip = true;
 									}
 									
 								}
@@ -436,7 +439,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 				double angle = Math.atan2(velX, velZ);
 				
 				
-				this.ry = -1 * (float)angle * 180f / (float)Math.PI;
+				this.ry = (float) (-1 * (float)Math.toDegrees(angle));
 				
 				double angle2 = Math.atan2(velY, velZ);
 				
@@ -497,7 +500,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     	if (amount < 1) amount = 1;
     	this.bosshealth -= amount;
     	super.setHealth(this.bosshealth);
-    	return super.attackEntityFrom(source, amount);
+    	return true;
     }
     
     protected void dealDamage(LivingEntity entityIn) {
@@ -509,6 +512,10 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
         }
 
      }
+    @Override
+    public void knockBack(Entity entityIn, float strength, double xRatio, double zRatio) {
+    	
+    }
     
     protected int getAttackStrength()
     {

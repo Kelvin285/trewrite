@@ -11,7 +11,11 @@ import kmerrill285.trewrite.util.Conversions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +24,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockT extends Block {
+public class BlockT extends Block implements IWaterLoggable {
 
 	public int buy, sell;
 	public float difficulty = 1;
@@ -57,6 +61,12 @@ public class BlockT extends Block {
 //		Block b;
 //		b.onBlockHarvested(worldIn, pos, state, player);
 	}
+	
+	public static final BooleanProperty field_220119_b = BlockStateProperties.WATERLOGGED;
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(field_220119_b);
+     }
+	
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (newState != Blocks.AIR.getDefaultState()) return;
 		if (!isMoving)

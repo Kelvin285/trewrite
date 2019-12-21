@@ -137,6 +137,16 @@ public class BlocksT {
 	public static BlockT MUSHROOM_GRASS;
 	public static BlockT MUSHROOM_BLOCK;
 	public static BlockT MUSHROOM_STEM_BLOCK;
+	
+	public static BlockT BOREAL_SAPLING;
+	public static BlockT CORRUPT_SAPLING;
+	public static BlockT CRIMSON_SAPLING;
+	public static BlockT FOREST_SAPLING;
+	public static BlockT HALLOWED_SAPLING;
+	public static BlockT JUNGLE_SAPLING;
+	public static BlockT PALM_SAPLING;
+	
+	public static BlockT CHAIN;
 
 	
 	public static float GROUND_HARDNESS = 10.0f, STONE_HARDNESS = 15.0f, ORE_HARDNESS = 20.0f, DUNGEON_HARDNESS = 50.0f;
@@ -252,8 +262,16 @@ public class BlocksT {
 					GLOWING_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "glowing_mushroom", 0, 0, "glowing_mushroom").setShape(Shape.MUSHROOM).setSell(250).setMaterial(),
 					MUSHROOM_GRASS = new MushroomGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("mushroom_grass"),
 					MUSHROOM_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, false, "mushroom_block", "glowing_mushroom"),
-					MUSHROOM_STEM_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, false, "mushroom_stem_block", "glowing_mushroom")
-
+					MUSHROOM_STEM_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, false, "mushroom_stem_block", "glowing_mushroom"),
+					BOREAL_SAPLING = new Sapling("boreal_sapling", BlocksT.BOREAL_TREE).addAllowed(BlocksT.SNOW.name),
+					CORRUPT_SAPLING = new Sapling("corrupt_sapling", BlocksT.CORRUPT_TREE).addAllowed(BlocksT.CORRUPT_GRASS.name, BlocksT.BOG_GRASS.name),
+					CRIMSON_SAPLING = new Sapling("crimson_sapling", BlocksT.CRIMSON_TREE),
+					FOREST_SAPLING = new Sapling("forest_sapling", BlocksT.FOREST_TREE).addAllowed(BlocksT.GRASS_BLOCK.name, BlocksT.HIGHLANDS_GRASS.name, BlocksT.BOG_GRASS.name),
+					HALLOWED_SAPLING = new Sapling("hallowed_sapling", BlocksT.HALLOWED_TREE),
+					JUNGLE_SAPLING = new Sapling("jungle_sapling", BlocksT.JUNGLE_TREE).addAllowed(BlocksT.MUD.name, BlocksT.JUNGLE_GRASS.name, BlocksT.BOG_GRASS.name),
+					PALM_SAPLING = new Sapling("palm_sapling", BlocksT.PALM_TREE).addAllowed(BlocksT.EBONSAND.name),
+					CHAIN = new RopeBlock(true, "chain", "chain")
+					
 
 
 				);

@@ -39,7 +39,7 @@ public class RenderEOC extends MobRenderer<EntityEyeOfCthulhu, ModelEOC>
     {
         float f = 8;
         GlStateManager.rotatef(entitylivingbaseIn.rx, 1, 0, 0);
-        GlStateManager.rotatef(entitylivingbaseIn.ry, 0, 1, 0);
+        GlStateManager.rotatef(entitylivingbaseIn.ry + 180.0f, 0, 1, 0);
         GlStateManager.rotatef(entitylivingbaseIn.rz, 0, 0, 1);
         GlStateManager.scalef(f, f, f);
        

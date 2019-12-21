@@ -33,13 +33,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-public class ItemBlockT extends ItemT {
+public class ItemAcorn extends ItemT {
 
 	public Block block;
 	
-	public ItemBlockT(BlockT blockIn, String name) {
+	public ItemAcorn(BlockT blockIn, String name) {
 		super(new Properties().group(ItemGroup.BUILDING_BLOCKS));
-		setRegistryName(blockIn.getRegistryName());
+		setRegistryName("acorn");
 		this.maxStack = 999;
 		this.block = blockIn;
 		ItemsT.items.put(name, this);

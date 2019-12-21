@@ -15,6 +15,7 @@ public class EntityArrowT extends ArrowEntity
 {
 
 	public ItemT arrow;
+	public int piercing;
 	
 	public EntityArrowT(World worldIn, LivingEntity shooter) {
 		super(worldIn, shooter);

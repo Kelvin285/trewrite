@@ -8,13 +8,17 @@ import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.basic.BasicBroadsword;
 import kmerrill285.trewrite.items.basic.BasicItem;
 import kmerrill285.trewrite.items.terraria.arrows.FlamingArrow;
+import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import kmerrill285.trewrite.items.terraria.axes.CopperAxe;
 import kmerrill285.trewrite.items.terraria.axes.IronAxe;
+import kmerrill285.trewrite.items.terraria.axes.WarAxeOfTheNight;
 import kmerrill285.trewrite.items.terraria.boss_summon.SuspiciousLookingEye;
+import kmerrill285.trewrite.items.terraria.bows.DemonBow;
 import kmerrill285.trewrite.items.terraria.bows.WoodenBow;
 import kmerrill285.trewrite.items.terraria.broadswords.CopperBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
+import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
@@ -55,7 +59,7 @@ public class ItemsT {
 	@ObjectHolder("trewrite:depth_meter")
 	public static Accessory DEPTH_METER;
 	public static ItemBlockT LIFE_CRYSTAL;
-	public static ItemT ACORN;
+	public static ItemAcorn ACORN;
 	public static ItemBlockT BOTTLE;
 	public static ItemT LESSER_HEALING_POTION;
 	public static ItemBlockT GRASS_BLOCK;
@@ -140,6 +144,18 @@ public class ItemsT {
 	
 	public static ItemT SUSPICIOUS_LOOKING_EYE;
 	
+	public static ItemT DEMONITE_BAR;
+	
+	public static ItemT DEMON_BOW;
+	public static ItemT WAR_AXE_OF_THE_NIGHT;
+	public static ItemT LIGHTS_BANE;
+	
+	public static ItemT CHAIN;
+	
+	public static ItemT UNHOLY_ARROW;
+	
+	public static ItemT WORM_TOOTH;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	
@@ -171,7 +187,7 @@ public class ItemsT {
 				GOLD_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "gold_watch").setTooltip("Tells the time").setBuySell(2000),
 				DEPTH_METER = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "depth_meter").setTooltip("Shows depth").setBuySell(2500),
 				LIFE_CRYSTAL = (ItemBlockT) new ItemBlockT(BlocksT.LIFE_CRYSTAL, "life_crystal").setMaxStack(99),
-				ACORN = new ItemT(new Properties().group(ItemGroup.MISC), "acorn").setConsumable().setMaxStack(99),
+				ACORN = (ItemAcorn) new ItemAcorn(BlocksT.FOREST_SAPLING, "acorn").setMaxStack(99),
 				BOTTLE = (ItemBlockT) new ItemBlockT(BlocksT.BOTTLE, "bottle").setMaterial(),
 				LESSER_HEALING_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "lesser_healing_potion").setMaterial().setConsumable().setPotionSickness(60).setHeal(50).setMaxStack(30),
 				GRASS_BLOCK = (ItemBlockT) new ItemBlockT(BlocksT.GRASS_BLOCK, "grass_block"),
@@ -206,7 +222,7 @@ public class ItemsT {
 				SILVER_BAR = new MetalBar(600, "silver_bar"),
 				IRON_BAR = new MetalBar(300, "iron_bar"),
 				IRON_ANVIL = (ItemBlockT) new ItemBlockT(BlocksT.IRON_ANVIL, "iron_anvil").setMaxStack(99),
-				DEMONITE_ORE = (ItemBlockT) new ItemBlockT(BlocksT.DEMONITE_ORE, "demonite_ore").setMaxStack(99),
+				DEMONITE_ORE = (ItemBlockT) new ItemBlockT(BlocksT.DEMONITE_ORE, "demonite_ore").setMaxStack(999),
 				VILE_MUSHROOM = (ItemBlockT) new ItemBlockT(BlocksT.VILE_MUSHROOM, "vile_mushroom").setMaxStack(99),
 				CORRUPT_GRASS = (ItemBlockT) new ItemBlockT(BlocksT.CORRUPT_GRASS, "corrupt_grass"),
 				EBONSTONE = (ItemBlockT) new ItemBlockT(BlocksT.EBONSTONE, "ebonstone"),
@@ -245,11 +261,17 @@ public class ItemsT {
 				GOGGLES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "goggles", Armor.ArmorType.HEAD, 1).setMaxStack(1).setBuySell(200),
 				LENS = new ItemT(new Properties().group(ItemGroup.MATERIALS), "lens").setMaterial().setBuySell(100).setMaxStack(99),
 				WOODEN_BOW = new WoodenBow(),
-				WOODEN_ARROW = new WoodenArrow().setMaxStack(999),
+				WOODEN_ARROW = new WoodenArrow().setMaxStack(999).setMaterial(),
 				FLAMING_ARROW = new FlamingArrow().setMaxStack(999),
 				SHURIKEN = new Shuriken().setMaxStack(999),
-				SUSPICIOUS_LOOKING_EYE = new SuspiciousLookingEye(new Properties().group(ItemGroup.MISC), "suspicious_looking_eye").setMaxStack(30)
-
+				SUSPICIOUS_LOOKING_EYE = new SuspiciousLookingEye(new Properties().group(ItemGroup.MISC), "suspicious_looking_eye").setMaxStack(30),
+				DEMONITE_BAR = new ItemT(new Properties().group(ItemGroup.MATERIALS), "demonite_bar").setMaterial().setBuySell(3200).setMaxStack(99),
+				DEMON_BOW = new DemonBow(),
+				WAR_AXE_OF_THE_NIGHT = new WarAxeOfTheNight(),
+				CHAIN = new ItemBlockT(BlocksT.CHAIN, "chain").setMaterial().setBuySell(40).setMaxStack(999),
+				LIGHTS_BANE = new LightsBane(),
+				UNHOLY_ARROW = new UnholyArrow(),
+				WORM_TOOTH = new ItemT(new Properties().group(ItemGroup.MATERIALS), "worm_tooth").setMaterial().setBuySell(20).setMaxStack(99)
 
 
 				);
