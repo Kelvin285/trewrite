@@ -6,6 +6,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import net.minecraft.command.arguments.EntityAnchorArgument.Type;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingEntity;
@@ -21,6 +22,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
@@ -147,9 +149,9 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     	super.tick();
    	 	
     	
+   	 this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(9999);
 
-    	this.preventDespawn();
-    	
+   	 
     	this.setNoGravity(true);
     	this.noClip = true;
     	
@@ -270,7 +272,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 						}
 						
 						if (velY > -2.5 && posY > target.posY + target.getHeight() + 5) {
-							velY -= 0.1f;
+							velY -= 0.3f;
 							if (velY > 2.5) {
 								velY -= 0.05;
 							} else if (velY > 0f) {
@@ -280,7 +282,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 								velY = -2.5;
 							}
 						} else if (velY < 2.5 && posY + 1 < target.posY + 5) {
-							velY += 0.1f;
+							velY += 0.3f;
 							if (velY < -2.5) {
 								velY += 0.05;
 							}
@@ -299,12 +301,12 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 					
 					float speed = 0.5f;
 					if (phase == 2)
-						speed = 0.75f;
-					if (getHealth() <= maxHealth * 0.4f)
 						speed = 1.2f;
+					if (getHealth() <= maxHealth * 0.4f)
+						speed = 2.0f;
 					
-					if (target != null);
-					if (this.ticksExisted % 35 == 0) {
+					if (target != null)
+					if (phase == 1 && this.ticksExisted % (20 * 2) == 0 || phase == 2 && this.ticksExisted % (35 * 1) == 0 || phase > 2 && this.ticksExisted % (20) == 0) {
 						
 						if (getHealth() > maxHealth * 0.4f) {
 //							if (Minecraft.getMinecraft() != null) {
@@ -320,7 +322,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 							}
 						} else {
 							if (getHealth() < maxHealth * 0.25f) {
-								speed = 1.4f;
+								speed = 2.5f;
 //								if (Minecraft.getMinecraft() != null) {
 //					            	MakeSound sound = new MakeSound();
 //					    			sound.playSound("sounds/boss/Roar_2.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
@@ -347,77 +349,21 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 							}
 						}
 						if (target != null) {
-							if (velX > 4 * speed) {
-								velX = 4 * speed;
-							}
-							if (velX < -4 * speed) {
-								velX = -4 * speed;
-							}
-							
-							if (velY > 4 * speed) {
-								velY = 4 * speed;
-							}
-							if (velY < -4 * speed) {
-								velY = -4 * speed;
-							}
-							
-							if (velZ > 4 * speed) {
-								velZ = 4 * speed;
-							}
-							if (velZ < -4 * speed) {
-								velZ = -4 * speed;
-							}
-							
-							if (velX > -4 * speed && this.posX > target.posX + target.getWidth()) {
-								
-//								if (velX < -4 * speed) {
-									velX = -4 * speed;
-//								}
-							} else if (velX < 4 * speed && posX + 1 < target.posX) {
-								
-//								if (velX > 4 * speed) {
-									velX = 4 * speed;
-//								}
-							}
-							
-							if (velZ > -4 * speed && this.posZ > target.posZ + target.getWidth()) {
-								
-//								if (velZ < -4 * speed) {
-									velZ = -4 * speed;
-//								}
-							} else if (velZ < 4f * speed && posZ + 1 < target.posZ) {
-								
-//								if (velZ > 4 * speed) {
-									velZ = 4 * speed;
-//								}
-							}
-							
-							if (velY > -4 * speed && posY > target.posY + target.getHeight()) {
-//								velY -= 0.1f * speed;
-//								if (velY > 2.5 * speed) {
-//									velY -= 0.05 * speed;
-//								} else if (velY > 0f) {
-//									velY -= 0.15 * speed;
-//								}
-//								if (velY < -2.5 * speed) {
-									velY = -4 * speed;
-//								}
-							} else if (velY < 4 * speed && posY + 1 < target.posY) {
-//								velY += 0.1f * speed;
-//								if (velY < -2.5 * speed) {
-//									velY += 0.05 * speed;
-//								}
-//								else if (velY < 0) {
-//									velY += 0.15 * speed;
-//								}
-//								if (velY > 2.5 * speed) {
-									velY = 4 * speed;
-//								}
-							}
-							
-							
+							Vec3d direction = new Vec3d(target.posX - posX, target.posY - posY, target.posZ - posZ).normalize();
+							direction.mul(speed, speed, speed);
+							velX = direction.x * 2;
+							velY = direction.y * 2;
+							velZ = direction.z * 2;
 						}
 					}
+					if (target != null) {
+						if (this.getDistance(target) >= 25) {
+							velX = 0;
+							velY = 0;
+							velZ = 0;
+						}
+					}
+					
 				}
 			}
 			if (getHealth() <= maxHealth * 0.65f) {
@@ -428,43 +374,22 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 			oldVelX = velX + 0;
 			oldVelY = velY + 0;
 			oldVelZ = velZ + 0;
-			motionX = velX * 0.075f;
-			motionY = velY * 0.075f;
-			motionZ = velZ * 0.075f;
+			motionX = velX * 0.25f;
+			motionY = velY * 0.25f;
+			motionZ = velZ * 0.25f;
 			
 			
 			
 			
-			if (velZ != 0) {
-				double angle = Math.atan2(velX, velZ);
-				
-				
-				this.ry = (float) (-1 * (float)Math.toDegrees(angle));
-				
-				double angle2 = Math.atan2(velY, velZ);
-				
-				this.rx = (float)angle2 * 180f / (float)Math.PI;
-	
-				
-				this.rotationYaw = ry;
-				
-	//			if (velX < 0 && velZ > 0) {
-	//				this.ry += 180;
-	//			}
-	//			
-	//			if (velX > 0 && velZ < 0) {
-	//				this.ry += 180;
-	//			}
-			}
 			
-			if (velX != 0) {
-				
-			}
+			if (target!= null)
+			this.lookAt(Type.EYES, target.getPositionVec());
 			
+			this.rx = (float)Math.toDegrees(Math.atan2(posY - target.posY, posX - target.posX));
+			this.rz = (float)Math.toDegrees(Math.atan2(posY - target.posY, posZ - target.posZ));
+
 			
 		}
-		
-		
 		
     	this.setMotion(motionX, motionY, motionZ);
     	this.dataManager.set(phase_data, phase);
@@ -510,11 +435,10 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
               this.applyEnchantments(this, entityIn);
            }
         }
-
+        
      }
     @Override
     public void knockBack(Entity entityIn, float strength, double xRatio, double zRatio) {
-    	
     }
     
     protected int getAttackStrength()

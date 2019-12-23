@@ -1,7 +1,5 @@
 package kmerrill285.trewrite.events;
 
-import java.util.Random;
-
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.Chest;
@@ -13,12 +11,14 @@ import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
+import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Axe;
 import kmerrill285.trewrite.items.Broadsword;
 import kmerrill285.trewrite.items.Hammer;
 import kmerrill285.trewrite.items.ItemBlockT;
 import kmerrill285.trewrite.items.ItemT;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.Pickaxe;
 import kmerrill285.trewrite.items.Shortsword;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
@@ -131,6 +131,15 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handleKnockback(LivingKnockBackEvent event) {
+		
+		if (event.getEntityLiving() instanceof EntityEyeOfCthulhu) {
+			event.setCanceled(true);
+			event.setStrength(0);
+			event.setRatioX(0);
+			event.setRatioZ(0);
+			return;
+		}
+		
 		if (event.getEntityLiving() != null) {
 			event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().x, 0, event.getEntityLiving().getMotion().z);
 		}
@@ -269,11 +278,13 @@ public class EntityEvents {
 					boolean shrink = false;
 					
 					if (event.getEntityPlayer().getHealth() < event.getEntityPlayer().getMaxHealth()) {
-						boolean heal = true;
+						boolean heal = false;
 						if (((ItemT)event.getItemStack().getItem()).potionSickness > 0) {
 							Score potionSickness = ScoreboardEvents.getScore(event.getEntityPlayer().getWorldScoreboard(), event.getEntityPlayer(), ScoreboardEvents.POTION_SICKNESS);
 							if (potionSickness.getScorePoints() > 0) heal = false;
 							else potionSickness.setScorePoints(((ItemT)event.getItemStack().getItem()).potionSickness * 20);
+						} else {
+							heal = true;
 						}
 						
 						if (heal) {
@@ -293,6 +304,8 @@ public class EntityEvents {
 						}
 						if (manaSicknessEffect.getScorePoints() < 2)
 						manaSicknessEffect.setScorePoints(manaSicknessEffect.getScorePoints() + 1);
+						mana.setScorePoints(mana.getScorePoints() + ((ItemT)event.getItemStack().getItem()).manaHeal);
+						shrink = true;
 					}
 					if (shrink) {
 
@@ -673,6 +686,28 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handleLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
+		A:
+		if (event.getEntity() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) event.getEntity();
+			InventoryTerraria inventory = null;
+			if (!player.world.isRemote) {
+				inventory = WorldEvents.inventories.get(player.getScoreboardName());
+			}
+			else {
+				break A;
+			}
+			
+			for (int i = 0; i < inventory.accessory.length; i++) {
+				InventorySlot slot = inventory.accessory[i];
+				if (slot.stack != null) {
+					if (slot.stack.item == ItemsT.CLOUD_IN_A_BOTTLE) {
+						player.onGround = true;
+						player.fallDistance = 0;
+					}
+				}
+			}
+		}
+		
 //		if (event.getEntity() instanceof EntitySlime) System.out.println("true");
 		if (event.getEntityLiving() != null) {
 			if (event.getEntityLiving().isInWater()) {

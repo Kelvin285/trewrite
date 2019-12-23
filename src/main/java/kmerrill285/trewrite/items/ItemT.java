@@ -236,5 +236,10 @@ public class ItemT extends Item {
 		return this;
 	}
 
+	public ItemT setAmmo() {
+		this.isAmmo = true;
+		return this;
+	}
+
 	
 }

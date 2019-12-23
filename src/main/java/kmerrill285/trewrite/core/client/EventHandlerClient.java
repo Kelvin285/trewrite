@@ -21,6 +21,7 @@ package kmerrill285.trewrite.core.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Random;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -30,15 +31,21 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -83,6 +90,8 @@ public class EventHandlerClient {
 	      
 	 }
 	
+	 public boolean cloud = false;
+	 
     @SubscribeEvent
     public void onKeyInput(TickEvent.ClientTickEvent evt) {
 
@@ -91,6 +100,51 @@ public class EventHandlerClient {
         GLFW.glfwSetScrollCallback(Minecraft.getInstance().mainWindow.getHandle(), this::scrollCallback);
         
         Minecraft mc = Minecraft.getInstance();
+        
+        PlayerEntity player = mc.player;
+        boolean hasCloud = false;
+        if (player != null) {
+        	
+    		InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+        	if (inventory != null) {
+        		for (int i = 0; i < inventory.accessory.length; i++) {
+        			InventorySlot slot = inventory.accessory[i];
+        			if (slot.stack != null) {
+        				if (slot.stack.item == ItemsT.CLOUD_IN_A_BOTTLE) {
+        					hasCloud = true;
+        				}
+        			}
+        		}
+        	}
+        	
+        	if (hasCloud == true) {
+        		if (player.onGround == true) {
+        			cloud = true;
+        		}
+        	} else {
+        		cloud = false;
+        	}
+        	if (mc.gameSettings.keyBindJump.isPressed() && !player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
+        		if (cloud == true) {
+        			
+        			player.setMotion(player.getMotion().x, 0.5f, player.getMotion().getZ());
+        			
+        			Random rand = new Random();
+        			for (int i = 0; i < 10; i++)
+        			player.world.addParticle(ParticleTypes.CLOUD, player.posX, player.posY, player.posZ, rand.nextDouble() - 0.5f,-0.1f, rand.nextDouble() - 0.5f);
+			 		NetworkHandler.INSTANCE.sendToServer(new CPacketNegateFall());
+			 		
+	    		    player.world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_SNOW_FALL, SoundCategory.PLAYERS, 1.0F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
+			 		
+			 		cloud = false;
+        		}
+            }
+        	
+        	if (mc.gameSettings.keyBindJump.isKeyDown() && !player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
+        		
+            }
+        }
+        
         
         if (KeyRegistry.openInventory.isPressed() && mc.isGameFocused()) {
 

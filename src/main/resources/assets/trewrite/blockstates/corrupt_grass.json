@@ -1,5 +1,9 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/corrupt_grass" }
+        "": [ 
+            { "model": "trewrite:block/corrupt_grass" },
+            { "model": "trewrite:block/corrupt_grass2" },
+            { "model": "trewrite:block/corrupt_grass3" }
+        ]
     }
 }

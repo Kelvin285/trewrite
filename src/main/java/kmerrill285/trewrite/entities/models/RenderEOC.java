@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.entities.models;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
@@ -28,6 +30,7 @@ public class RenderEOC extends MobRenderer<EntityEyeOfCthulhu, ModelEOC>
     {
 //    	BossStatus.setBossStatus(entity, true);
         this.shadowSize = 0.25F;
+
         super.doRender(entity, x, y-4, z, entityYaw, partialTicks);
     }
 
@@ -38,11 +41,13 @@ public class RenderEOC extends MobRenderer<EntityEyeOfCthulhu, ModelEOC>
     protected void preRenderCallback(EntityEyeOfCthulhu entitylivingbaseIn, float partialTickTime)
     {
         float f = 8;
-        GlStateManager.rotatef(entitylivingbaseIn.rx, 1, 0, 0);
-        GlStateManager.rotatef(entitylivingbaseIn.ry + 180.0f, 0, 1, 0);
-        GlStateManager.rotatef(entitylivingbaseIn.rz, 0, 0, 1);
+        
+        double radp = Math.toRadians(entitylivingbaseIn.rotationPitch);
+        GlStateManager.translated(0, -Math.sin(radp)*2, Math.sin(radp)*5.5);
+        GlStateManager.rotated(entitylivingbaseIn.rotationPitch, 1, 0, 0);
+        GlStateManager.translated(0, Math.sin(radp)*2-1, Math.sin(radp)*3);
         GlStateManager.scalef(f, f, f);
-       
+
     }
 
     /**

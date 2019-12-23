@@ -1,5 +1,8 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/iron_ore" }
+        "": [
+            { "model": "trewrite:block/iron_ore" },
+            { "model": "trewrite:block/iron_ore_mirror" }
+        ]
     }
 }

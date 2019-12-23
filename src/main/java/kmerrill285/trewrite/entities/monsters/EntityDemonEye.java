@@ -120,6 +120,12 @@ public class EntityDemonEye extends FlyingEntity {
 				}
 			}
 			
+			if (this.noClip == false) {
+				if (world.getBlockState(new BlockPos(posX, posY - 0.5f, posZ)).getMaterial().isSolid()) {
+					this.velY = 2.0f;
+				}
+			}
+			
 			if (bounce == true) {
 				double absX = Math.abs(motionX);
 				double absY = Math.abs(motionY);
@@ -244,9 +250,9 @@ public class EntityDemonEye extends FlyingEntity {
 			oldVelX = velX + 0;
 			oldVelY = velY + 0;
 			oldVelZ = velZ + 0;
-			motionX = velX * 0.1f;
-			motionY = velY * 0.1f;
-			motionZ = velZ * 0.1f;
+			motionX = velX * 0.075f;
+			motionY = velY * 0.075f;
+			motionZ = velZ * 0.075f;
 			
 			this.rotationYaw = (float)Math.toDegrees(Math.atan2(velZ, velX)) - 90;
 

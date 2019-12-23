@@ -3,15 +3,24 @@ package kmerrill285.trewrite;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import kmerrill285.trewrite.core.inventory.InventorySlot;
+import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.EntitySpawner;
 import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
@@ -74,6 +83,22 @@ public class Trewrite
 			WorldStateHolder holder = WorldStateHolder.get(world);
 			Util.minSpawnDistance = 15.0;
 			Util.entitySpawnRate = 1.0/25.0;
+			
+			if (world.rand.nextDouble() <= Util.starChance / 3.0) {
+				System.out.println("star!");
+				if (world.getPlayers().size() > 0) {
+					PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
+					double x = player.posX + world.rand.nextInt(180) - 90, y = 255, z = player.posZ + world.rand.nextInt(180) - 90;
+					
+					EntityItemT item = EntitiesT.ITEM.create(world, null, null, null, new BlockPos(x, y, z), SpawnReason.EVENT, false, false);
+					item.setItem(new ItemStackT(ItemsT.FALLEN_STAR, 1, null));
+//					EntityItemT item = new EntityItemT(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), stack);
+					item.pickupDelay = 0;
+					world.addEntity(item);
+					item.hitGround = false;
+				}
+			}
+			
 			if (world.rand.nextDouble() <= Util.entitySpawnRate) {
 				for (PlayerEntity player : world.getPlayers()) {
 					double x = player.posX + world.rand.nextInt(180) - 90, y = player.posY + world.rand.nextInt(180) - 90, z = player.posZ + world.rand.nextInt(180) - 90;
@@ -89,6 +114,20 @@ public class Trewrite
 							break;
 						}
 					}
+					
+					InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+					if (inventory != null) {
+						for (int i = 0; i < inventory.accessory.length; i++) {
+							InventorySlot slot = inventory.accessory[i];
+							if (slot.stack != null) {
+								if (slot.stack.item instanceof Accessory) {
+									Accessory a = (Accessory)slot.stack.item;
+									a.accessoryTick(player);
+								}
+							}
+						}
+					}
+					
 				}
 			}
 		}

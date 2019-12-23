@@ -2,9 +2,8 @@
     "variants": {
         "": [
             { "model": "trewrite:block/dirt_block" },
-            { "model": "trewrite:block/dirt_block", "y": 90 },
-            { "model": "trewrite:block/dirt_block", "y": 180 },
-            { "model": "trewrite:block/dirt_block", "y": 270 }
+            { "model": "trewrite:block/dirt_block2" },
+            { "model": "trewrite:block/dirt_block3" }
         ]
     }
 }

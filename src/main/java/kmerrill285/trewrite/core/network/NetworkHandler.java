@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
+import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryVanilla;
@@ -47,6 +48,7 @@ public class NetworkHandler {
         registerMessage(CPacketRequestInventoryChest.class, CPacketRequestInventoryChest::encode, CPacketRequestInventoryChest::new, CPacketRequestInventoryChest::handle);
         registerMessage(CPacketOpenChestTerraria.class, CPacketOpenChestTerraria::encode, CPacketOpenChestTerraria::new, CPacketOpenChestTerraria::handle);
         registerMessage(CPacketSaveChestTerraria.class, CPacketSaveChestTerraria::encode, CPacketSaveChestTerraria::new, CPacketSaveChestTerraria::handle);
+        registerMessage(CPacketNegateFall.class, CPacketNegateFall::encode, CPacketNegateFall::new, CPacketNegateFall::handle);
 
         registerMessage(SPacketSendInventoryTerraria.class, SPacketSendInventoryTerraria::encode, SPacketSendInventoryTerraria::new, SPacketSendInventoryTerraria::handle);
         registerMessage(SPacketSyncInventoryTerraria.class, SPacketSyncInventoryTerraria::encode, SPacketSyncInventoryTerraria::decode, SPacketSyncInventoryTerraria::handle);

@@ -117,5 +117,10 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_WATCH, 1), BlocksT.TABLE, new ItemStackT(ItemsT.COPPER_BAR, 10), new ItemStackT(ItemsT.CHAIN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_WATCH, 1), BlocksT.TABLE, new ItemStackT(ItemsT.SILVER_BAR, 10), new ItemStackT(ItemsT.CHAIN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.UNHOLY_ARROW, 5), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.WOODEN_ARROW, 5), new ItemStackT(ItemsT.WORM_TOOTH, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.JESTERS_ARROW, 20), null, new ItemStackT(ItemsT.WOODEN_ARROW, 20), new ItemStackT(ItemsT.FALLEN_STAR, 1)));
+
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CLOUD_IN_A_BOTTLE, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
+
 	}
 }

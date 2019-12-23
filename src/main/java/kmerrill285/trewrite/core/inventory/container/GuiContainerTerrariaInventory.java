@@ -417,19 +417,19 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
 
             if (this.availableRecipes.size() > r + 12) {
             	//more pages available
-            	this.drawTexturedRectangle(325, 90, 40, 196, 7, 4);
-            	if (mouseInRect(325, 90, 7, 4, mouseX, mouseY)) {
+            	this.drawTexturedRectangle(347, 97, 40, 196, 7, 4);
+            	if (mouseInRect(347, 97, 7, 4, mouseX, mouseY)) {
             		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-    	    		this.drawTexturedRectangle(325, 90, 23, 191, 7, 4);
+    	    		this.drawTexturedRectangle(347, 97, 23, 191, 7, 4);
     	    		downSelected = true;
             	}
             }
             
             if (page > 0) {
-            	this.drawTexturedRectangle(325, 47, 40, 191, 7, 4);
-            	if (mouseInRect(325, 47, 7, 4, mouseX, mouseY)) {
+            	this.drawTexturedRectangle(347, 51, 40, 191, 7, 4);
+            	if (mouseInRect(347, 51, 7, 4, mouseX, mouseY)) {
             		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-    	    		this.drawTexturedRectangle(325, 47, 23, 191, 7, 4);
+    	    		this.drawTexturedRectangle(347, 51, 23, 191, 7, 4);
     	    		upSelected = true;
             	}
             }
@@ -697,6 +697,22 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
 	        }
     	
     	if (mouseButton == 0) {
+    		if (inventory.holdingSlot.stack != null && selectedSlot.itemType == ItemType.ACCESSORY) {
+    			boolean a = false;
+    			if (selectedSlot.stack != null) {
+    				if (selectedSlot.stack.item == inventory.holdingSlot.stack.item) {
+    					a = true;
+    				}
+    			}
+    			if (a == false)
+    			for (int i = 0; i < inventory.accessory.length; i++) {
+    				if (inventory.accessory[i].stack != null) {
+    					if (inventory.accessory[i].stack.item == inventory.holdingSlot.stack.item) {
+    						return false;
+    					}
+    				}
+    			}
+    		}
     		if (inventory.holdingSlot.stack != null && selectedSlot.isTrashSlot == true) {
     			ItemStackT stack = new ItemStackT(inventory.holdingSlot.stack.item, inventory.holdingSlot.stack.size, ItemModifier.getModifier(inventory.holdingSlot.stack.modifier));
     			selectedSlot.stack = stack;

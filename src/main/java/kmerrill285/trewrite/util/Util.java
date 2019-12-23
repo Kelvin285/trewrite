@@ -23,6 +23,8 @@ public class Util {
 	public static int caveLevel = 65;
 	public static int underworldLevel = 0;
 	
+	public static double starChance = (3.0/1600.0) * 3.0;
+	
 	public static int randomValue(int min, int max, Random random) {
 		return random.nextInt(max - min) + min;
 	}

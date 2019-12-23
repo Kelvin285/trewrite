@@ -15,6 +15,7 @@ import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
@@ -26,6 +27,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -45,10 +48,12 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 	
 	public EntityItemT(EntityType<EntityItemT> type, World worldIn) {
 		super(type, worldIn);
+		this.hitGround = true;
 	}
 	
 	public EntityItemT(World worldIn) {
 		super(EntitiesT.ITEM, worldIn);
+		this.hitGround = true;
 	}
 		
 	public EntityItemT(World worldIn, double x, double y, double z, ItemStackT stack) {
@@ -63,6 +68,7 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 			this.stack = stack.item.stackSize;
 			this.modifier = stack.modifier;
 		}
+		this.hitGround = true;
 	}
 
 	public EntitySize getSize(Pose pose) {
@@ -107,12 +113,46 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 		return true;
 	}
 	
+	public boolean hitGround = false;
+	
+	public void applyEntityCollision (Entity entityIn) {
+		if (this.getItem() != null)
+			if (this.getItem().item == ItemsT.FALLEN_STAR)
+		if (hitGround == false) {
+			if (entityIn instanceof LivingEntity) {
+				if (!(entityIn instanceof PlayerEntity)) {
+					entityIn.attackEntityFrom(DamageSource.GENERIC, 2500);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void tick() {
+		if (this.onGround) hitGround = true;
 		super.tick();
 		this.setNoGravity(false);
 		this.age++;
 		boolean moving = false;
+		
+		
+		
+		if (hitGround == false) {
+			this.move(MoverType.SELF, new Vec3d(0, -1.0f, 0));
+		}
+		
+		if (this.getItem() != null) {
+			if (this.getItem().item == ItemsT.FALLEN_STAR) {
+				if (hitGround == false)
+					for (int i = 0; i < 10; i++)
+		    	 world.addParticle(ParticleTypes.END_ROD, posX, posY, posZ, rand.nextDouble() - 0.5f, rand.nextDouble(), rand.nextDouble() - 0.5f);
+
+				
+				if (world.getDayTime() % 24000 < 15000 || world.getDayTime() % 24000 > 22000) {
+					this.remove();
+				}
+			}
+		}
 		
 		if (pickupDelay > 0) {
 			pickupDelay--;
@@ -223,6 +263,7 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 				}
 			}
 		if (moving == false) {
+			 
 			this.move(MoverType.SELF, new Vec3d(0, -0.5f, 0));
 		}
 	}

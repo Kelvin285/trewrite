@@ -9,6 +9,7 @@ import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityArrowT extends ArrowEntity
@@ -37,12 +38,28 @@ public class EntityArrowT extends ArrowEntity
 	
 	public void tick() {
 		super.tick();
+		
+		if (this.hasNoGravity()) {
+			if (this.ticksExisted > 20 * 5) {
+				for (int i = 0; i < 10; i++)
+		    	 world.addParticle(ParticleTypes.END_ROD, posX, posY, posZ, 0, 0, 0);
+
+				this.remove();
+			}
+		}
+		
 		if (this.timeInGround > 0) {
 			this.remove();
 		}
 		if (arrow != null) {
-			if (arrow instanceof Arrow)
+			
+			if (arrow instanceof Arrow) {
 				((Arrow)arrow).arrowTick(this);
+				Arrow a = (Arrow)arrow;
+				if (a.gravity == false) {
+					this.setNoGravity(true);
+				}
+			}
 		}
 	}
 	

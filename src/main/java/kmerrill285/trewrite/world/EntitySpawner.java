@@ -1,12 +1,18 @@
 package kmerrill285.trewrite.world;
 
+import java.util.List;
+
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,6 +32,12 @@ public class EntitySpawner {
 	
 	public static void spawnEntities(PlayerEntity player, double x, double y, double z) {
 		World world = player.getEntityWorld();
+		
+		List<EntityEyeOfCthulhu> eocs = player.world.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 150, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 150, player.posZ + 150)));
+		if (eocs.size() > 0) {
+			return;
+		}
+		
 		
 		if (world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().expand(50, 50, 50)).size() <= 30) {
 			if (y <= Util.underworldLevel) return;

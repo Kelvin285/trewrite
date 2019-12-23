@@ -7,7 +7,9 @@ import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.basic.BasicBroadsword;
 import kmerrill285.trewrite.items.basic.BasicItem;
+import kmerrill285.trewrite.items.terraria.accessories.CloudInABottle;
 import kmerrill285.trewrite.items.terraria.arrows.FlamingArrow;
+import kmerrill285.trewrite.items.terraria.arrows.JestersArrow;
 import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import kmerrill285.trewrite.items.terraria.axes.CopperAxe;
@@ -26,6 +28,7 @@ import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
 import kmerrill285.trewrite.items.terraria.shortswords.IronShortsword;
 import kmerrill285.trewrite.items.terraria.throwable.Shuriken;
+import kmerrill285.trewrite.items.terraria.tools.MagicMirror;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
@@ -156,6 +159,15 @@ public class ItemsT {
 	
 	public static ItemT WORM_TOOTH;
 	
+	public static ItemT BAND_OF_REGENERATION;
+	
+	public static ItemT MAGIC_MIRROR;
+	
+	public static ItemT FALLEN_STAR;
+	public static ItemT JESTERS_ARROW;
+	
+	public static ItemT CLOUD_IN_A_BOTTLE;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	
@@ -211,7 +223,7 @@ public class ItemsT {
 				ULTRABRIGHT_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ULTRABRIGHT_TORCH, BlocksT.ULTRABRIGHT_TORCH_WALL, "ultrabright_torch").setMaxStack(99),
 				ICE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ICE_TORCH, BlocksT.ICE_TORCH_WALL, "ice_torch").setMaxStack(99),
 				DOOR = (ItemBlockT) new ItemBlockT(BlocksT.DOOR, "door").setMaxStack(99),
-				LESSER_HEALING_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "lesser_mana_potion").setMaterial().setConsumable().setManaSickness(5).setManaHeal(50).setMaxStack(30),
+				LESSER_MANA_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "lesser_mana_potion").setMaterial().setConsumable().setManaSickness(5).setManaHeal(50).setMaxStack(30),
 				CHAIR = (ItemBlockT) new ItemBlockT(BlocksT.CHAIR, "chair").setMaxStack(99),
 				TABLE = (ItemBlockT) new ItemBlockT(BlocksT.TABLE, "table").setMaxStack(99),
 				WOOD_PLATFORM = (ItemBlockT) new ItemBlockT(BlocksT.WOOD_PLATFORM, "wood_platform").setMaxStack(999),
@@ -271,7 +283,12 @@ public class ItemsT {
 				CHAIN = new ItemBlockT(BlocksT.CHAIN, "chain").setMaterial().setBuySell(40).setMaxStack(999),
 				LIGHTS_BANE = new LightsBane(),
 				UNHOLY_ARROW = new UnholyArrow(),
-				WORM_TOOTH = new ItemT(new Properties().group(ItemGroup.MATERIALS), "worm_tooth").setMaterial().setBuySell(20).setMaxStack(99)
+				WORM_TOOTH = new ItemT(new Properties().group(ItemGroup.MATERIALS), "worm_tooth").setMaterial().setBuySell(20).setMaxStack(99),
+				BAND_OF_REGENERATION = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "band_of_regeneration").setTooltip("Slowly regenerates life").setMaterial().setBuySell(10000),
+				MAGIC_MIRROR = new MagicMirror().setMaterial(),
+				JESTERS_ARROW = new JestersArrow(),
+				FALLEN_STAR = new ItemT(new Properties().group(ItemGroup.MATERIALS), "fallen_star").setMaterial().setMaxStack(99).setBuySell(500).setAmmo().setTooltip("Dissapears after the sunrise"),
+				CLOUD_IN_A_BOTTLE = new CloudInABottle()
 
 
 				);

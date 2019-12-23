@@ -34,7 +34,7 @@ public class SuspiciousLookingEye extends ItemT {
 
 		if (worldIn.getDayTime() % 24000L > 15000 && worldIn.getDayTime() % 24000L < 22000) {
 			
-			List<EntityEyeOfCthulhu> eocs = worldIn.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 50, player.posY - 50, player.posZ - 50), new BlockPos(player.posX + 50, player.posY + 50, player.posZ + 50)));
+			List<EntityEyeOfCthulhu> eocs = worldIn.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 150, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 150, player.posZ + 150)));
 			if (eocs.size() > 0) {
 				return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 			}

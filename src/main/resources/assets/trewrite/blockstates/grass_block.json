@@ -1,5 +1,9 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/grass_block" }
+        "": [ 
+            { "model": "trewrite:block/grass_block" },
+            { "model": "trewrite:block/grass_block2" },
+            { "model": "trewrite:block/grass_block3" }
+        ]
     }
 }
