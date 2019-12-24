@@ -147,6 +147,9 @@ public class BlocksT {
 	public static BlockT PALM_SAPLING;
 	
 	public static BlockT CHAIN;
+	
+	public static BlockT GLASS;
+	public static BlockT GLASS_PLATFORM;
 
 	
 	public static float GROUND_HARDNESS = 10.0f, STONE_HARDNESS = 15.0f, ORE_HARDNESS = 20.0f, DUNGEON_HARDNESS = 50.0f;
@@ -270,7 +273,9 @@ public class BlocksT {
 					HALLOWED_SAPLING = new Sapling("hallowed_sapling", BlocksT.HALLOWED_TREE),
 					JUNGLE_SAPLING = new Sapling("jungle_sapling", BlocksT.JUNGLE_TREE).addAllowed(BlocksT.MUD.name, BlocksT.JUNGLE_GRASS.name, BlocksT.BOG_GRASS.name),
 					PALM_SAPLING = new Sapling("palm_sapling", BlocksT.PALM_TREE).addAllowed(BlocksT.EBONSAND.name),
-					CHAIN = new RopeBlock(true, "chain", "chain")
+					CHAIN = new RopeBlock(true, "chain", "chain"),
+					GLASS = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.GLASS), GROUND_HARDNESS, 15, true, false, false, true, "glass", "glass").setRenderLayer(BlockRenderLayer.CUTOUT),
+					GLASS_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.GLASS), true, "glass_platform")
 					
 
 

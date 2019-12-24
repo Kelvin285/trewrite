@@ -83,7 +83,7 @@ public class EntityDemonEye extends FlyingEntity {
     public void onCollideWithPlayer(PlayerEntity entityIn)
     {
     	if (entityIn != null)
-    	if (entityIn.getPositionVector().distanceTo(getPositionVector()) <= 1f) {
+    	if (entityIn.getPositionVector().distanceTo(getPositionVector()) <= 1.5f) {
 			velX *= -2f;
 			velY *= -2f;
 			velZ *= -2f;

@@ -8,6 +8,7 @@ import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
+import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;
@@ -60,7 +61,6 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleOverlayEvent(RenderGameOverlayEvent event) {
-		
 		boolean copper_watch = false;
 		boolean silver_watch = false;
 		boolean gold_watch = false;

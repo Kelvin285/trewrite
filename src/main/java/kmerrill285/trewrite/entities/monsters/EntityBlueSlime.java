@@ -21,6 +21,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBlueSlime extends SlimeEntity
 {
@@ -35,6 +37,7 @@ public class EntityBlueSlime extends SlimeEntity
     public EntityBlueSlime(World world) {
     	super(EntitiesT.BLUE_SLIME, world);
     	init();
+    	
     }
     
     public void init() {
@@ -62,10 +65,19 @@ public class EntityBlueSlime extends SlimeEntity
         this.experienceValue = 0;
         
      }
-
+    
     public void dropLoot(DamageSource source, boolean b) {
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.GEL, Util.randomValue(1, 3, rand), null));
 
+    }
+    
+    /**
+     * Checks if the entity is in range to render.
+     */
+    @OnlyIn(Dist.CLIENT)
+    public boolean isInRangeToRenderDist(double distance) {
+       double d0 = 64.0D * getRenderDistanceWeight();
+       return distance < d0 * d0;
     }
     
 	public void remove() {		

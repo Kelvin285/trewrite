@@ -168,8 +168,12 @@ public class ItemsT {
 	
 	public static ItemT CLOUD_IN_A_BOTTLE;
 	
+	public static ItemT GLASS;
+	public static ItemT GLASS_PLATFORM;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
+	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
 	
 	public static HashMap<String, ItemT> items = new HashMap<String, ItemT>();
 	
@@ -288,7 +292,9 @@ public class ItemsT {
 				MAGIC_MIRROR = new MagicMirror().setMaterial(),
 				JESTERS_ARROW = new JestersArrow(),
 				FALLEN_STAR = new ItemT(new Properties().group(ItemGroup.MATERIALS), "fallen_star").setMaterial().setMaxStack(99).setBuySell(500).setAmmo().setTooltip("Dissapears after the sunrise"),
-				CLOUD_IN_A_BOTTLE = new CloudInABottle()
+				CLOUD_IN_A_BOTTLE = new CloudInABottle(),
+				GLASS = new ItemBlockT(BlocksT.GLASS, "glass").setMaterial().setMaxStack(999),
+				GLASS_PLATFORM = new ItemBlockT(BlocksT.GLASS_PLATFORM, "glass_platform").setMaterial().setMaxStack(999)
 
 
 				);

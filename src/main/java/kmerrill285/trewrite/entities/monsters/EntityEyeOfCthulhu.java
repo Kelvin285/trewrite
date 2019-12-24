@@ -16,19 +16,22 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityEyeOfCthulhu extends FlyingEntity {
+public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditionalSpawnData {
 	
 	public int damage = 18;
 	
@@ -110,7 +113,6 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 //		
 //		this.dropItem(Items.shield_of_cthulu, this.worldObj.playerEntities.size());
     	
-    	
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.DEMONITE_ORE, this.rand.nextInt(87 - 30) + 30, null));
     }
     
@@ -126,12 +128,17 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     	}
     	if (player != null)
     		{
-    			if (phase == 1)
-    				player.attackEntityFrom(DamageSource.causeMobDamage(this), 15);
-    			else
-    				player.attackEntityFrom(DamageSource.causeMobDamage(this), 23);
+    			if (player.getDistance(this) <= 1.5)
+        			if (phase == 1)
+        				player.attackEntityFrom(DamageSource.causeMobDamage(this), 15);
+        			else
+        				player.attackEntityFrom(DamageSource.causeMobDamage(this), 23);
+        		
+	    		 
     		}
-    }
+		}
+    		
+    
     
     public float getHealth() {
     	return this.bosshealth;
@@ -145,6 +152,8 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     	//bosses are immune to fire
     }
     
+    public BlockPos lastTarget;
+    
     public void tick() {
     	super.tick();
    	 	
@@ -154,6 +163,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
    	 
     	this.setNoGravity(true);
     	this.noClip = true;
+    	
     	
     	double motionY = this.getMotion().y;
     	double motionX = this.getMotion().x;
@@ -298,15 +308,20 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 					}
 
 				} else {
-					
-					float speed = 0.5f;
+					velX *= 0.95f;
+					velY *= 0.95f;
+					velZ *= 0.95f;
+					float speed = 2.0f;
 					if (phase == 2)
-						speed = 1.2f;
+						speed = 2.0f;
 					if (getHealth() <= maxHealth * 0.4f)
 						speed = 2.0f;
+					boolean fast = false;
 					
+					
+					Vec3d motion = new Vec3d(velX, velY, velZ);
 					if (target != null)
-					if (phase == 1 && this.ticksExisted % (20 * 2) == 0 || phase == 2 && this.ticksExisted % (35 * 1) == 0 || phase > 2 && this.ticksExisted % (20) == 0) {
+					if (motion.length() <= 1 || getHealth() <= maxHealth * 0.4f && getHealth() >= maxHealth * 0.25f && dashed >= 3 && motion.length() <= 2.5 || getHealth() <= maxHealth * 0.25f && motion.length() < 2.5) {
 						
 						if (getHealth() > maxHealth * 0.4f) {
 //							if (Minecraft.getMinecraft() != null) {
@@ -322,50 +337,74 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 							}
 						} else {
 							if (getHealth() < maxHealth * 0.25f) {
-								speed = 2.5f;
+								speed = 4.0f;
 //								if (Minecraft.getMinecraft() != null) {
 //					            	MakeSound sound = new MakeSound();
 //					    			sound.playSound("sounds/boss/Roar_2.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
 //					    		}
+								fast = true;
+								
+								if (this.lastTarget == null) {
+									this.lastTarget = target.getPosition();
+								}
+								
+								if (dashed < 5) {
+									dashed += 1;
+								} else {
+									dashed = 0;
+									speed = 1;
+									this.lastTarget = null;
+								}
+								
 							} else {
+								if (this.lastTarget == null) {
+									this.lastTarget = target.getPosition();
+								}
 								if (dashed < 6) {
 									dashed += 1;
 								} else {
 									dashed = 0;
+									this.lastTarget = null;
 								}
 								if (dashed < 3) {
 //									if (Minecraft.getMinecraft() != null) {
 //						            	MakeSound sound = new MakeSound();
 //						    			sound.playSound("sounds/boss/Roar_0.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
 //						    		}
-									speed = 1.0f;
+									speed = 2.0f;
 								} else {
-									speed = 1.2f;
+									speed = 4.0f;
 //									if (Minecraft.getMinecraft() != null) {
 //						            	MakeSound sound = new MakeSound();
 //						    			sound.playSound("sounds/boss/Roar_2.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
 //						    		}
+									fast = true;
 								}
 							}
 						}
 						if (target != null) {
-							Vec3d direction = new Vec3d(target.posX - posX, target.posY - posY, target.posZ - posZ).normalize();
-							direction.mul(speed, speed, speed);
-							velX = direction.x * 2;
-							velY = direction.y * 2;
-							velZ = direction.z * 2;
+							
+							
+								Vec3d direction = new Vec3d((target.lastTickPosX - target.getMotion().x) - posX, (target.lastTickPosY - target.getMotion().y) - posY, (target.lastTickPosZ - target.getMotion().z) - posZ);
+								direction = new Vec3d(direction.x * 100, direction.y * 100, direction.z * 100).normalize();
+								direction = new Vec3d(direction.x * speed, direction.y * speed, direction.z * speed);
+								velX = direction.x * 2;
+								velY = direction.y * 2;
+								velZ = direction.z * 2;							
+							
+							
 						}
-					}
-					if (target != null) {
-						if (this.getDistance(target) >= 25) {
-							velX = 0;
-							velY = 0;
-							velZ = 0;
-						}
+						
+						
+						
 					}
 					
 				}
 			}
+			
+			
+			
+			
 			if (getHealth() <= maxHealth * 0.65f) {
 				phase = 2;
 			}
@@ -384,10 +423,10 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 			
 			if (target!= null)
 			this.lookAt(Type.EYES, target.getPositionVec());
-			
-			this.rx = (float)Math.toDegrees(Math.atan2(posY - target.posY, posX - target.posX));
-			this.rz = (float)Math.toDegrees(Math.atan2(posY - target.posY, posZ - target.posZ));
-
+			if (target != null) {
+				this.rx = (float)Math.toDegrees(Math.atan2(posY - target.posY, posX - target.posX));
+				this.rz = (float)Math.toDegrees(Math.atan2(posY - target.posY, posZ - target.posZ));
+			}
 			
 		}
 		
@@ -415,6 +454,14 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 				this.rotationYaw = ry;
 			}
 		}
+    	
+    }
+    
+    
+    
+    public void remove() {
+    	super.remove();
+    	
     }
     
     public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -424,7 +471,12 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
     	amount -= defense;
     	if (amount < 1) amount = 1;
     	this.bosshealth -= amount;
+    	System.out.println("OUCH!: " + bosshealth);
     	super.setHealth(this.bosshealth);
+    	if (this.bosshealth <= 0) {
+    		this.dropLoot(DamageSource.GENERIC, true);
+    		this.remove();
+    	}
     	return true;
     }
     
@@ -450,6 +502,39 @@ public class EntityEyeOfCthulhu extends FlyingEntity {
 	protected void registerData() {
 		super.registerData();
 		this.dataManager.register(phase_data, 1);
+	}
+	
+
+	@Override
+	public void read(CompoundNBT compound) {
+//		System.out.println("read " + compound);
+		super.read(compound);
+		this.bosshealth = compound.getFloat("bosshealth");
+	}
+
+	@Override
+	public void readAdditional(CompoundNBT compound) {
+//		System.out.println("read additional " + compound);
+		this.bosshealth = compound.getFloat("bosshealth");
+	}
+
+	@Override
+	public void writeAdditional(CompoundNBT compound) {
+//		System.out.println("write additional " + compound);
+		compound.putFloat("bosshealth", bosshealth);
+	}
+
+	@Override
+	public void writeSpawnData(PacketBuffer buffer) {
+//		System.out.println("writeSpawnData " + buffer);
+		buffer.writeFloat(bosshealth);
+	}
+
+	@Override
+	public void readSpawnData(PacketBuffer additionalData) {
+//		System.out.println("READ SPAWN DATA: " + additionalData);
+
+		this.bosshealth = additionalData.readFloat();
 	}
     
 }

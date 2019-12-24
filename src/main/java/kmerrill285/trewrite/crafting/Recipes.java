@@ -35,6 +35,21 @@ public class Recipes {
 					return;
 				}
 				
+				if (item == ItemsT.ANY_SAND) {
+					ItemT[] types = {ItemsT.SAND, ItemsT.EBONSAND};
+					for (int t = 0; t < types.length; t++) {
+						ItemStackT[] items = new ItemStackT[recipe.input.length];
+						for (int j = 0; j < items.length; j++) {
+							items[j] = recipe.input[j];
+							if (items[j].item == ItemsT.ANY_SAND) {
+								items[j] = new ItemStackT(types[t], items[j].size);
+							}
+						}
+						addRecipe(new CraftingRecipe(recipe.output, recipe.block, items));
+					}
+					return;
+				}
+				
 				if (item == ItemsT.ANY_WOOD) {
 					ItemT[] types = {ItemsT.WOOD, ItemsT.SHADEWOOD, ItemsT.EBONWOOD, ItemsT.BOREAL_WOOD, ItemsT.PALM_WOOD, ItemsT.RICH_MAHOGANY, ItemsT.PEARLWOOD};
 					for (int t = 0; t < types.length; t++) {
@@ -119,8 +134,9 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.UNHOLY_ARROW, 5), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.WOODEN_ARROW, 5), new ItemStackT(ItemsT.WORM_TOOTH, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.JESTERS_ARROW, 20), null, new ItemStackT(ItemsT.WOODEN_ARROW, 20), new ItemStackT(ItemsT.FALLEN_STAR, 1)));
 
-		
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CLOUD_IN_A_BOTTLE, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
-
+				
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GLASS, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.ANY_SAND, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GLASS, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.GLASS_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GLASS_PLATFORM, 2), BlocksT.WORKBENCH, new ItemStackT(ItemsT.GLASS, 1)));
 	}
 }
