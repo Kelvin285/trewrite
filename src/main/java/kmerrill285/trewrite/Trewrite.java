@@ -8,11 +8,12 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
-import kmerrill285.trewrite.core.network.server.SPacketSendInventoryTerraria;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
@@ -25,6 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.server.ServerWorld;
@@ -82,7 +84,8 @@ public class Trewrite
     }
     
     public static int ticks = 0;
-    
+    public static boolean spawningEye = false;
+    public static boolean oncePerDay = false;
 	public static void onWorldTick(WorldTickEvent event)
 	{
     	
@@ -91,13 +94,50 @@ public class Trewrite
 		
 		for (PlayerEntity player : world.getPlayers()) {
 			InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+			
+			int defense = 0;
+			
+			
 			if (inventory != null) {
+				
+				for (int i = 0; i < 3; i++) {
+					InventorySlot slot = inventory.armor[i];
+					if (slot.stack != null) {
+						if (slot.stack.item instanceof Armor) {
+							Armor armor = (Armor)slot.stack.item;
+							defense += armor.defense;
+						}
+					}
+				}
+				
 				for (int i = 0; i < inventory.accessory.length; i++) {
 					InventorySlot slot = inventory.accessory[i];
 					if (slot.stack != null) {
 						if (slot.stack.item instanceof Accessory) {
 							Accessory a = (Accessory)slot.stack.item;
 							a.accessoryTick(player);
+							
+							ItemModifier modifier = ItemModifier.getModifier(slot.stack.modifier);
+							if (modifier != null) {
+								if (modifier.defense > 0) {
+									defense += modifier.defense;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			float maxHealth = player.getMaxHealth();
+			if (maxHealth >= 200 && defense >= 2) {
+				if (!world.isRemote) {
+					if (world.getDayTime() % 24000 >= 11000) {
+						if (oncePerDay == false) {
+							oncePerDay = true;
+							if (world.rand.nextInt(10) == 0) {
+								spawningEye = true;
+						    	world.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"You feel an evil presence watching you.\",\"bold\":true,\"color\":\"blue\"}"));
+							}
 						}
 					}
 				}
@@ -105,6 +145,25 @@ public class Trewrite
 		}
 		
 		if (!world.isRemote) {
+			if (world.getDayTime() % 24000 <= 1000) {
+				oncePerDay = false;
+			}
+			if (spawningEye == true && world.getDayTime() % 24000 > 17500) {
+				if (world.getPlayers().size() > 0) {
+					PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
+					float posX = 0, posY = world.rand.nextInt(20) - 10, posZ = 0;
+		    		float rad = 20;
+		    		
+		    		float rotation = world.rand.nextInt(360);
+		    		posX = (float) (Math.cos(Math.toDegrees(rotation)) * rad);
+		    		posZ = (float) (Math.sin(Math.toDegrees(rotation)) * rad);
+		    		
+		    		EntityEyeOfCthulhu eye = EntitiesT.EYE_OF_CTHULHU.create(world, null, null, null, player.getPosition(), SpawnReason.EVENT, false, false);
+					eye.setPosition(player.getPosition().getX() + posX, player.getPosition().getY() + posY, player.getPosition().getZ() + posZ);
+					world.addEntity(eye);
+					spawningEye = false;
+				}
+			}
 			
 			Trewrite.ticks++;
 			if (Trewrite.ticks % 20 == 0) {
@@ -131,7 +190,6 @@ public class Trewrite
 			Util.entitySpawnRate = 1.0/25.0;
 			
 			if (world.rand.nextDouble() <= Util.starChance / 3.0) {
-				System.out.println("star!");
 				if (world.getPlayers().size() > 0) {
 					PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
 					double x = player.posX + world.rand.nextInt(180) - 90, y = 255, z = player.posZ + world.rand.nextInt(180) - 90;

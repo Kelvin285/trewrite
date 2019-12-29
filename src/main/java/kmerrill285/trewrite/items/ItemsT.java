@@ -181,6 +181,9 @@ public class ItemsT {
 	
 	public static ItemT IRIDESCENT_BRICK;
 	
+	public static ItemT HELLSTONE;
+	public static ItemT HELLSTONE_BRICKS;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
@@ -308,7 +311,9 @@ public class ItemsT {
 				ANGEL_STATUE = new ItemBlockT(BlocksT.ANGEL_STATUE, "angel_statue").setMaxStack(99).setBuySell(60),
 				HERMES_BOOTS = new HermesBoots().setWearable(WearSlot.FEET),
 				ASH_BLOCK = new ItemBlockT(BlocksT.ASH_BLOCK, "ash_block"),
-				IRIDESCENT_BRICK = new ItemBlockT(BlocksT.IRIDESCENT_BRICK, "iridescent_brick")
+				IRIDESCENT_BRICK = new ItemBlockT(BlocksT.IRIDESCENT_BRICK, "iridescent_brick"),
+				HELLSTONE = new ItemBlockT(BlocksT.HELLSTONE, "hellstone"),
+				HELLSTONE_BRICKS = new ItemBlockT(BlocksT.HELLSTONE_BRICKS, "hellstone_bricks")
 
 
 				);

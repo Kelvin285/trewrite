@@ -136,7 +136,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 					   
 					    BlockPos pos = new BlockPos(x, y, z);
 					    double underworldCeiling = this.genElevation.getValue(k1 / 10.0f, l1 / 10.0f) * 5.0f;
-					    double underworldFloor = this.genTemperature.getValue(k1 / 100.0f, l1 / 100.0f) * 15.0f + underworldCeiling + 25;
+					    double underworldFloor = this.genTemperature.getValue(k1 / 100.0f, l1 / 100.0f) * 15.0f + underworldCeiling + 15;
 					    //int undernoise = (int)(2.5f * perlin.func_151601_a((double)(x + X * 16) / 10d, (double)(z + Z * 16) / 10d));
 
 					    
@@ -144,6 +144,13 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 					    		y > kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 10) {
 					    	chunkIn.setBlockState(new BlockPos(x, y, z), BlocksT.ASH_BLOCK.getDefaultState(), false);
 					    }
+					    
+					    if (y == (int)kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 8) {
+					    	if (world.getRandom().nextInt(25) == 0)
+					    		for (int yy = y; yy > kmerrill285.trewrite.util.Util.underworldLevel + 15; yy--)
+					    			chunkIn.setBlockState(new BlockPos(x, yy, z), Blocks.LAVA.getDefaultState(), false);
+					    }
+					    
 					    if (y <= kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 10) {
 					    	chunkIn.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState(), false);
 					    }
@@ -158,12 +165,6 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 					   
 					   if (chunkIn.getBlockState(new BlockPos(x, y, z)) == Blocks.STONE.getDefaultState()) {
 						   chunkIn.setBlockState(new BlockPos(x, y, z), BlocksT.STONE_BLOCK.getDefaultState(),false);
-						   if (y < kmerrill285.trewrite.util.Util.surfaceLevel)
-						   if (chunkIn.getBlockState(new BlockPos(x, y + 1, z)) == Blocks.AIR.getDefaultState()) {
-							   if (this.random.nextInt(1000) == 0) {
-								   chunkIn.setBlockState(new BlockPos(x, y + 1, z), BlocksT.LIFE_CRYSTAL.getDefaultState(), false);
-							   }
-						   }
 					   }
 					   
 					   

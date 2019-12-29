@@ -29,6 +29,7 @@ import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.RabbitEntity;
@@ -561,6 +562,11 @@ public class EntityEvents {
 	public static void handlePlayerEvent(PlayerEvent event) {
 		if (event.getPlayer() != null) {
 			PlayerEntity player = event.getPlayer();
+			
+			player.setNoGravity(true);
+			
+			
+			
 			player.getFoodStats().setFoodLevel(20);
 			
 			Score lifeCrystals = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.LIFE_CRYSTALS);
@@ -578,11 +584,12 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleClientLivingEvent(LivingEvent event) {
-		
+		event.getEntity().setNoGravity(true);
 		if (event.getEntity() != null) {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-				
+				player.getAttribute(PlayerEntity.ENTITY_GRAVITY).setBaseValue(0.0f);
+				player.setNoGravity(true);
 				InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
 				
 				boolean hasBoots = false;
@@ -629,6 +636,7 @@ public class EntityEvents {
 		if (event.getEntity() != null) {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+				player.getAttribute(PlayerEntity.ENTITY_GRAVITY).setBaseValue(0.0f);
 				
 				
 				
@@ -692,8 +700,22 @@ public class EntityEvents {
 				if (event.getEntity().getMotion().getY() > -Conversions.convertToIngame(Util.terminalVelocity));
 			Vec3d motion = event.getEntity().getMotion();
 			if (!event.getEntityLiving().isInWater()) {
-				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
-				event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
+//				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
+				if (event.getEntity() instanceof PlayerEntity) {
+					boolean nope = false;
+					if (event.getEntity() instanceof ClientPlayerEntity) {
+						ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
+						if (Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson()) {
+							event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 50.0f), motion.getZ()));
+							nope = true;
+						}
+					}
+					if (!nope) {
+						event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
+					}
+				} else {
+					event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
+				}
 			}
 			event.getEntity().stepHeight = 1.0f;
 

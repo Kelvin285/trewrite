@@ -20,6 +20,8 @@ public class WorldEvents {
 	public static HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
 	public static HashMap<String, InventoryChestTerraria> chests = new HashMap<String, InventoryChestTerraria>();
 
+	
+	
 	@SubscribeEvent
 	public static void blockHarvestEvent(HarvestDropsEvent event) {
 		System.out.println("HARVEST");

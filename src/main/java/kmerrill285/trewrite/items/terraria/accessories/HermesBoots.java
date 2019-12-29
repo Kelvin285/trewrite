@@ -44,7 +44,7 @@ public class HermesBoots extends Accessory {
 			player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue((float) (baseSpeed + baseSpeed * getSpeed(player)));
 		} else {
 			double mul = (maxSpeed * 10 + 1) / (getSpeed(player) * 10 + 1);
-			if (player.ticksExisted % ((int)(5 * mul)) == 0 && getSpeed(player) > 0)
+			if (player.ticksExisted % ((int)(5 * mul)) == 0 && getSpeed(player) > 0 && player.onGround)
 				if (player.distanceWalkedModified > player.prevDistanceWalkedModified)
 					player.getEntityWorld().addParticle(ParticleTypes.CLOUD, player.posX, player.posY, player.posZ, 0, 0, 0);
 		}

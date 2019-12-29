@@ -46,7 +46,8 @@ public class TerrariaFeatures {
 
 	public static TerrariaOreFeature ORES = new TerrariaOreFeature(TerrariaOreFeatureConfig::deserialize);
 	public static CorruptionSpireFeature CORRUPTION_SPIRE = new CorruptionSpireFeature(NoFeatureConfig::deserialize);
-	
+	public static LifeCrystalFeature LIFE_CRYSTAL = new LifeCrystalFeature(NoFeatureConfig::deserialize);
+
 	
 	public static final WorldCarver<ProbabilityConfig> CAVE = new TerrariaCaveCarver(ProbabilityConfig::deserialize, 256);
 	public static final Feature FREEZE_TOP_LAYER = new FreezeWaterTopFeature(NoFeatureConfig::deserialize);

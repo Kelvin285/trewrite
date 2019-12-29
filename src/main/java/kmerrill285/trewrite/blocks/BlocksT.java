@@ -156,6 +156,9 @@ public class BlocksT {
 	public static BlockT ASH_BLOCK;
 	
 	public static BlockT IRIDESCENT_BRICK;
+	
+	public static BlockT HELLSTONE;
+	public static BlockT HELLSTONE_BRICKS;
 
 	
 	public static float mul = 1.5f;
@@ -224,7 +227,7 @@ public class BlocksT {
 					WOOD_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.WOOD), true, "wood_platform"),
 					WOOD = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), 25, 15, true, false, false, true, "wood", "wood"),
 					CHEST = new Chest(Properties.create(Material.EARTH).sound(SoundType.WOOD), "chest"),
-					DEMONITE_ORE = new DemoniteOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
+					DEMONITE_ORE = new DemoniteOre(Properties.create(Material.EARTH).sound(SoundType.STONE).lightValue(2)),
 					CORRUPTION_PLANTS = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, false, "corruption_plants", "no drop").setShape(Shape.MUSHROOM).addAllowed("corrupt_grass"),
 					VILE_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "vile_mushroom", 0, 0, "vile_mushroom").setShape(Shape.MUSHROOM).setSell(10).setMaterial().addAllowed("corrupt_grass"),
 					CORRUPT_GRASS = new CorruptGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("corrupt_grass").addAllowed("corruption_plants", "vile_mushroom"),
@@ -285,7 +288,9 @@ public class BlocksT {
 					GLASS_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.GLASS), true, "glass_platform"),
 					ANGEL_STATUE = new Statue("angel_statue"),
 					ASH_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS * 0.75f, 15, true, false, false, true, "ash_block", "ash_block"),
-					IRIDESCENT_BRICK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), STONE_HARDNESS, 15, true, false, false, true, "iridescent_brick", "iridescent_brick")
+					IRIDESCENT_BRICK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), STONE_HARDNESS, 15, true, false, false, true, "iridescent_brick", "iridescent_brick"),
+					HELLSTONE = new HellstoneBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone"),
+					HELLSTONE_BRICKS = new HellstoneBricks(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone_bricks")
 
 
 

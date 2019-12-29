@@ -6,6 +6,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.command.arguments.EntityAnchorArgument.Type;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -112,7 +113,10 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		this.dropItem(Items.corrupt_arrow, this.rand.nextInt(49 - 20) + 20);
 //		
 //		this.dropItem(Items.shield_of_cthulu, this.worldObj.playerEntities.size());
-    	
+    	WorldStateHolder.get(world).eyeDefeated = true;
+    	if (!world.isRemote()) {
+    		world.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"The Eye of Cthulhu has been defeated!\",\"bold\":true,\"color\":\"blue\"}"));
+	    }
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.DEMONITE_ORE, this.rand.nextInt(87 - 30) + 30, null));
     }
     

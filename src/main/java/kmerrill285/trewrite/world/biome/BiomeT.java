@@ -3,6 +3,7 @@ package kmerrill285.trewrite.world.biome;
 import java.util.ArrayList;
 
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.biome.features.TerrariaFeatures;
 import kmerrill285.trewrite.world.biome.features.TerrariaOreFeatureConfig;
 import kmerrill285.trewrite.world.biome.ocean.BeachBiome;
@@ -17,7 +18,9 @@ import kmerrill285.trewrite.world.biome.ocean.WarmOcean;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -158,6 +161,10 @@ public class BiomeT {
 		
 		for (Biome biome : biomes) 
 		{
+			
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.ASH_BLOCK.getDefaultState(), BlocksT.HELLSTONE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, Util.underworldLevel + 50)));
+
+			
 			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
 			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.DIRT_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
 			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.GRASS_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
@@ -173,7 +180,10 @@ public class BiomeT {
 			
 			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.DEMONITE_ORE.getDefaultState() , 3), Placement.COUNT_RANGE, new CountRangeConfig(5, 0, 0, 128)));
 			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.EBONSTONE.getDefaultState(), BlocksT.DEMONITE_ORE.getDefaultState() , 8), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
-
+			
+			
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.LIFE_CRYSTAL, IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_HEIGHTMAP_DOUBLE, new FrequencyConfig(70)));
+			
 		}
 	}
 	
