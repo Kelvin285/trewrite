@@ -5,9 +5,11 @@ import java.util.HashMap;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.items.accessories.Accessory;
+import kmerrill285.trewrite.items.accessories.Accessory.WearSlot;
 import kmerrill285.trewrite.items.basic.BasicBroadsword;
 import kmerrill285.trewrite.items.basic.BasicItem;
 import kmerrill285.trewrite.items.terraria.accessories.CloudInABottle;
+import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.items.terraria.arrows.FlamingArrow;
 import kmerrill285.trewrite.items.terraria.arrows.JestersArrow;
 import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
@@ -171,6 +173,14 @@ public class ItemsT {
 	public static ItemT GLASS;
 	public static ItemT GLASS_PLATFORM;
 	
+	public static ItemT ANGEL_STATUE;
+	
+	public static ItemT HERMES_BOOTS;
+	
+	public static ItemT ASH_BLOCK;
+	
+	public static ItemT IRIDESCENT_BRICK;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
@@ -198,9 +208,9 @@ public class ItemsT {
 				COPPER_ORE = (ItemBlockT) new ItemBlockT(BlocksT.COPPER_ORE, "copper_ore"),
 				GOLD_ORE = (ItemBlockT) new ItemBlockT(BlocksT.GOLD_ORE, "gold_ore"),
 				SILVER_ORE = (ItemBlockT) new ItemBlockT(BlocksT.SILVER_ORE, "silver_ore"),
-				COPPER_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "copper_watch").setTooltip("Tells the time").setBuySell(200),
-				SILVER_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "silver_watch").setTooltip("Tells the time").setBuySell(1000),
-				GOLD_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "gold_watch").setTooltip("Tells the time").setBuySell(2000),
+				COPPER_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "copper_watch").setWearable(WearSlot.SINGLE_LEG).setTooltip("Tells the time").setBuySell(200),
+				SILVER_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "silver_watch").setWearable(WearSlot.SINGLE_LEG).setTooltip("Tells the time").setBuySell(1000),
+				GOLD_WATCH = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "gold_watch").setWearable(WearSlot.SINGLE_LEG).setTooltip("Tells the time").setBuySell(2000),
 				DEPTH_METER = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "depth_meter").setTooltip("Shows depth").setBuySell(2500),
 				LIFE_CRYSTAL = (ItemBlockT) new ItemBlockT(BlocksT.LIFE_CRYSTAL, "life_crystal").setMaxStack(99),
 				ACORN = (ItemAcorn) new ItemAcorn(BlocksT.FOREST_SAPLING, "acorn").setMaxStack(99),
@@ -292,9 +302,13 @@ public class ItemsT {
 				MAGIC_MIRROR = new MagicMirror().setMaterial(),
 				JESTERS_ARROW = new JestersArrow(),
 				FALLEN_STAR = new ItemT(new Properties().group(ItemGroup.MATERIALS), "fallen_star").setMaterial().setMaxStack(99).setBuySell(500).setAmmo().setTooltip("Dissapears after the sunrise"),
-				CLOUD_IN_A_BOTTLE = new CloudInABottle(),
+				CLOUD_IN_A_BOTTLE = new CloudInABottle().setWearable(WearSlot.SINGLE_LEG),
 				GLASS = new ItemBlockT(BlocksT.GLASS, "glass").setMaterial().setMaxStack(999),
-				GLASS_PLATFORM = new ItemBlockT(BlocksT.GLASS_PLATFORM, "glass_platform").setMaterial().setMaxStack(999)
+				GLASS_PLATFORM = new ItemBlockT(BlocksT.GLASS_PLATFORM, "glass_platform").setMaterial().setMaxStack(999),
+				ANGEL_STATUE = new ItemBlockT(BlocksT.ANGEL_STATUE, "angel_statue").setMaxStack(99).setBuySell(60),
+				HERMES_BOOTS = new HermesBoots().setWearable(WearSlot.FEET),
+				ASH_BLOCK = new ItemBlockT(BlocksT.ASH_BLOCK, "ash_block"),
+				IRIDESCENT_BRICK = new ItemBlockT(BlocksT.IRIDESCENT_BRICK, "iridescent_brick")
 
 
 				);

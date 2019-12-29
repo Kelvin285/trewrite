@@ -21,7 +21,9 @@ import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.Pickaxe;
 import kmerrill285.trewrite.items.Shortsword;
+import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.BlockState;
@@ -125,6 +127,12 @@ public class EntityEvents {
 					event.setCanceled(true);
 				}
 			}
+			if (event.getSource() == DamageSource.LAVA) {
+				event.setAmount(event.getAmount() * 10);
+			}
+			if (event.getSource() == DamageSource.ON_FIRE) {
+				event.setAmount(event.getAmount() * 5);
+			}
 		}
 		
 	}
@@ -199,6 +207,7 @@ public class EntityEvents {
 						}
 					}
 				}
+				
 			}
 			event.setAmount(event.getAmount() - armor);
 			if (event.getAmount() < 1) event.setAmount(1);
@@ -574,7 +583,24 @@ public class EntityEvents {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 				
+				InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
 				
+				boolean hasBoots = false;
+				for (int i = 0; i < inventory.accessory.length; i++) {
+					if (inventory.accessory[i].stack != null) {
+						if (inventory.accessory[i].stack.item instanceof HermesBoots) {
+							((Accessory)inventory.accessory[i].stack.item).accessoryTick(player);
+							hasBoots = true;
+							break;
+						}
+					}
+				}
+				if (hasBoots == false) {
+					HermesBoots HERMES_BOOTS = (HermesBoots)ItemsT.HERMES_BOOTS;
+					if (HERMES_BOOTS.baseSpeed != 0.0f) {
+						player.setAIMoveSpeed((float) HERMES_BOOTS.baseSpeed);
+					}
+				}
 				
 				World world = player.getEntityWorld();
 				Scoreboard scoreboard = player.getWorldScoreboard();

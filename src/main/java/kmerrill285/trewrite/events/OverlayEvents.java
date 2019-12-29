@@ -7,8 +7,8 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
-import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;
@@ -22,7 +22,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -48,6 +47,7 @@ public class OverlayEvents {
 		//      this.addLayer(new BipedArmorLayer<>(this, new BipedModel(0.5F), new BipedModel(1.0F)));
 		if (!addedLayer) {
 			event.getRenderer().addLayer(new TerrariaBipedArmorLayer<>(event.getRenderer(), new BipedModel(0.5f), new BipedModel(1.0f)));
+			event.getRenderer().addLayer(new TerrariaBipedAccessoryLayer<>(event.getRenderer(), new BipedModel(0.5f), new BipedModel(1.0f)));
 			addedLayer = true;
 		}
 		

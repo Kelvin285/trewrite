@@ -16,6 +16,7 @@ import kmerrill285.trewrite.core.network.client.CPacketSaveChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryChest;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
+import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.core.network.server.SPacketSendInventoryTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryChest;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
@@ -54,6 +55,8 @@ public class NetworkHandler {
         registerMessage(SPacketSyncInventoryTerraria.class, SPacketSyncInventoryTerraria::encode, SPacketSyncInventoryTerraria::decode, SPacketSyncInventoryTerraria::handle);
 //        registerMessage(SPacketSpawnItemTerraria.class, SPacketSpawnItemTerraria::encode, SPacketSpawnItemTerraria::decode, SPacketSpawnItemTerraria::handle);
         registerMessage(SPacketSyncInventoryChest.class, SPacketSyncInventoryChest::encode, SPacketSyncInventoryChest::new, SPacketSyncInventoryChest::handle);
+        registerMessage(SPacketSendAccessories.class, SPacketSendAccessories::encode, SPacketSendAccessories::new, SPacketSendAccessories::handle);
+
 	}
 	
 	 private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer) {

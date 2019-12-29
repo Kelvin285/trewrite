@@ -220,7 +220,6 @@ public class InventoryTerraria {
 		//System.out.println(inv);
 		loadFromString(inv);
 		
-		armor[0].stack = new ItemStackT(ItemsT.GOGGLES, 1);
 		//System.out.println("FINISHED LOADING INVENTORY FOR PLAYER");
 	}
 

@@ -29,6 +29,15 @@ public class ItemModifier {
 	public static ItemModifier SPIKED = registerModifier(new AccessoryModifier("Spiked", 1, 21.00).damage(2));
 	public static ItemModifier ANGRY = registerModifier(new AccessoryModifier("Angry", 1, 32.25).damage(3));
 	public static ItemModifier MENACING = registerModifier(new AccessoryModifier("Menacing", 2, 44.00).damage(4));
+	public static ItemModifier BRISK = registerModifier(new AccessoryModifier("Brisk", 0, 10.25).movementSpeed(1));
+	public static ItemModifier FLEETING = registerModifier(new AccessoryModifier("Fleeting", 1, 21.00).movementSpeed(2));
+	public static ItemModifier HASTY = registerModifier(new AccessoryModifier("Hasty", 1, 32.25).movementSpeed(3));
+	public static ItemModifier QUICK = registerModifier(new AccessoryModifier("Quick", 2, 44.00).movementSpeed(4));
+	public static ItemModifier WILD = registerModifier(new AccessoryModifier("Wild", 0, 10.25).meleeSpeed(1));
+	public static ItemModifier RASH = registerModifier(new AccessoryModifier("Rash", 1, 21.00).meleeSpeed(2));
+	public static ItemModifier INTREPID = registerModifier(new AccessoryModifier("Intrepid", 1, 32.25).meleeSpeed(3));
+	public static ItemModifier VIOLENT = registerModifier(new AccessoryModifier("Violent", 2, 44.00).meleeSpeed(4));
+	public static ItemModifier ARCANE = registerModifier(new AccessoryModifier("Arcane", 1, 32.25).mana(20));
 	
 	
 	public static ItemModifier KEEN = registerModifier(new UniversalModifer("Keen", 0, 3, 0, 1, 12.36));

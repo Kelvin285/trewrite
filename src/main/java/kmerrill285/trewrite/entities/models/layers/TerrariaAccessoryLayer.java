@@ -4,16 +4,16 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Armor.ArmorType;
+import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
@@ -22,15 +22,14 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class TerrariaArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends LayerRenderer<T, M> {
+public abstract class TerrariaAccessoryLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends LayerRenderer<T, M> {
    protected static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
    protected final A modelLeggings;
    protected final A modelArmor;
@@ -41,7 +40,7 @@ public abstract class TerrariaArmorLayer<T extends LivingEntity, M extends Biped
    private boolean skipRenderGlint;
    private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
 
-   protected TerrariaArmorLayer(IEntityRenderer<T, M> p_i50951_1_, A p_i50951_2_, A p_i50951_3_) {
+   protected TerrariaAccessoryLayer(IEntityRenderer<T, M> p_i50951_1_, A p_i50951_2_, A p_i50951_3_) {
       super(p_i50951_1_);
       this.modelLeggings = p_i50951_2_;
       this.modelArmor = p_i50951_3_;
@@ -58,58 +57,24 @@ public abstract class TerrariaArmorLayer<T extends LivingEntity, M extends Biped
    }
 
    private void renderArmorLayer(T entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, Armor.ArmorType slotIn) {
-	   InventoryTerraria inventory = WorldEvents.inventories.get(entityLivingBaseIn.getScoreboardName());
-	   int slot = 0;
-	   if (slotIn == ArmorType.CHEST) slot = 1;
-	   if (slotIn == ArmorType.LEGS) slot = 2;
+	   if (modelArmor == null || entityLivingBaseIn == null) return;
+	   this.modelArmor.isSneak = false;
+	   this.modelLeggings.isSneak = false;
+	   if (entityLivingBaseIn.isSneaking()) {
+		  this.modelArmor.isSneak = true;
+		  this.modelLeggings.isSneak = true;
+	  }
 	   
-	   InventorySlot vanitySlot = inventory.armorVanity[slot];
-	   InventorySlot armorSlot = inventory.armor[slot];
-	   InventorySlot currentSlot = vanitySlot;
-	   if (vanitySlot.stack == null) {
-		   currentSlot = armorSlot;
-	   } else {
-		   if (vanitySlot.stack.item == null) {
-			   currentSlot = armorSlot;
-		   }
-	   }
-	   
-	   if (currentSlot.stack == null) {
-		   return;
-	   } else {
-		   if (currentSlot.stack.item == null) {
-			   return;
-		   }
-	   }
-	   
-	   ItemStackT stack = currentSlot.stack;
-      
-      if (stack.item instanceof Armor) {
-    	  Armor armoritem = (Armor)stack.item;
-         if (armoritem.type == slotIn) {
-            A a = this.func_215337_a(slotIn);
-            a = getArmorModelHook(entityLivingBaseIn, stack, slotIn, a);
-            ((BipedModel)this.getEntityModel()).func_217148_a(a);
-            a.setLivingAnimations(entityLivingBaseIn, limbSwing, limbSwingAmount, partialTicks);
-            this.setModelSlotVisible(a, slotIn);
-            boolean flag = this.isLegSlot(slotIn);
-            this.bindTexture(this.getArmorResource(entityLivingBaseIn, stack, slotIn, null));
-//            if (armoritem instanceof net.minecraft.item.IDyeableArmorItem) { // Allow this for anything, not only cloth
-//               int i = ((net.minecraft.item.IDyeableArmorItem)armoritem).getColor(itemstack);
-//               float f = (float)(i >> 16 & 255) / 255.0F;
-//               float f1 = (float)(i >> 8 & 255) / 255.0F;
-//               float f2 = (float)(i & 255) / 255.0F;
-//               GlStateManager.color4f(this.colorR * f, this.colorG * f1, this.colorB * f2, this.alpha);
-//               a.render(entityLivingBaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-//               this.bindTexture(this.getArmorResource(entityLivingBaseIn, itemstack, slotIn, "overlay"));
-//            }
-            
-            GlStateManager.color4f(this.colorR, this.colorG, this.colorB, this.alpha);
-
-            a.render(entityLivingBaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            
-         }
-      }
+	   A a = this.func_215337_a(slotIn);
+       a = getArmorModelHook(entityLivingBaseIn, new ItemStackT(ItemsT.GOGGLES), slotIn, a);
+       ((BipedModel)this.getEntityModel()).func_217148_a(a);
+       a.setLivingAnimations(entityLivingBaseIn, limbSwing, limbSwingAmount, partialTicks);
+       GL11.glPushMatrix();
+       GL11.glTranslatef(0, -1000, 0);
+       a.render(entityLivingBaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+       GL11.glPopMatrix();
+       this.setModelSlotVisible(this.modelArmor, Armor.ArmorType.CHEST, limbSwing, limbSwingAmount, (PlayerEntity)entityLivingBaseIn);
+       
    }
 
    public A func_215337_a(ArmorType slotIn) {
@@ -211,7 +176,7 @@ public abstract class TerrariaArmorLayer<T extends LivingEntity, M extends Biped
       return resourcelocation;
    }
    /*=================================== FORGE END ===========================================*/
-   protected abstract void setModelSlotVisible(A p_188359_1_, ArmorType slotIn);
+   protected abstract void setModelSlotVisible(A p_188359_1_, ArmorType slotIn, float limbSwing, float limbSwingAmount, PlayerEntity player);
 
    protected abstract void setModelVisible(A model);
 }

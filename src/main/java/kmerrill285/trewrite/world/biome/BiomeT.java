@@ -2,6 +2,9 @@ package kmerrill285.trewrite.world.biome;
 
 import java.util.ArrayList;
 
+import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.world.biome.features.TerrariaFeatures;
+import kmerrill285.trewrite.world.biome.features.TerrariaOreFeatureConfig;
 import kmerrill285.trewrite.world.biome.ocean.BeachBiome;
 import kmerrill285.trewrite.world.biome.ocean.ColdOcean;
 import kmerrill285.trewrite.world.biome.ocean.DeepColdOcean;
@@ -13,6 +16,9 @@ import kmerrill285.trewrite.world.biome.ocean.ShallowOcean;
 import kmerrill285.trewrite.world.biome.ocean.WarmOcean;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
@@ -149,7 +155,26 @@ public class BiomeT {
 		registerBiome(GLACIERS = new Glaciers(), "glaciers", 10, BiomeManager.BiomeType.ICY,Type.BEACH);
 		registerBiome(SHALLOW_OCEAN = new ShallowOcean(), "shallow_ocean", 10, BiomeManager.BiomeType.WARM,Type.BEACH);
 		registerBiome(WARM_OCEAN = new WarmOcean(), "warm_ocean", 10, BiomeManager.BiomeType.WARM,Type.BEACH);
+		
+		for (Biome biome : biomes) 
+		{
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.DIRT_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.GRASS_BLOCK.getDefaultState(), BlocksT.IRON_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
+			
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.COPPER_ORE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(10, 0, 0, 255)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.DIRT_BLOCK.getDefaultState(), BlocksT.COPPER_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(10, 0, 0, 255)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.GRASS_BLOCK.getDefaultState(), BlocksT.COPPER_ORE.getDefaultState(), 17), Placement.COUNT_RANGE, new CountRangeConfig(10, 0, 0, 255)));
+		
+		
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.GOLD_ORE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.SILVER_ORE.getDefaultState() , 17), Placement.COUNT_RANGE, new CountRangeConfig(10, 0, 0, 255)));
 
+			
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.STONE_BLOCK.getDefaultState(), BlocksT.DEMONITE_ORE.getDefaultState() , 3), Placement.COUNT_RANGE, new CountRangeConfig(5, 0, 0, 128)));
+			biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.ORES, new TerrariaOreFeatureConfig(BlocksT.EBONSTONE.getDefaultState(), BlocksT.DEMONITE_ORE.getDefaultState() , 8), Placement.COUNT_RANGE, new CountRangeConfig(20, 0, 0, 255)));
+
+		}
 	}
 	
 	private static IForgeRegistry<Biome> biomeRegistry;

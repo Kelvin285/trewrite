@@ -7,9 +7,10 @@ import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
+import kmerrill285.trewrite.core.network.server.SPacketSendInventoryTerraria;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemsT;
@@ -20,12 +21,13 @@ import kmerrill285.trewrite.world.EntitySpawner;
 import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("trewrite")
@@ -78,12 +81,51 @@ public class Trewrite
         WorldType.WORLD_TYPES = types2;
     }
     
+    public static int ticks = 0;
+    
 	public static void onWorldTick(WorldTickEvent event)
 	{
     	
 
 		World world = event.world;
+		
+		for (PlayerEntity player : world.getPlayers()) {
+			InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+			if (inventory != null) {
+				for (int i = 0; i < inventory.accessory.length; i++) {
+					InventorySlot slot = inventory.accessory[i];
+					if (slot.stack != null) {
+						if (slot.stack.item instanceof Accessory) {
+							Accessory a = (Accessory)slot.stack.item;
+							a.accessoryTick(player);
+						}
+					}
+				}
+			}
+		}
+		
 		if (!world.isRemote) {
+			
+			Trewrite.ticks++;
+			if (Trewrite.ticks % 20 == 0) {
+				new Thread() {
+					public void run() {
+						try {
+							for (PlayerEntity player : event.world.getPlayers()) {
+								SPacketSendAccessories packet = new SPacketSendAccessories(player.getScoreboardName());
+								if (event.world instanceof ServerWorld)
+								for (ServerPlayerEntity send : ((ServerWorld)event.world).getPlayers())
+		    	    	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> send), packet);
+								
+							}
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}.start();
+				
+			}
+			
 			WorldStateHolder holder = WorldStateHolder.get(world);
 			Util.minSpawnDistance = 15.0;
 			Util.entitySpawnRate = 1.0/25.0;
@@ -103,6 +145,12 @@ public class Trewrite
 				}
 			}
 			
+			
+
+			
+				
+			
+			
 			if (world.rand.nextDouble() <= Util.entitySpawnRate) {
 				for (PlayerEntity player : world.getPlayers()) {
 					double x = player.posX + world.rand.nextInt(180) - 90, y = player.posY + world.rand.nextInt(180) - 90, z = player.posZ + world.rand.nextInt(180) - 90;
@@ -119,18 +167,7 @@ public class Trewrite
 						}
 					}
 					
-					InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
-					if (inventory != null) {
-						for (int i = 0; i < inventory.accessory.length; i++) {
-							InventorySlot slot = inventory.accessory[i];
-							if (slot.stack != null) {
-								if (slot.stack.item instanceof Accessory) {
-									Accessory a = (Accessory)slot.stack.item;
-									a.accessoryTick(player);
-								}
-							}
-						}
-					}
+					
 					
 				}
 			}

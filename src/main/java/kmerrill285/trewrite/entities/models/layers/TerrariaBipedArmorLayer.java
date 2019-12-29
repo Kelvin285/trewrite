@@ -1,11 +1,12 @@
 package kmerrill285.trewrite.entities.models.layers;
 
+import org.lwjgl.opengl.GL11;
+
 import kmerrill285.trewrite.items.Armor.ArmorType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ArmorLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,8 +34,12 @@ public class TerrariaBipedArmorLayer<T extends LivingEntity, M extends BipedMode
          p_188359_1_.bipedLeftLeg.showModel = true;
          break;
       }
-
+      
+	  this.bindTexture(new ResourceLocation("trewrite:textures/block/clay_block.png"));
+	  
+      
    }
+   
 
    protected void setModelVisible(A model) {
       model.setVisible(false);

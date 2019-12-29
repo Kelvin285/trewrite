@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "trewrite:block/angel_statue" },
+        "facing=south": { "model": "trewrite:block/angel_statue", "y": 180 },
+        "facing=west":  { "model": "trewrite:block/angel_statue", "y": 270 },
+        "facing=east":  { "model": "trewrite:block/angel_statue", "y": 90 }
+    }
+}

@@ -150,10 +150,17 @@ public class BlocksT {
 	
 	public static BlockT GLASS;
 	public static BlockT GLASS_PLATFORM;
+	
+	public static BlockT ANGEL_STATUE;
+	
+	public static BlockT ASH_BLOCK;
+	
+	public static BlockT IRIDESCENT_BRICK;
 
 	
-	public static float GROUND_HARDNESS = 10.0f, STONE_HARDNESS = 15.0f, ORE_HARDNESS = 20.0f, DUNGEON_HARDNESS = 50.0f;
-	
+	public static float mul = 1.5f;
+	public static float GROUND_HARDNESS = 30.0f * mul, STONE_HARDNESS = 45.0f * mul, ORE_HARDNESS = 50.0f * mul, DUNGEON_HARDNESS = 60.0f * mul;
+	 
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
 		event.getRegistry().registerAll(
@@ -275,8 +282,11 @@ public class BlocksT {
 					PALM_SAPLING = new Sapling("palm_sapling", BlocksT.PALM_TREE).addAllowed(BlocksT.EBONSAND.name),
 					CHAIN = new RopeBlock(true, "chain", "chain"),
 					GLASS = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.GLASS), GROUND_HARDNESS, 15, true, false, false, true, "glass", "glass").setRenderLayer(BlockRenderLayer.CUTOUT),
-					GLASS_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.GLASS), true, "glass_platform")
-					
+					GLASS_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.GLASS), true, "glass_platform"),
+					ANGEL_STATUE = new Statue("angel_statue"),
+					ASH_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS * 0.75f, 15, true, false, false, true, "ash_block", "ash_block"),
+					IRIDESCENT_BRICK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), STONE_HARDNESS, 15, true, false, false, true, "iridescent_brick", "iridescent_brick")
+
 
 
 				);
