@@ -132,6 +132,7 @@ public class TorchWall extends Torch {
 	   }
 
 	   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		   super.fillStateContainer(builder);
 	      builder.add(HORIZONTAL_FACING);
 	   }
 	}

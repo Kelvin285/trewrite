@@ -3,6 +3,7 @@ package kmerrill285.trewrite.world;
 import java.util.List;
 
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.SpawnCondition;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.material.Material;
@@ -10,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -132,10 +131,13 @@ public class EntitySpawner {
 	}
 	
 	public static void spawnEntityAt(EntityType type, BlockPos pos, World world) {
-		Entity e = type.create(world, null, null, null, pos, SpawnReason.EVENT, false, false);
-		e.setPosition(pos.getX(), pos.getY(), pos.getZ());
-		if (world.getEntitiesWithinAABB(e.getClass(), e.getBoundingBox().expand(20,20,20)).size() <= 8)
-		world.addEntity(e);
+		
+		if (SpawnCondition.canSpawn(type, pos, world, world.rand)) {
+			Entity e = type.create(world, null, null, null, pos, SpawnReason.EVENT, false, false);
+			e.setPosition(pos.getX(), pos.getY(), pos.getZ());
+			if (world.getEntitiesWithinAABB(e.getClass(), e.getBoundingBox().expand(20,20,20)).size() <= 8)
+			world.addEntity(e);
+		}
 	}
 	
 	public static BlockPos getSuitableEntitySpawnpoint(World world, double x, double y, double z) {

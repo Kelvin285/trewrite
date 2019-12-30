@@ -1,8 +1,11 @@
 package kmerrill285.trewrite;
 
+import java.lang.reflect.Field;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
@@ -18,20 +21,27 @@ import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.DimensionTypeT;
 import kmerrill285.trewrite.world.EntitySpawner;
+import kmerrill285.trewrite.world.TerrariaDimension;
 import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -73,6 +83,20 @@ public class Trewrite
         NetworkHandler.register();
         
         MinecraftForge.EVENT_BUS.addListener(Trewrite::onWorldTick);
+        MinecraftForge.EVENT_BUS.addListener(Trewrite::onBlockUpdate);
+
+        try {
+        	Field f = DimensionType.class.getDeclaredField(DEBUG ? "OVERWORLD" : "field_223227_a_");
+        	Util.makeFieldAccessible(f);
+        	
+        	DimensionType OVERWORLD = new DimensionTypeT(1, "", "", TerrariaDimension::new, true);
+        	DimensionType type = Registry.register(Registry.DIMENSION_TYPE, OVERWORLD.getId(), "custom_overworld", OVERWORLD);
+        	f.set(null, type);
+        	//return Registry.register(Registry.DIMENSION_TYPE, type.id, key, type);
+
+        }catch (Exception e) {
+        	e.printStackTrace();
+        }
         
         WorldType type = WorldType.WORLD_TYPES[0];
         WorldType[] types2 = new WorldType[WorldType.WORLD_TYPES.length + 1];
@@ -83,14 +107,25 @@ public class Trewrite
         WorldType.WORLD_TYPES = types2;
     }
     
+    @SubscribeEvent
+	public static void onBlockUpdate(NeighborNotifyEvent e) {
+    	if (e.getState().getBlock() == Blocks.STONE || e.getState().getBlock() == Blocks.COBBLESTONE) {
+    		e.getWorld().setBlockState(e.getPos(), BlocksT.STONE_BLOCK.getDefaultState(), 0);
+    	}
+    	if (e.getState().getBlock() == Blocks.OBSIDIAN) {
+    		e.getWorld().setBlockState(e.getPos(), BlocksT.OBSIDIAN.getDefaultState(), 0);
+    	}
+    }
+    
     public static int ticks = 0;
     public static boolean spawningEye = false;
     public static boolean oncePerDay = false;
 	public static void onWorldTick(WorldTickEvent event)
 	{
-    	
 
 		World world = event.world;
+		
+		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
 		
 		for (PlayerEntity player : world.getPlayers()) {
 			InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());

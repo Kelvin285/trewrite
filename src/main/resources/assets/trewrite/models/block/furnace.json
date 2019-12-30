@@ -1,68 +1,62 @@
 {
-	"parent": "block/orientable",
-	"credit": "Made with Blockbench",
-	"textures": {
-		"0": "trewrite:block/modeled/furnace",
-		"particle": "trewrite:block/modeled/furnace"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 4, 16],
-			"faces": {
-				"north": {"uv": [0, 10.667, 5.333, 12.333], "texture": "#0"},
-				"east": {"uv": [0, 10.667, 5.334, 12.332], "texture": "#0"},
-				"south": {"uv": [0, 10.667, 5.334, 12.334], "texture": "#0"},
-				"west": {"uv": [0, 10.667, 5.334, 12.334], "texture": "#0"},
-				"up": {"uv": [0, 5.333, 5.333, 10.666], "texture": "#0"},
-				"down": {"uv": [0, 5.334, 5.334, 10.667], "texture": "#0"}
-			}
-		},
-		{
-			"from": [2, 4, 6],
-			"to": [14, 16, 15],
-			"faces": {
-				"north": {"uv": [0, 0, 5.334, 5.667], "texture": "#0"},
-				"east": {"uv": [12, 5.334, 16, 10.667], "texture": "#0"},
-				"south": {"uv": [5.334, 0, 10.667, 5.334], "texture": "#0"},
-				"west": {"uv": [10.667, 0, 14.667, 5.334], "texture": "#0"},
-				"up": {"uv": [5.334, 5.334, 10.667, 9.334], "texture": "#0"},
-				"down": {"uv": [5.334, 5.334, 10.667, 9.334], "texture": "#0"}
-			}
-		},
-		{
-			"from": [2, 4, 2],
-			"to": [6, 6, 6],
-			"faces": {
-				"north": {"uv": [5.667, 11.667, 7, 12.334], "texture": "#0"},
-				"east": {"uv": [5.667, 11.667, 5.98, 12.323], "texture": "#0"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#missing"},
-				"west": {"uv": [7, 11.668, 8.334, 12.334], "texture": "#0"},
-				"up": {"uv": [5.667, 11.333, 6, 11.667], "texture": "#0"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#missing"}
-			}
-		},
-		{
-			"from": [2, 6, 2],
-			"to": [5, 7, 6],
-			"faces": {
-				"north": {"uv": [6, 11.334, 7, 11.667], "texture": "#0"},
-				"east": {"uv": [6, 11.334, 6.646, 11.656], "texture": "#0"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#missing"},
-				"west": {"uv": [7, 11.334, 8.334, 11.668], "texture": "#0"},
-				"up": {"uv": [5.667, 9.334, 6.666, 10.667], "texture": "#0"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#missing"}
-			}
-		}
-	],
-	"display": {
-		"ground": {
-			"translation": [0, 2, 0],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"gui": {
-			"rotation": [0, -180, 0],
-			"scale": [0.8, 0.8, 0.8]
-		}
-	}
+    "parent": "minecraft:block/block",
+    "textures": {
+        "furnace": "trewrite:block/modeled/furnace"
+    },
+    "elements": [
+        {
+            "from": [ 0, 0, 0 ], 
+            "to": [ 16, 6, 16 ], 
+            "faces": {
+                "north": { "texture": "#furnace", "uv": [ 0, 13, 8, 16 ] },
+                "east": { "texture": "#furnace", "uv": [ 0, 13, 8, 16 ] },
+                "south": { "texture": "#furnace", "uv": [ 0, 13, 8, 16 ] },
+                "west": { "texture": "#furnace", "uv": [ 0, 13, 8, 16 ] },
+                "up": { "texture": "#furnace", "uv": [ 8, 8, 16, 16 ] },
+                "down": { "texture": "#furnace", "uv": [ 8, 8, 16, 16 ] }
+            }
+        },
+        {
+            "from": [ 2, 6, 1 ], 
+            "to": [ 14, 16, 13 ], 
+            "faces": {
+                "north": { "texture": "#furnace", "uv": [ 2, 8, 8, 13 ] },
+                "east": { "texture": "#furnace", "uv": [ 2, 8, 8, 13 ] },
+                "south": { "texture": "#furnace", "uv": [ 2, 3, 8, 8 ] },
+                "west": { "texture": "#furnace", "uv": [ 2, 8, 8, 13 ] },
+                "up": { "texture": "#furnace", "uv": [ 8, 2, 14, 8 ] }
+            }
+        },
+        {
+            "from": [ 4, 12, 13 ], 
+            "to": [ 12, 14, 14 ], 
+            "faces": {
+                "east": { "texture": "#furnace", "uv": [ 4, 2, 5, 2 ] },
+                "south": { "texture": "#furnace", "uv": [ 4, 2, 8, 3 ] },
+                "west": { "texture": "#furnace", "uv": [ 4, 2, 5, 2 ] },
+                "up": { "texture": "#furnace", "uv": [ 4, 2, 8, 2 ] },
+                "down": { "texture": "#furnace", "uv": [ 4, 2, 8, 2 ] }
+            }
+        },
+        {
+            "from": [ 12, 6, 13 ], 
+            "to": [ 15, 9, 14 ], 
+            "faces": {
+                "north": { "texture": "#furnace", "uv": [ 2.5, 1.5, 4, 3 ] },
+                "east": { "texture": "#furnace", "uv": [ 3.5, 1.5, 4, 3 ] },
+                "south": { "texture": "#furnace", "uv": [ 2.5, 1.5, 4, 3 ] },
+                "west": { "texture": "#furnace", "uv": [ 3.5, 1.5, 4, 3 ] },
+                "up": { "texture": "#furnace", "uv": [ 3, 2, 3, 2 ] }
+            }
+        },
+        {
+            "from": [ 11, 5, 13 ], 
+            "to": [ 12, 8, 14 ], 
+            "faces": {
+                "south": { "texture": "#furnace", "uv": [ 2, 2, 2.5, 3.5 ] },
+                "west": { "texture": "#furnace", "uv": [ 2, 2, 2.5, 3.5 ] },
+                "up": { "texture": "#furnace", "uv": [ 2, 2, 2.5, 2.5 ] }
+            }
+        }
+    ]
 }

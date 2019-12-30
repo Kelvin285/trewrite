@@ -301,6 +301,7 @@ public class Door extends BlockT {
 	   }
 
 	   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		   super.fillStateContainer(builder);
 	      builder.add(HALF, FACING, OPEN, HINGE, POWERED);
 	   }
 		   

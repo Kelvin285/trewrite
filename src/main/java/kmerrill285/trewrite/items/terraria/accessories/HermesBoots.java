@@ -32,11 +32,11 @@ public class HermesBoots extends Accessory {
 		}
 		if (player.distanceWalkedModified > player.prevDistanceWalkedModified) {
 			if (getSpeed(player) < maxSpeed) {
-				setSpeed(player, getSpeed(player) + 0.0025f);
+				setSpeed(player, getSpeed(player) + 0.025f);
 			}
 		} else {
 			if (getSpeed(player) > 0.0f) {
-				setSpeed(player, getSpeed(player) - 0.0025f);
+				setSpeed(player, getSpeed(player) - 0.025f);
 			}
 		}
 		World world = player.world;

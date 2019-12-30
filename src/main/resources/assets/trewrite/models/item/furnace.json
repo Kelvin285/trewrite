@@ -1,3 +1,7 @@
 {
-    "parent": "trewrite:block/furnace"
+	"parent": "item/generated",
+	"textures":
+	{
+		"layer0": "trewrite:item/furnace"
+	}
 }

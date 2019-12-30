@@ -159,6 +159,10 @@ public class BlocksT {
 	
 	public static BlockT HELLSTONE;
 	public static BlockT HELLSTONE_BRICKS;
+	
+	public static BlockT HELLFORGE;
+	
+	public static BlockT OBSIDIAN;
 
 	
 	public static float mul = 1.5f;
@@ -290,7 +294,9 @@ public class BlocksT {
 					ASH_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS * 0.75f, 15, true, false, false, true, "ash_block", "ash_block"),
 					IRIDESCENT_BRICK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), STONE_HARDNESS, 15, true, false, false, true, "iridescent_brick", "iridescent_brick"),
 					HELLSTONE = new HellstoneBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone"),
-					HELLSTONE_BRICKS = new HellstoneBricks(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone_bricks")
+					HELLSTONE_BRICKS = new HellstoneBricks(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone_bricks"),
+					HELLFORGE = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, true, false, "hellforge", "hellforge").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(600),
+					OBSIDIAN = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), ORE_HARDNESS, 65, true, false, false, true, "obsidian", "obsidian")
 
 
 

@@ -15,8 +15,10 @@ import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -56,11 +58,13 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePostPlayerRenderEvent(RenderPlayerEvent.Post event) {
+			
 		}
 	
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleOverlayEvent(RenderGameOverlayEvent event) {
+				
 		boolean copper_watch = false;
 		boolean silver_watch = false;
 		boolean gold_watch = false;

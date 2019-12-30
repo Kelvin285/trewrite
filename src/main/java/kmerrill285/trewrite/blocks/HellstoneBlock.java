@@ -1,5 +1,9 @@
 package kmerrill285.trewrite.blocks;
 
+import kmerrill285.trewrite.core.inventory.InventorySlot;
+import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -7,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
@@ -23,10 +28,55 @@ public class HellstoneBlock extends BlockT {
 	}
 
 	public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-		entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+		
+		if (entityIn instanceof PlayerEntity) {
+			if (!entityIn.world.isRemote) {
+				PlayerEntity player = (PlayerEntity)entityIn;
+				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				if (inventory != null) {
+					boolean hasSkull = false;
+					for (int i = 0; i < inventory.accessory.length; i++) {
+						InventorySlot slot = inventory.accessory[i];
+						if (slot.stack != null) {
+							if (slot.stack.item == ItemsT.OBSIDIAN_SKULL) {
+								hasSkull = true;
+								break;
+							}
+						}
+					}
+					if (!hasSkull) {
+						entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+					}
+				}
+			}
+		} else {
+			entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+		}
 	}
    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-      entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+	   if (entityIn instanceof PlayerEntity) {
+			if (!entityIn.world.isRemote) {
+				PlayerEntity player = (PlayerEntity)entityIn;
+				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				if (inventory != null) {
+					boolean hasSkull = false;
+					for (int i = 0; i < inventory.accessory.length; i++) {
+						InventorySlot slot = inventory.accessory[i];
+						if (slot.stack != null) {
+							if (slot.stack.item == ItemsT.OBSIDIAN_SKULL) {
+								hasSkull = true;
+								break;
+							}
+						}
+					}
+					if (!hasSkull) {
+						entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+					}
+				}
+			}
+		} else {
+			entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+		}
    }
    
    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {

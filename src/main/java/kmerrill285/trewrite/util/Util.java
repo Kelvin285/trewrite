@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Random;
 
 public class Util {
@@ -31,6 +33,20 @@ public class Util {
 	
 	public static int randomValue(int min, int max) {
 		return new Random().nextInt(max - min) + min;
+	}
+	
+	public static void makeFieldAccessible(Field field) throws Exception {
+		Field modifiers = Field.class.getDeclaredField("modifiers");
+		modifiers.setAccessible(true);
+		try {
+			modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+			modifiers.setInt(field, field.getModifiers() & ~Modifier.PROTECTED);
+			modifiers.setInt(field, field.getModifiers() | Modifier.PUBLIC);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static String getTimerString(int seconds) {

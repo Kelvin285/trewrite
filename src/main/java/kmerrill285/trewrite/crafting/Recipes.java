@@ -16,6 +16,12 @@ public class Recipes {
 	public static HashMap<Block, List<CraftingRecipe>> recipes = new HashMap<Block, List<CraftingRecipe>>();
 	
 	public static void addRecipe(CraftingRecipe recipe) {
+		
+		if (recipe.block == BlocksT.FURNACE) {
+			CraftingRecipe recipe2 = new CraftingRecipe(recipe.output, BlocksT.HELLFORGE, recipe.input);
+			addRecipe(recipe2);
+		}
+		
 		for (int i = 0; i < recipe.input.length; i++) {
 			if (recipe.input[i] != null) {
 				ItemT item = recipe.input[i].item;
@@ -111,7 +117,7 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.PEARLWOOD, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD, 1), null, new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2), null, new ItemStackT(ItemsT.RICH_MAHOGANY, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY, 1), null, new ItemStackT(ItemsT.RICH_MAHOGANY, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY, 1), null, new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.BOREAL_WOOD, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD, 1), null, new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PALM_WOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.PALM_WOOD, 1)));
@@ -140,6 +146,8 @@ public class Recipes {
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRIDESCENT_BRICK, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.STONE_BLOCK, 1), new ItemStackT(ItemsT.ASH_BLOCK, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BRICKS, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.STONE_BLOCK, 1), new ItemStackT(ItemsT.HELLSTONE, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CORRUPT_TORCH, 3), null, new ItemStackT(ItemsT.TORCH, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_SKULL, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.OBSIDIAN, 20)));
 
 	}
 }

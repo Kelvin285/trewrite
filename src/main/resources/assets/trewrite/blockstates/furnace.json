@@ -1,8 +1,8 @@
 {
     "variants": {
-        "facing=north": { "model": "trewrite:block/furnace" },
-        "facing=south": { "model": "trewrite:block/furnace", "y": 180 },
-        "facing=west":  { "model": "trewrite:block/furnace", "y": 270 },
-        "facing=east":  { "model": "trewrite:block/furnace", "y": 90 }
+        "facing=north": { "model": "trewrite:block/furnace", "y": 180 },
+        "facing=south": { "model": "trewrite:block/furnace" },
+        "facing=west":  { "model": "trewrite:block/furnace", "y": 90 },
+        "facing=east":  { "model": "trewrite:block/furnace", "y": 270 }
     }
 }

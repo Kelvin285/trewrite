@@ -134,6 +134,29 @@ public class EntityEvents {
 			if (event.getSource() == DamageSource.ON_FIRE) {
 				event.setAmount(event.getAmount() * 5);
 			}
+			if (event.getSource() == DamageSource.HOT_FLOOR) {
+				if (event.getEntityLiving() instanceof PlayerEntity)
+				if (!event.getEntityLiving().world.isRemote) {
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+					if (inventory != null) {
+						boolean hasSkull = false;
+						for (int i = 0; i < inventory.accessory.length; i++) {
+							InventorySlot slot = inventory.accessory[i];
+							if (slot.stack != null) {
+								if (slot.stack.item == ItemsT.OBSIDIAN_SKULL) {
+									hasSkull = true;
+									break;
+								}
+							}
+						}
+						if (hasSkull) {
+							event.setAmount(0);
+							event.setCanceled(true);
+						}
+					}
+				}
+			}
 		}
 		
 	}
@@ -584,8 +607,8 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleClientLivingEvent(LivingEvent event) {
-		event.getEntity().setNoGravity(true);
 		if (event.getEntity() != null) {
+			event.getEntity().setNoGravity(true);
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 				player.getAttribute(PlayerEntity.ENTITY_GRAVITY).setBaseValue(0.0f);

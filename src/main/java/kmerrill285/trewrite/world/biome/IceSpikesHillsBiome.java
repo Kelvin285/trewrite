@@ -21,7 +21,7 @@ public class IceSpikesHillsBiome extends Biome {
 	protected IceSpikesHillsBiome() {
 	      super((new Biome.Builder()).surfaceBuilder(new ConfiguredSurfaceBuilder<SurfaceBuilderConfig>(SurfaceBuilder.DEFAULT, 
 					new SurfaceBuilderConfig(BlocksT.ICE.getDefaultState(), BlocksT.ICE.getDefaultState(), BlocksT.STONE_BLOCK.getDefaultState())
-					)).precipitation(Biome.RainType.SNOW).category(Biome.Category.DESERT).depth(0.45F).scale(0.3F).temperature(2.0F).downfall(0.0F).waterColor(4159204).waterFogColor(329011).parent((String)null));
+					)).precipitation(Biome.RainType.SNOW).category(Biome.Category.DESERT).depth(0.45F).scale(0.3F).temperature(0.2F).downfall(0.0F).waterColor(4159204).waterFogColor(329011).parent((String)null));
 		  this.addCarver(GenerationStage.Carving.AIR, Biome.createCarver(TerrariaFeatures.CAVE, new ProbabilityConfig(0.14285715F)));//	      this.addSpawn(EntityClassification.MONSTER, new Biome.SpawnListEntry(EntitiesT.BLUE_SLIME, 12, 4, 4));
 	      this.setRegistryName("trewrite:ice_spikes_hills");
 	      

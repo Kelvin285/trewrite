@@ -32,12 +32,15 @@ public class TerrariaWorldType extends WorldType {
 //	public TerrariaServerWorld(MinecraftServer p_i50703_1_, Executor p_i50703_2_, SaveHandler p_i50703_3_,
 //			WorldInfo p_i50703_4_, DimensionType p_i50703_5_, IProfiler p_i50703_6_, IChunkStatusListener p_i50703_7_) {
 	
+	public float getCloudHeight() {
+		return 180;
+	}
+	
 	@Override
 
     public ChunkGenerator<?> createChunkGenerator(World world)
 
     {
-		
 //		WorldEntitySpawner
     	if (world.getDimension().getType() == DimensionType.OVERWORLD)
 

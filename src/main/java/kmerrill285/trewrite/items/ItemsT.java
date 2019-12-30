@@ -10,6 +10,7 @@ import kmerrill285.trewrite.items.basic.BasicBroadsword;
 import kmerrill285.trewrite.items.basic.BasicItem;
 import kmerrill285.trewrite.items.terraria.accessories.CloudInABottle;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
+import kmerrill285.trewrite.items.terraria.accessories.ObsidianSkull;
 import kmerrill285.trewrite.items.terraria.arrows.FlamingArrow;
 import kmerrill285.trewrite.items.terraria.arrows.JestersArrow;
 import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
@@ -184,6 +185,12 @@ public class ItemsT {
 	public static ItemT HELLSTONE;
 	public static ItemT HELLSTONE_BRICKS;
 	
+	public static ItemT HELLFORGE;
+	
+	public static ItemT OBSIDIAN;
+	
+	public static ItemT OBSIDIAN_SKULL;
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
@@ -313,8 +320,10 @@ public class ItemsT {
 				ASH_BLOCK = new ItemBlockT(BlocksT.ASH_BLOCK, "ash_block"),
 				IRIDESCENT_BRICK = new ItemBlockT(BlocksT.IRIDESCENT_BRICK, "iridescent_brick"),
 				HELLSTONE = new ItemBlockT(BlocksT.HELLSTONE, "hellstone"),
-				HELLSTONE_BRICKS = new ItemBlockT(BlocksT.HELLSTONE_BRICKS, "hellstone_bricks")
-
+				HELLSTONE_BRICKS = new ItemBlockT(BlocksT.HELLSTONE_BRICKS, "hellstone_bricks"),
+				HELLFORGE = new ItemBlockT(BlocksT.HELLFORGE, "hellforge"),
+				OBSIDIAN = new ItemBlockT(BlocksT.OBSIDIAN, "obsidian"),
+				OBSIDIAN_SKULL = new ObsidianSkull()
 
 				);
 		Recipes.addAllRecipes();

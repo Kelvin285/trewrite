@@ -37,7 +37,6 @@ public class EntityBlueSlime extends SlimeEntity
     public EntityBlueSlime(World world) {
     	super(EntitiesT.BLUE_SLIME, world);
     	init();
-    	
     }
     
     public void init() {
@@ -184,4 +183,5 @@ public class EntityBlueSlime extends SlimeEntity
     {
         return this.getSlimeSize() > 2;
     }
+
 }
