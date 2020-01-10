@@ -172,7 +172,7 @@ public class ItemT extends Item {
 	
 	protected void setLocation(String name) {
 		this.setRegistryName(new ResourceLocation("trewrite", name));
-		ItemsT.items.put(name, this);
+		ItemsT.items.put(ItemsT.getStringForItem(this), this);
 		this.itemName = name;
 	}
 	

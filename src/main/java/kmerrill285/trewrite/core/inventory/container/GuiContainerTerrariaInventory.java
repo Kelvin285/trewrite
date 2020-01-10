@@ -20,8 +20,8 @@
 package kmerrill285.trewrite.core.inventory.container;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -38,7 +38,11 @@ import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemT;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.items.terraria.loot_bags.LootBag;
+import kmerrill285.trewrite.items.terraria.loot_bags.LootStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -48,7 +52,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -168,7 +171,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     	for (int x = 0; x < 30; x++) {
     		if (x < 10)
     		if (inventory.hotbar[x].stack != null) {
-    			if (inventory.hotbar[x].stack.item.itemName.contentEquals(item.item.itemName)) {
+    			if (ItemsT.getStringForItem(inventory.hotbar[x].stack.item).contentEquals(ItemsT.getStringForItem(item.item))) {
     				//System.out.println("has item");
     				hasItem = true;
     				stack += inventory.hotbar[x].stack.size;
@@ -176,7 +179,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     		}
     		
     		if (inventory.main[x].stack != null) {
-    			if (inventory.main[x].stack.item.itemName.contentEquals(item.item.itemName)) {
+    			if (ItemsT.getStringForItem(inventory.main[x].stack.item).contentEquals(ItemsT.getStringForItem(item.item))) {
     				//System.out.println("has item");
     				hasItem = true;
     				stack += inventory.main[x].stack.size;
@@ -464,7 +467,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         if (rightDown == true && System.currentTimeMillis() > rightClicked + 500L) {
         	if (selectedRecipe != null) {
         		if (inventory.holdingSlot.stack.item == selectedRecipe.output.item) { 
-					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < inventory.holdingSlot.stack.item.maxStack) {
+        			int maxStack = 0;
+    				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+    					maxStack = ((ItemT)inventory.holdingSlot.stack.item).maxStack;
+    				} else {
+    					maxStack = inventory.holdingSlot.stack.itemForRender.getMaxStackSize();
+    				}
+					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < maxStack) {
 						inventory.holdingSlot.stack.size += selectedRecipe.output.size;
             			for (ItemStackT stack : selectedRecipe.input) {
             				this.removeItemCrafting(stack);
@@ -480,7 +489,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     				inventory.holdingSlot.stack = new ItemStackT(selectedSlot.stack.item, ItemModifier.getModifier(selectedSlot.stack.modifier));
     				selectedSlot.decrementStack(1);
     			} else {
-    				if (inventory.holdingSlot.stack.size + 1 < inventory.holdingSlot.stack.item.maxStack) {
+    				int maxStack = 0;
+    				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+    					maxStack = ((ItemT)inventory.holdingSlot.stack.item).maxStack;
+    				} else {
+    					maxStack = inventory.holdingSlot.stack.itemForRender.getMaxStackSize();
+    				}
+    				if (inventory.holdingSlot.stack.size + 1 < maxStack) {
     					inventory.holdingSlot.stack.size++;
     					selectedSlot.decrementStack(1);
     				}
@@ -627,6 +642,8 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     		page++;
     	}
     	
+    	
+    	
     	if (this.selectedRecipe != null) {
     		//System.out.println("selected recipe");
     		if (inventory.holdingSlot == null || inventory.holdingSlot.stack == null) {
@@ -644,7 +661,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		if (inventory.holdingSlot.stack != null) {
         			if (mouseButton == 0) {
         				if (inventory.holdingSlot.stack.item == selectedRecipe.output.item) { 
-        					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < inventory.holdingSlot.stack.item.maxStack) {
+        					int maxStack = 0;
+            				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+            					maxStack = ((ItemT)inventory.holdingSlot.stack.item).maxStack;
+            				} else {
+            					maxStack = inventory.holdingSlot.stack.itemForRender.getMaxStackSize();
+            				}
+        					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < maxStack) {
         						inventory.holdingSlot.stack.size += selectedRecipe.output.size;
                     			for (ItemStackT stack : selectedRecipe.input) {
                     				this.removeItemCrafting(stack);
@@ -656,7 +679,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
             		}
         			if (mouseButton == 1) {
         				if (inventory.holdingSlot.stack.item == selectedRecipe.output.item) {
-        					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < inventory.holdingSlot.stack.item.maxStack) {
+        					int maxStack = 0;
+            				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+            					maxStack = ((ItemT)inventory.holdingSlot.stack.item).maxStack;
+            				} else {
+            					maxStack = inventory.holdingSlot.stack.itemForRender.getMaxStackSize();
+            				}
+        					if (inventory.holdingSlot.stack.size + selectedRecipe.output.size < maxStack) {
         						inventory.holdingSlot.stack.size += selectedRecipe.output.size;
                     			for (ItemStackT stack : selectedRecipe.input) {
                     				this.removeItemCrafting(stack);
@@ -679,7 +708,46 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     	
     	rightDown = false;
     	
-    	
+    	if (mouseButton == 1) {
+    		if (selectedSlot.stack != null && inventory.holdingSlot.stack == null) {
+    			ItemStackT stack = selectedSlot.stack;
+    			if (stack.item instanceof LootBag) {
+    				
+    				LootBag bag = (LootBag)stack.item;
+    				LootStack[] stacks = bag.stacks;
+    				
+    				Random rand = new Random();
+    				
+    				ItemStackT s = new ItemStackT(stack.item, stack.size - 1);
+    				
+    				for (LootStack loot : stacks) {
+    					int amt = loot.getAmount(rand);
+    					ItemStackT stack1 = new ItemStackT(loot.loot, amt);
+    					
+    					selectedSlot.stack = stack1;
+    					NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack));
+            			NetworkHandler.INSTANCE.sendToServer(new CPacketThrowItemTerraria(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack, 0));
+            			
+            			if (loot.secondLoot != null) {
+            				ItemStackT stack2 = new ItemStackT(loot.secondLoot, loot.secondValue);
+        					
+        					selectedSlot.stack = stack2;
+        					NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack));
+                			NetworkHandler.INSTANCE.sendToServer(new CPacketThrowItemTerraria(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack, 0));
+                			
+            			}
+            			selectedSlot.stack = s;
+            			if(s.size <= 0) {
+            				selectedSlot.stack = null;
+            			}
+    				}
+    				
+        			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack));
+        			
+        			return true;
+    			}
+    		}
+    	}
     	
     	if (KeyRegistry.trash.isKeyDown()) {
 	        	if (mouseButton == 0) {
@@ -743,7 +811,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     				inventory.holdingSlot.stack = new ItemStackT(selectedSlot.stack.item, ItemModifier.getModifier(selectedSlot.stack.modifier));
     				selectedSlot.decrementStack(1);
     			} else {
-    				if (inventory.holdingSlot.stack.size + 1 < inventory.holdingSlot.stack.item.maxStack) {
+    				int maxStack = 0;
+    				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+    					maxStack = ((ItemT)inventory.holdingSlot.stack.item).maxStack;
+    				} else {
+    					maxStack = inventory.holdingSlot.stack.itemForRender.getMaxStackSize();
+    				}
+    				if (inventory.holdingSlot.stack.size + 1 < maxStack) {
     					inventory.holdingSlot.stack.size++;
     					selectedSlot.decrementStack(1);
     				}

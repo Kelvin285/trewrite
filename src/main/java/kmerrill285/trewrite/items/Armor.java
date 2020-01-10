@@ -20,8 +20,4 @@ public class Armor extends ItemT {
 		this.defense = defense;
 		this.type = type;
 	}
-
-	public ArmorMaterial getArmorMaterial() {
-		return ArmorMaterial.TURTLE;
-	}
 }

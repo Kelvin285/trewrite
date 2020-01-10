@@ -184,25 +184,25 @@ public class InventoryChestTerraria {
 			if (main[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += main[i].stack.item.itemName + "," + main[i].stack.size + "," + main[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(main[i].stack.item) + "," + main[i].stack.size + "," + main[i].stack.modifier +  "\n";
 		}
 		
 		for (int i = 0; i < hotbar.length; i++) {
 			if (hotbar[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += hotbar[i].stack.item.itemName + "," + hotbar[i].stack.size + "," + hotbar[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(hotbar[i].stack.item) + "," + hotbar[i].stack.size + "," + hotbar[i].stack.modifier +  "\n";
 		}
 		for (int i = 0; i < chest.length; i++) {
 			if (chest[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += chest[i].stack.item.itemName + "," + chest[i].stack.size + "," + chest[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(chest[i].stack.item) + "," + chest[i].stack.size + "," + chest[i].stack.modifier +  "\n";
 		}
 		if (trash.stack == null)
 			savedata += "null\n";
 		else
-		savedata += trash.stack.item.itemName + "," + trash.stack.size + "," + trash.stack.modifier +  "\n";
+		savedata += ItemsT.getStringForItem(trash.stack.item) + "," + trash.stack.size + "," + trash.stack.modifier +  "\n";
 		
 		
 		

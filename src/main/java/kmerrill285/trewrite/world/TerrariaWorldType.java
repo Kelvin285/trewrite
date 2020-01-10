@@ -1,27 +1,21 @@
 package kmerrill285.trewrite.world;
 
-import java.util.concurrent.Executor;
-
 import kmerrill285.trewrite.world.biome.provider.TerrariaBiomeProvider;
+import kmerrill285.trewrite.world.dimension.Dimensions;
+import kmerrill285.trewrite.world.dimension.TerrariaSkyChunkGenerator;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.provider.OverworldBiomeProviderSettings;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProviderSettings;
-import net.minecraft.world.chunk.listener.IChunkStatusListener;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.ChunkGeneratorType;
 import net.minecraft.world.gen.NetherGenSettings;
 import net.minecraft.world.gen.OverworldGenSettings;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.SaveHandler;
-import net.minecraft.world.storage.WorldInfo;
 
 public class TerrariaWorldType extends WorldType {
 
@@ -45,7 +39,7 @@ public class TerrariaWorldType extends WorldType {
     	if (world.getDimension().getType() == DimensionType.OVERWORLD)
 
     	{
-    		
+    		System.out.println("ovrwerld");
 	        OverworldGenSettings overworldGenSettings = new OverworldGenSettings();
 	        
 //	        SingleBiomeProviderSettings biomeProviderSettings = new SingleBiomeProviderSettings();
@@ -58,6 +52,18 @@ public class TerrariaWorldType extends WorldType {
 	        return new TerrariaChunkGenerator(world, new TerrariaBiomeProvider(biomeProviderSettings), overworldGenSettings);
 	        
     	}
+    	
+//    	else if (world.getDimension().getType() == Dimensions.THE_SKY) {
+//    		System.out.println("skai");
+//    		 OverworldGenSettings overworldGenSettings = new OverworldGenSettings();
+// 	        
+// 	        OverworldBiomeProviderSettings biomeProviderSettings = new OverworldBiomeProviderSettings();
+// 	        biomeProviderSettings.setWorldInfo(world.getWorldInfo());
+//
+// 	        biomeProviderSettings.setGeneratorSettings(overworldGenSettings);	
+// 	        
+// 	        return new TerrariaSkyChunkGenerator(world, new TerrariaBiomeProvider(biomeProviderSettings), overworldGenSettings);
+//    	}
 
 		else if (world.getDimension().getType() == DimensionType.THE_NETHER)
 
@@ -80,30 +86,6 @@ public class TerrariaWorldType extends WorldType {
 			return ChunkGeneratorType.CAVES.create(world, new SingleBiomeProvider(new SingleBiomeProviderSettings().setBiome(Biomes.NETHER)), nethergensettings);
 
 		}
-
-    	/*else if (world.getDimension().getType() == DimensionType.THE_END)
-
-    	{
-
-    		BlockPos SPAWN = new BlockPos(100, 50, 0);
-
-
-
-			EndGenerationSettings endgenerationsettings = ChunkGeneratorType.FLOATING_ISLANDS.createSettings();
-
-			EndBiomeProviderSettings endBiomeProviderSettings = new EndBiomeProviderSettings();
-
-			endBiomeProviderSettings.setSeed(world.getSeed());
-
-			endgenerationsettings.setDefaultBlock(Blocks.END_STONE.getDefaultState());
-
-			endgenerationsettings.setDefaultFluid(Blocks.AIR.getDefaultState());
-
-			endgenerationsettings.setSpawnPos(SPAWN);
-
-			return ChunkGeneratorType.FLOATING_ISLANDS.create(world, new BOPEndBiomeProvider(endBiomeProviderSettings), endgenerationsettings);
-
-    	}*/
 
     	else
 

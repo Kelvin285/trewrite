@@ -3,6 +3,7 @@ package kmerrill285.trewrite.entities.monsters;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.DrownedEntity;
@@ -27,6 +28,11 @@ public class EntityDrownedT extends DrownedEntity {
 	@Override
 	public void dropLoot(DamageSource source, boolean b) {
 //		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.DEMONITE_ORE, this.rand.nextInt(87 - 30) + 30, null));
+		if (Util.isChristmas()) {
+			if (rand.nextDouble() <= 0.0769) {
+				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
+			}
+		}
     }
 	
 	protected void registerAttributes() {

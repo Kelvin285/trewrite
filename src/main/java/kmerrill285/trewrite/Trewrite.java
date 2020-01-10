@@ -26,12 +26,15 @@ import kmerrill285.trewrite.world.EntitySpawner;
 import kmerrill285.trewrite.world.TerrariaDimension;
 import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
+import kmerrill285.trewrite.world.dimension.DimensionRegistry;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameRules;
@@ -39,6 +42,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
@@ -60,6 +64,8 @@ public class Trewrite
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final boolean DEBUG = true;
+    
+   
     
     public Trewrite() {
     	
@@ -109,27 +115,57 @@ public class Trewrite
     
     @SubscribeEvent
 	public static void onBlockUpdate(NeighborNotifyEvent e) {
+    	
+    	
+    	
     	if (e.getState().getBlock() == Blocks.STONE || e.getState().getBlock() == Blocks.COBBLESTONE) {
     		e.getWorld().setBlockState(e.getPos(), BlocksT.STONE_BLOCK.getDefaultState(), 0);
     	}
     	if (e.getState().getBlock() == Blocks.OBSIDIAN) {
     		e.getWorld().setBlockState(e.getPos(), BlocksT.OBSIDIAN.getDefaultState(), 0);
     	}
+    	if (e.getState().getBlock() == Blocks.ICE) {
+    		e.getWorld().setBlockState(e.getPos(), Blocks.WATER.getDefaultState(), 0);
+    	}
     }
     
     public static int ticks = 0;
     public static boolean spawningEye = false;
     public static boolean oncePerDay = false;
+    
 	public static void onWorldTick(WorldTickEvent event)
 	{
+	
+//		if (DimensionManager.getWorld(event.world.getServer(), t, true, true) == null) {
+//			DimensionManager.initWorld(event.world.getServer(), t);
+//		}
 
+		
 		World world = event.world;
 		
-		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
+		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 		
+		
+		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
+
 		for (PlayerEntity player : world.getPlayers()) {
-			InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, world);
+			if (player.getPosition().getY() < -3) {
+				if (player.dimension == sky) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
+					return;
+				}
+			}
 			
+			
+			if (player.getPosition().getY() > 255) {
+				if (player.onGround == true)
+				if (player.dimension == DimensionType.OVERWORLD) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, sky, new BlockPos(player.getPosition().getX(), 1, player.getPosition().getZ()));
+					return;
+				}
+			}
+
 			int defense = 0;
 			
 			
@@ -206,7 +242,7 @@ public class Trewrite
 					public void run() {
 						try {
 							for (PlayerEntity player : event.world.getPlayers()) {
-								SPacketSendAccessories packet = new SPacketSendAccessories(player.getScoreboardName());
+								SPacketSendAccessories packet = new SPacketSendAccessories(player);
 								if (event.world instanceof ServerWorld)
 								for (ServerPlayerEntity send : ((ServerWorld)event.world).getPlayers())
 		    	    	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> send), packet);

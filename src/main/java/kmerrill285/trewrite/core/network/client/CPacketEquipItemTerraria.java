@@ -32,8 +32,7 @@ public class CPacketEquipItemTerraria {
 		ctx.get().enqueueWork(() -> {
 			ServerPlayerEntity sender = ctx.get().getSender();
 			if (sender != null) {
-				String name = sender.getScoreboardName();
-				InventoryTerraria inventory = WorldEvents.inventories.get(name);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
 				if (inventory != null) {
 					
 					for (int i = 0; i < 9; i++) {

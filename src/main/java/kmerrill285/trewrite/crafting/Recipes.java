@@ -11,6 +11,8 @@ import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 public class Recipes {
 	public static HashMap<Block, List<CraftingRecipe>> recipes = new HashMap<Block, List<CraftingRecipe>>();
@@ -24,7 +26,7 @@ public class Recipes {
 		
 		for (int i = 0; i < recipe.input.length; i++) {
 			if (recipe.input[i] != null) {
-				ItemT item = recipe.input[i].item;
+				Item item = recipe.input[i].item;
 				
 				if (item == ItemsT.ANY_IRON) {
 					ItemT[] types = {ItemsT.IRON_BAR};
@@ -59,7 +61,7 @@ public class Recipes {
 				if (item == ItemsT.ANY_WOOD) {
 					ItemT[] types = {ItemsT.WOOD, ItemsT.SHADEWOOD, ItemsT.EBONWOOD, ItemsT.BOREAL_WOOD, ItemsT.PALM_WOOD, ItemsT.RICH_MAHOGANY, ItemsT.PEARLWOOD};
 					for (int t = 0; t < types.length; t++) {
-						System.out.println(".");
+//						System.out.println(".");
 						ItemStackT[] items = new ItemStackT[recipe.input.length];
 						for (int j = 0; j < items.length; j++) {
 							items[j] = recipe.input[j];
@@ -68,9 +70,9 @@ public class Recipes {
 							}
 						}
 						
-						for (ItemStackT it : items) {
-							System.out.println(it.item.itemName);
-						}
+//						for (ItemStackT it : items) {
+//							System.out.println(ItemsT.getStringForItem(it.item));
+//						}
 						addRecipe(new CraftingRecipe(recipe.output, recipe.block, items));
 					}
 					return;
@@ -148,6 +150,12 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BRICKS, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.STONE_BLOCK, 1), new ItemStackT(ItemsT.HELLSTONE, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CORRUPT_TORCH, 3), null, new ItemStackT(ItemsT.TORCH, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_SKULL, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.OBSIDIAN, 20)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_CHEST, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.OBSIDIAN, 6), new ItemStackT(ItemsT.HELLSTONE, 2), new ItemStackT(ItemsT.ANY_IRON, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_PLATFORM, 2), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(Items.BUCKET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.ANY_IRON, 3)));
+
+//		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 
 	}
 }

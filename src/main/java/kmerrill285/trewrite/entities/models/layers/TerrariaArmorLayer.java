@@ -10,8 +10,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Armor.ArmorType;
 import net.minecraft.client.Minecraft;
@@ -22,9 +22,7 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,7 +56,7 @@ public abstract class TerrariaArmorLayer<T extends LivingEntity, M extends Biped
    }
 
    private void renderArmorLayer(T entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, Armor.ArmorType slotIn) {
-	   InventoryTerraria inventory = WorldEvents.inventories.get(entityLivingBaseIn.getScoreboardName());
+	   InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
 	   int slot = 0;
 	   if (slotIn == ArmorType.CHEST) slot = 1;
 	   if (slotIn == ArmorType.LEGS) slot = 2;

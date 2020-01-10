@@ -6,6 +6,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.command.arguments.EntityAnchorArgument.Type;
 import net.minecraft.entity.Entity;
@@ -118,6 +119,12 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     		world.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"The Eye of Cthulhu has been defeated!\",\"bold\":true,\"color\":\"blue\"}"));
 	    }
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.DEMONITE_ORE, this.rand.nextInt(87 - 30) + 30, null));
+		
+		if (Util.isChristmas()) {
+			if (rand.nextDouble() <= 0.0769) {
+				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
+			}
+		}
     }
     
     
@@ -226,6 +233,8 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 										world.addEntity(eye);
 										eye.money = 0;
 										eye.noClip = true;
+										eye.getDataManager().set(EntityDemonEye.type_data, 0);
+										eye.setCustomName(new StringTextComponent("Servant of Cthulhu"));
 									}
 									
 								}
@@ -445,6 +454,21 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     	
     	if (this.getDataManager().get(EntityEyeOfCthulhu.phase_data).intValue() != 1) {
 			if (this.transformedRotation < 360 * 5 - 10) {
+				
+				if (this.ticksExisted % 10 == 0) {
+					if (world.getEntitiesWithinAABB(EntityDemonEye.class, this.getBoundingBox().expand(15, 15, 15)).size() <= 8) {
+						EntityDemonEye eye = EntitiesT.DEMON_EYE.create(world, null, null, null, this.getPosition(), SpawnReason.EVENT, false, false);
+						eye.setPosition(posX, posY, posZ);
+						eye.setHealth(8);
+						eye.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(12);
+						world.addEntity(eye);
+						eye.money = 0;
+						eye.noClip = true;
+						eye.getDataManager().set(EntityDemonEye.type_data, 0);
+						eye.setCustomName(new StringTextComponent("Servant of Cthulhu"));
+					}
+				}
+				
 				this.transformedRotation += (360 * 5 - transformedRotation) * 0.08f;
 				this.ry = (float) this.transformedRotation;
 				this.rx = 0;

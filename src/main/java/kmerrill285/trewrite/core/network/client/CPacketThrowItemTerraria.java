@@ -23,6 +23,7 @@ public class CPacketThrowItemTerraria {
 	private int slotId;
     private ItemStackT stack;
     private int inventoryArea;
+    private int delay;
 	
 	public CPacketThrowItemTerraria(int entityId, int inventoryArea, int slotId, ItemStackT stack) {
 		this.entityId = entityId;
@@ -30,19 +31,30 @@ public class CPacketThrowItemTerraria {
 		this.stack = stack;
 		this.inventoryArea = inventoryArea;
 		if (this.stack == null) this.stack = new ItemStackT(ItemsT.DIRT_BLOCK, -1, null);
+		this.delay = 20 * 4;
+	}
+	
+	public CPacketThrowItemTerraria(int entityId, int inventoryArea, int slotId, ItemStackT stack, int delay) {
+		this.entityId = entityId;
+		this.slotId = slotId;
+		this.stack = stack;
+		this.inventoryArea = inventoryArea;
+		if (this.stack == null) this.stack = new ItemStackT(ItemsT.DIRT_BLOCK, -1, null);
+		this.delay = delay;
 	}
 	
 	public void encode(PacketBuffer buf) {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.inventoryArea);
         buf.writeInt(this.slotId);
-        buf.writeString(this.stack.item.itemName);
+        buf.writeString(ItemsT.getStringForItem(this.stack.item));
         buf.writeInt(this.stack.size);
         buf.writeInt(this.stack.modifier);
+        buf.writeInt(this.delay);
     }
 	
 	public CPacketThrowItemTerraria(PacketBuffer buf) {
-		this(buf.readInt(), buf.readInt(), buf.readInt(), new ItemStackT(ItemsT.getItemFromString(buf.readString(100).trim()), buf.readInt(), ItemModifier.getModifier(buf.readInt())));
+		this(buf.readInt(), buf.readInt(), buf.readInt(), new ItemStackT(ItemsT.getItemFromString(buf.readString(100).trim()), buf.readInt(), ItemModifier.getModifier(buf.readInt())), buf.readInt());
 	}
 	
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
@@ -51,13 +63,12 @@ public class CPacketThrowItemTerraria {
 			ServerPlayerEntity sender = ctx.get().getSender();
 			if (sender != null) {
 				System.out.println("Sender is not null");
-				String name = sender.getScoreboardName();
 				int i = this.slotId;
 				ItemStackT stack = this.stack;
 				if (stack.size < 0) {
 					stack = null;
 				}
-				InventoryTerraria inventory = WorldEvents.inventories.get(name);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
 				if (inventory == null) return;
 				System.out.println("Inventory is not null");
 				if (this.inventoryArea == 8) {
@@ -82,19 +93,19 @@ public class CPacketThrowItemTerraria {
 //						item.item = s.item.itemName;
 //						item.stack = s.size;
 //						item.pickupDelay = 20 * 4;
-						EntityItemT.spawnItem(sender.world, sender.getPosition().up(), new ItemStackT(s.item, s.size, ItemModifier.getModifier(s.modifier)), 20 * 4);
+						EntityItemT.spawnItem(sender.world, sender.getPosition().up(), new ItemStackT(s.item, s.size, ItemModifier.getModifier(s.modifier)), this.delay);
 						System.out.println("drop item");
 					} else {
 						if (slots[i] != null) {
 							ItemStackT s = new ItemStackT(slots[i].stack.item, slots[i].stack.size, ItemModifier.getModifier(slots[i].stack.modifier));
 							slots[i].stack = null;
-				 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSyncInventoryTerraria(0, area, i, null));
+				 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSyncInventoryTerraria(0, area, i, slots[i].stack));
 				 			
 //				 			EntityItemT item = (EntityItemT) EntitiesT.ITEM.spawn(sender.world, null, null, sender.getPosition().up(), SpawnReason.EVENT, false, false);
 //				 			item.item = s.item.itemName;
 //							item.stack = s.size;
 //							item.pickupDelay = 20 * 4;
-							EntityItemT.spawnItem(sender.world, sender.getPosition().up(), new ItemStackT(s.item, s.size, ItemModifier.getModifier(s.modifier)), 20 * 4);
+							EntityItemT.spawnItem(sender.world, sender.getPosition().up(), new ItemStackT(s.item, s.size, ItemModifier.getModifier(s.modifier)), this.delay);
 							System.out.println("drop item");
 						}
 					}

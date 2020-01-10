@@ -32,7 +32,7 @@ public class HellstoneBlock extends BlockT {
 		if (entityIn instanceof PlayerEntity) {
 			if (!entityIn.world.isRemote) {
 				PlayerEntity player = (PlayerEntity)entityIn;
-				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, entityIn.world);
 				if (inventory != null) {
 					boolean hasSkull = false;
 					for (int i = 0; i < inventory.accessory.length; i++) {
@@ -57,7 +57,7 @@ public class HellstoneBlock extends BlockT {
 	   if (entityIn instanceof PlayerEntity) {
 			if (!entityIn.world.isRemote) {
 				PlayerEntity player = (PlayerEntity)entityIn;
-				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, entityIn.world);
 				if (inventory != null) {
 					boolean hasSkull = false;
 					for (int i = 0; i < inventory.accessory.length; i++) {

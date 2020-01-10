@@ -49,16 +49,9 @@ public class CPacketRequestInventoryChest {
 	            	
 	    	 		
 	 				System.out.println("sender: " + sender);
-	 				Set<String> players = WorldEvents.inventories.keySet();
-	    	 		boolean hasPlayer = false;
-	    	 		for (String player : players) {
-	    	 			if (player.equals(this.playername)) {
-	    	 				hasPlayer = true;
-	    	 				break;
-	    	 			}
-	    	 		}
+	 				
             		System.out.println("Loading and sending over an inventory.");
-    	 			InventoryTerraria inventoryPlayer = WorldEvents.inventories.get(sender.getScoreboardName());
+    	 			InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender, sender.world);
     	 			
     	 			InventoryChestTerraria inventory = new InventoryChestTerraria(false);
     	 			inventory.player = sender;

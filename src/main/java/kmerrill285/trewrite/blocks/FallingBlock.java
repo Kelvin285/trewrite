@@ -4,13 +4,13 @@ import java.util.Random;
 
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.item.Item;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
@@ -40,7 +40,7 @@ public class FallingBlock extends BasicBlock {
 			
 			if (state.getBlock() instanceof BlockT) {
 				if (ItemsT.getItemFromString(((BlockT)state.getBlock()).drop) != null) {
-					ItemT drop = ItemsT.getItemFromString(((BlockT)state.getBlock()).drop);
+					Item drop = ItemsT.getItemFromString(((BlockT)state.getBlock()).drop);
 					EntityItemT.spawnItem(worldIn.getWorld(), pos, new ItemStackT(drop, 1));
 				}
 				

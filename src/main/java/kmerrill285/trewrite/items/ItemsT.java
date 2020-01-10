@@ -26,6 +26,7 @@ import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
+import kmerrill285.trewrite.items.terraria.loot_bags.Present;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
@@ -35,6 +36,9 @@ import kmerrill285.trewrite.items.terraria.tools.MagicMirror;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -191,14 +195,66 @@ public class ItemsT {
 	
 	public static ItemT OBSIDIAN_SKULL;
 	
+	public static ItemT OBSIDIAN_VASE;
+	
+	public static ItemT ICE_MIRROR;
+	
+	public static ItemT PRESENT;
+	
+	public static ItemT OBSIDIAN_BRICK;
+	public static ItemT OBSIDIAN_CHEST;
+	
+	public static ItemT OBSIDIAN_PLATFORM;
+	
+	public static ItemT RYORAMAS_BLADE;
+	
+	public static ItemT OBSIDIAN_LAMP;
+	
+	public static ItemT OBSIDIAN_PIANO;
+	
+	public static ItemT OBSIDIAN_DOOR;
+	public static ItemT OBSIDIAN_CHANDELIER;
+	public static ItemT OBSIDIAN_LANTERN;
+	public static ItemT OBSIDIAN_CANDELABRA;
+	public static ItemT OBSIDIAN_CANDLE;
+
+
+
+
+	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
 	
 	public static HashMap<String, ItemT> items = new HashMap<String, ItemT>();
 	
-	public static ItemT getItemFromString(String name) {
-		return ItemsT.items.get(name);
+	public static String getStringForItem(Item item) {
+		if (item == null) {
+			return "null";
+		}
+		String str = item.getRegistryName().getNamespace()+":"+item.getRegistryName().toString();
+		if (item.getRegistryName().toString().contains(item.getRegistryName().getNamespace())) {
+			str = item.getRegistryName().toString();
+		}
+		return str;
+	}
+	
+	public static Item getItemFromString(String name) {
+		
+		try {
+			return Registry.ITEM.getValue(new ResourceLocation(name)).get();
+		}catch (Exception e) {
+//			e.printStackTrace();
+		}
+		
+		try {
+			return Registry.ITEM.getValue(new ResourceLocation("trewrite:"+name)).get();
+		}catch (Exception e) {
+//			e.printStackTrace();
+		}
+		
+		return null;
+//		return ItemsT.items.get(name);
 	}
 	
 	@SubscribeEvent
@@ -309,7 +365,7 @@ public class ItemsT {
 				UNHOLY_ARROW = new UnholyArrow(),
 				WORM_TOOTH = new ItemT(new Properties().group(ItemGroup.MATERIALS), "worm_tooth").setMaterial().setBuySell(20).setMaxStack(99),
 				BAND_OF_REGENERATION = (Accessory) new Accessory(new Properties().group(ItemGroup.MISC), "band_of_regeneration").setTooltip("Slowly regenerates life").setMaterial().setBuySell(10000),
-				MAGIC_MIRROR = new MagicMirror().setMaterial(),
+				MAGIC_MIRROR = new MagicMirror("magic_mirror").setMaterial(),
 				JESTERS_ARROW = new JestersArrow(),
 				FALLEN_STAR = new ItemT(new Properties().group(ItemGroup.MATERIALS), "fallen_star").setMaterial().setMaxStack(99).setBuySell(500).setAmmo().setTooltip("Dissapears after the sunrise"),
 				CLOUD_IN_A_BOTTLE = new CloudInABottle().setWearable(WearSlot.SINGLE_LEG),
@@ -323,9 +379,25 @@ public class ItemsT {
 				HELLSTONE_BRICKS = new ItemBlockT(BlocksT.HELLSTONE_BRICKS, "hellstone_bricks"),
 				HELLFORGE = new ItemBlockT(BlocksT.HELLFORGE, "hellforge"),
 				OBSIDIAN = new ItemBlockT(BlocksT.OBSIDIAN, "obsidian"),
-				OBSIDIAN_SKULL = new ObsidianSkull()
+				OBSIDIAN_SKULL = new ObsidianSkull(),
+				ICE_MIRROR = new MagicMirror("ice_mirror").setMaterial(),
+				PRESENT = new Present(new Properties().group(ItemGroup.MISC), "present"),
+				OBSIDIAN_BRICK = new ItemBlockT(BlocksT.OBSIDIAN_BRICK, "obsidian_brick"),
+				OBSIDIAN_CHEST = new ItemBlockT(BlocksT.OBSIDIAN_CHEST, "obsidian_chest"),
+				OBSIDIAN_PLATFORM = new ItemBlockT(BlocksT.OBSIDIAN_PLATFORM, "obsidian_platform"),
+				RYORAMAS_BLADE = new BasicBroadsword(65, 4, 24, 25000, "ryoramas_blade").setTooltip("Made with pure green diamond"),
+				OBSIDIAN_VASE = new ItemBlockT(BlocksT.OBSIDIAN_VASE, "obsidian_vase").setBuySell(60),
+				OBSIDIAN_LAMP = new ItemBlockT(BlocksT.OBSIDIAN_LAMP, "obsidian_lamp").setBuySell(100),
+				OBSIDIAN_PIANO = new ItemBlockT(BlocksT.OBSIDIAN_PIANO, "obsidian_piano").setBuySell(60),
+				OBSIDIAN_DOOR = new ItemBlockT(BlocksT.OBSIDIAN_DOOR, "obsidian_door"),
+				OBSIDIAN_CHANDELIER = new ItemBlockT(BlocksT.OBSIDIAN_CHANDELIER, "obsidian_chandelier"),
+				OBSIDIAN_LANTERN = new ItemBlockT(BlocksT.OBSIDIAN_LANTERN, "obsidian_lantern"),
+						OBSIDIAN_CANDELABRA = new ItemBlockT(BlocksT.OBSIDIAN_CANDELABRA, "obsidian_candelabra"),
+				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle")
+
 
 				);
 		Recipes.addAllRecipes();
+		
 	}
 }

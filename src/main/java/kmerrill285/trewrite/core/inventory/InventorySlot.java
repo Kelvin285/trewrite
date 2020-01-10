@@ -2,6 +2,7 @@ package kmerrill285.trewrite.core.inventory;
 
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 
@@ -42,18 +43,33 @@ public class InventorySlot {
 				slot.stack = null;
 				return;
 			}
-			
-			if (stack.size == stack.item.maxStack || stack.item != slot.stack.item) {
-				swapStacks(slot);
-			} else {
-				stack.size += slot.stack.size;
-				if (stack.size > stack.item.maxStack) {
-					slot.stack.size = stack.size - stack.item.maxStack;
-					stack.size = stack.item.maxStack;
+			if (stack.item instanceof ItemT) {
+				if (stack.size == ((ItemT)stack.item).maxStack || stack.item != slot.stack.item) {
+					swapStacks(slot);
 				} else {
-					slot.stack = null;
+					stack.size += slot.stack.size;
+					if (stack.size > ((ItemT)stack.item).maxStack) {
+						slot.stack.size = stack.size - ((ItemT)stack.item).maxStack;
+						stack.size = ((ItemT)stack.item).maxStack;
+					} else {
+						slot.stack = null;
+					}
+				}
+			} else {
+				if (stack.size == stack.itemForRender.getMaxStackSize() || stack.item != slot.stack.item) {
+					swapStacks(slot);
+				} else {
+					stack.size += slot.stack.size;
+					if (stack.size > stack.itemForRender.getMaxStackSize()) {
+						slot.stack.size = stack.size - stack.itemForRender.getMaxStackSize();
+						stack.size = stack.itemForRender.getMaxStackSize();
+					} else {
+						slot.stack = null;
+					}
 				}
 			}
+			
+			
 		}
 	}
 	
@@ -103,8 +119,14 @@ public class InventorySlot {
 			if (this.stack.size <= 0) {
 				this.stack = null;
 			}
-			if (this.stack.size > this.stack.item.maxStack) {
-				this.stack.size = this.stack.item.maxStack;
+			if (this.stack.item instanceof ItemT) {
+				if (this.stack.size > ((ItemT)this.stack.item).maxStack) {
+					this.stack.size = ((ItemT)this.stack.item).maxStack;
+				}
+			} else {
+				if (this.stack.size > this.stack.itemForRender.getMaxStackSize()) {
+					this.stack.size = this.stack.itemForRender.getMaxStackSize();
+				}
 			}
 		}
 	}

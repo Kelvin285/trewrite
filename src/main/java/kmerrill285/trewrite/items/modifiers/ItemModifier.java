@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import kmerrill285.trewrite.items.ItemT;
+import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -136,17 +137,23 @@ public class ItemModifier {
 		return modifier;
 	}
 	
-	public static ItemModifier getRandomModifier(ItemT item) {
-		if (item.MODIFIER_TYPE == EnumModifierType.NONE) return null;
-		ItemModifier modifier = null;
-		ArrayList<ItemModifier> modifiersForItem = new ArrayList<ItemModifier>();
-		for (String str : ItemModifier.modifiers.keySet()) {
-			ItemModifier mod = ItemModifier.modifiers.get(str);
-			if (mod.doesModifierEffect(item)) {
-				modifiersForItem.add(mod);
+	public static ItemModifier getRandomModifier(Item i) {
+		
+		if (i instanceof ItemT) {
+			ItemT item = (ItemT)i;
+			
+			if (item.MODIFIER_TYPE == EnumModifierType.NONE) return null;
+			ItemModifier modifier = null;
+			ArrayList<ItemModifier> modifiersForItem = new ArrayList<ItemModifier>();
+			for (String str : ItemModifier.modifiers.keySet()) {
+				ItemModifier mod = ItemModifier.modifiers.get(str);
+				if (mod.doesModifierEffect(item)) {
+					modifiersForItem.add(mod);
+				}
 			}
+			return modifiersForItem.get(new Random().nextInt(modifiersForItem.size()));
 		}
-		return modifiersForItem.get(new Random().nextInt(modifiersForItem.size()));
+		return null;
 	}
 	
 	public static int getIdForModifier(ItemModifier modifier) {

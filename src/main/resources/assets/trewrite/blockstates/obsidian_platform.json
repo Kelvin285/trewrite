@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "type=bottom": { "model": "trewrite:block/obsidian_platform" },
+        "type=top": { "model": "trewrite:block/obsidian_platform_top" },
+        "type=double": { "model": "trewrite:block/obsidian_brick" }
+    }
+}

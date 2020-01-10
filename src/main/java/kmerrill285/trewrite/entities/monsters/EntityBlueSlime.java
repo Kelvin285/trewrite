@@ -67,7 +67,11 @@ public class EntityBlueSlime extends SlimeEntity
     
     public void dropLoot(DamageSource source, boolean b) {
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.GEL, Util.randomValue(1, 3, rand), null));
-
+		if (Util.isChristmas()) {
+			if (rand.nextDouble() <= 0.0769) {
+				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
+			}
+		}
     }
     
     /**

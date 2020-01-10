@@ -163,7 +163,28 @@ public class BlocksT {
 	public static BlockT HELLFORGE;
 	
 	public static BlockT OBSIDIAN;
+	
+	public static BlockT OBSIDIAN_BRICK;
+	
+	public static BlockT OBSIDIAN_CHEST;
 
+	public static BlockT OBSIDIAN_PLATFORM;
+	
+	public static BlockT OBSIDIAN_VASE;
+	
+	public static BlockT OBSIDIAN_LAMP;
+	
+	public static BlockT OBSIDIAN_PIANO;
+	
+	public static BlockT OBSIDIAN_DOOR;
+	
+	public static BlockT OBSIDIAN_CHANDELIER;
+	public static BlockT OBSIDIAN_CANDELABRA;
+	public static BlockT OBSIDIAN_CANDLE;
+	public static BlockT OBSIDIAN_LANTERN;
+	
+	public static BlockT DIMENSION_BLOCK;
+	
 	
 	public static float mul = 1.5f;
 	public static float GROUND_HARDNESS = 30.0f * mul, STONE_HARDNESS = 45.0f * mul, ORE_HARDNESS = 50.0f * mul, DUNGEON_HARDNESS = 60.0f * mul;
@@ -259,9 +280,9 @@ public class BlocksT {
 					JUNGLE_GRASS = new JungleGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("jungle_grass").addAllowed("flower", "mushroom", "sunflower"),
 					MUD = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND), BlocksT.GROUND_HARDNESS, 10.0f, true, false, false, true, "mud", "mud"),
 					DEEP_MUD = new DeepMudBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("deep_mud"),
-					ICE = new BasicBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS), STONE_HARDNESS, 15, true, false, false, true, "ice", "ice"),
-					PURPLE_ICE = new BasicBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS), STONE_HARDNESS, 15, true, false, false, true, "purple_ice", "purple_ice"),
-					THIN_ICE = new ThinIceBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS)).setLocation("thin_ice").setRenderLayer(BlockRenderLayer.TRANSLUCENT),
+					ICE = new BasicBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS).slipperiness(0.989F), STONE_HARDNESS, 15, true, false, false, true, "ice", "ice"),
+					PURPLE_ICE = new BasicBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS).slipperiness(0.989F), STONE_HARDNESS, 15, true, false, false, true, "purple_ice", "purple_ice"),
+					THIN_ICE = new ThinIceBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS).slipperiness(0.989F)).setLocation("thin_ice").setRenderLayer(BlockRenderLayer.TRANSLUCENT),
 					SNOW = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SNOW), GROUND_HARDNESS, 15, true, false, false, true, "snow", "snow"),
 					SAVANNA_GRASS = new GrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("savannah_grass").addAllowed("tall_savannah_grass"),
 					TALL_SAVANNA_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_savannah_grass", "none").setShape(Shape.SMALL_GRASS),
@@ -296,7 +317,22 @@ public class BlocksT {
 					HELLSTONE = new HellstoneBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone"),
 					HELLSTONE_BRICKS = new HellstoneBricks(Properties.create(Material.EARTH).sound(SoundType.STONE)).setLocation("hellstone_bricks"),
 					HELLFORGE = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, true, false, "hellforge", "hellforge").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(600),
-					OBSIDIAN = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), ORE_HARDNESS, 65, true, false, false, true, "obsidian", "obsidian")
+					OBSIDIAN = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), ORE_HARDNESS, 65, true, false, false, true, "obsidian", "obsidian"),
+					OBSIDIAN_BRICK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_brick", "obsidian_brick"),
+					OBSIDIAN_CHEST = new Chest(Properties.create(Material.EARTH).sound(SoundType.STONE), "obsidian_chest"),
+					OBSIDIAN_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.STONE), true, "obsidian_platform"),
+					OBSIDIAN_VASE = new DoubleBlock(Properties.create(Material.EARTH).sound(SoundType.GLASS), "obsidian_vase", "obsidian_vase"),
+					OBSIDIAN_LAMP = new DoubleBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).lightValue(7), "obsidian_lamp", "obsidian_lamp"),
+					OBSIDIAN_PIANO = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, true, false, "obsidian_piano", "obsidian_piano").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_DOOR = (Door) new Door(GROUND_HARDNESS, 15, "obsidian_door").setSell(40),
+					OBSIDIAN_CHANDELIER = new CeilingCrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_chandelier", "obsidian_chandelier").setShape(Shape.BLOCK),
+					OBSIDIAN_LANTERN = new CeilingCrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_lantern", "obsidian_lantern").setShape(Shape.BLOCK),
+					OBSIDIAN_CANDELABRA = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candelabra", "obsidian_candelabra").setShape(Shape.BLOCK),
+					OBSIDIAN_CANDLE = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candle", "obsidian_candle").setShape(Shape.BLOCK),
+					DIMENSION_BLOCK = (BlockT) new DimensionBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setRegistryName("dimension_block")
+
+
+
 
 
 

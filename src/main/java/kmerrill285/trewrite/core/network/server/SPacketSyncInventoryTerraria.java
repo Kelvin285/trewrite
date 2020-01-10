@@ -30,7 +30,7 @@ public class SPacketSyncInventoryTerraria {
 		buf.writeInt(msg.inventoryArea);
         buf.writeInt(msg.slotId);
         if (msg.stack != null) {
-        	buf.writeString(msg.stack.item.itemName);
+        	buf.writeString(ItemsT.getStringForItem(msg.stack.item));
             buf.writeInt(msg.stack.size);
             buf.writeInt(msg.stack.modifier);
         } else {
@@ -53,7 +53,7 @@ public class SPacketSyncInventoryTerraria {
 	}
 	
 	public static void handle(SPacketSyncInventoryTerraria msg, Supplier<NetworkEvent.Context> ctx) {
-		System.out.println("SYNCING INVENTORY SLOT");
+//		System.out.println("SYNCING INVENTORY SLOT");
 		ctx.get().enqueueWork(() -> {
 			
 //          Entity entity = Minecraft.getInstance().world.getEntityByID(msg.entityId);
@@ -71,39 +71,39 @@ public class SPacketSyncInventoryTerraria {
 			InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
 			switch (invArea) {
 			case 0:
-				System.out.println("SLOT MAIN " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT MAIN " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.main[i].stack = stack;
 				break;
 			case 1:
-				System.out.println("SLOT HOTBAR " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT HOTBAR " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.hotbar[i].stack = stack;
 				break;
 			case 2:
-				System.out.println("SLOT ARMOR " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ARMOR " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.armor[i].stack = stack;
 				break;
 			case 3:
-				System.out.println("SLOT ARMOR VANITY " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ARMOR VANITY " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.armorVanity[i].stack = stack;
 				break;
 			case 4:
-				System.out.println("SLOT ARMOR DYES " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ARMOR DYES " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.armorDyes[i].stack = stack;
 				break;
 			case 5:
-				System.out.println("SLOT ACCESSORY " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ACCESSORY " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.accessory[i].stack = stack;
 				break;
 			case 6:
-				System.out.println("SLOT ACCESSORY VANITY " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ACCESSORY VANITY " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.accessoryVanity[i].stack = stack;
 				break;
 			case 7:
-				System.out.println("SLOT ACCESSORY DYES " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT ACCESSORY DYES " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.accessoryDyes[i].stack = stack;
 				break;
 			case 8:
-				System.out.println("SLOT TRASH SET TO " + (stack != null ? stack.item.itemName : null));
+//				System.out.println("SLOT TRASH SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.trash.stack = stack;
 				break;
 			}

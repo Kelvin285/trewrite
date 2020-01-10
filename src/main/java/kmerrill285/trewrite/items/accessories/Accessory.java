@@ -21,6 +21,7 @@ public class Accessory extends ItemT {
 		super(properties, name);
 		accessory = true;
 		this.MODIFIER_TYPE = EnumModifierType.ACCESSORY;
+		this.setMaxStack(1);
 	}
 	
 	public int getItemStackLimit(ItemStack stack) {

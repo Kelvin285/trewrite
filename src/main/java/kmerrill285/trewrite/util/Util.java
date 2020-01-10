@@ -2,6 +2,8 @@ package kmerrill285.trewrite.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Random;
 
 public class Util {
@@ -26,6 +28,10 @@ public class Util {
 	public static int underworldLevel = 0;
 	
 	public static double starChance = (3.0/1600.0) * 3.0;
+	
+	public static boolean isChristmas() {
+		return LocalDateTime.now().getMonth() == Month.DECEMBER && LocalDateTime.now().getDayOfMonth() >= 15 && LocalDateTime.now().getDayOfMonth() <= 31;
+	}
 	
 	public static int randomValue(int min, int max, Random random) {
 		return random.nextInt(max - min) + min;

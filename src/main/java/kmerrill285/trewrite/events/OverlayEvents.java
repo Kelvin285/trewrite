@@ -9,21 +9,28 @@ import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInvento
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
+import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.TRenderInfo;
+import kmerrill285.trewrite.world.client.RenderWorld;
+import kmerrill285.trewrite.world.client.TerrariaChunkRenderer;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -32,6 +39,55 @@ import net.minecraftforge.fml.common.Mod;
 public class OverlayEvents {
 
 	public static boolean debug = false;
+	
+	public static boolean b = false;
+		
+	public static int frameCount = 0;
+	
+	public static EntityZombieT camera;
+	public static GameRenderer gameRenderer;
+	
+	public static TRenderInfo tRenderInfo;
+	
+	public static WorldRenderer worldRenderer;
+	
+	public static boolean setupWorld = false;
+	public static boolean finishSetup = false;
+	public static boolean startSetup = false;
+	public static boolean reloadOverworld = false;
+	
+	public static RenderWorld renderWorldTop;
+	public static RenderWorld renderWorldBottom;
+	public static RenderWorld renderWorld;
+	
+	public static boolean loadingChunks = false;
+	
+	public static int ticks = 0;
+	
+	public static float blockMiningProgress = 0.0f;
+	
+	@SubscribeEvent
+	@OnlyIn(value=Dist.CLIENT)
+	public static void handleWorldRenderEvent(RenderWorldLastEvent event) {
+		
+		if (Minecraft.getInstance().world.dimension.getType().getId() == 0) {
+			try {
+				TerrariaChunkRenderer.update(event, 2, 256, true);
+			}catch (Exception e) {
+				e.printStackTrace();
+				TerrariaChunkRenderer.rendering = false;
+			}
+		}
+		
+		if (Minecraft.getInstance().world.dimension.getType().getId() == 2) {
+			try {
+				TerrariaChunkRenderer.update(event, 0, -256, false);
+			}catch (Exception e) {
+				e.printStackTrace();
+				TerrariaChunkRenderer.rendering = false;
+			}
+		}
+	}
 	
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
@@ -43,6 +99,10 @@ public class OverlayEvents {
 	
 	
 	static boolean addedLayer = false;
+
+	public static boolean loadRenderers = false;
+
+	public static RayTraceResult blockHit;
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePrePlayerRenderEvent(RenderPlayerEvent.Pre event) {
@@ -52,6 +112,7 @@ public class OverlayEvents {
 			event.getRenderer().addLayer(new TerrariaBipedAccessoryLayer<>(event.getRenderer(), new BipedModel(0.5f), new BipedModel(1.0f)));
 			addedLayer = true;
 		}
+		
 		
 	}
 	
@@ -64,7 +125,7 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleOverlayEvent(RenderGameOverlayEvent event) {
-				
+		
 		boolean copper_watch = false;
 		boolean silver_watch = false;
 		boolean gold_watch = false;

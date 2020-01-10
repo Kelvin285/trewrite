@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.block.Blocks;
@@ -13,16 +12,14 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -46,6 +43,10 @@ public class EntityDemonEye extends FlyingEntity {
 	
 	public int money = 75;
 	
+	public int damage = 18;
+	
+	public float kbResist = 0.2f;
+	
 	 public EntityDemonEye(EntityType<? extends EntityDemonEye> type, World worldIn) {
 		super(type, worldIn);
 		init();
@@ -57,13 +58,50 @@ public class EntityDemonEye extends FlyingEntity {
     }
     
     public void init() {
-    	
+    	this.dataManager.set(EntityDemonEye.type_data, rand.nextInt(6));
     }
     
     @Nullable
     public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-    	 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(41 + rand.nextInt(60 - 41));
-    	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2);
+    	
+    	 switch (this.dataManager.get(EntityDemonEye.type_data).intValue()) {
+    	 case 0:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2);
+        	 this.damage = 18;
+        	 this.kbResist = 0.2f;
+    		 break;
+    	 case 2:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2);
+        	 this.damage = 18;
+        	 this.kbResist = 0.2f;
+    		 break;
+    	 case 1:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(65);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(4);
+        	 this.damage = 18;
+        	 this.kbResist = 0.3f;
+    		 break;
+    	 case 3:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(4);
+        	 this.damage = 20;
+        	 this.kbResist = 0.0f;
+    		 break;
+    	 case 4:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(66);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(4);
+        	 this.damage = 14;
+        	 this.kbResist = 0.28f;
+    		 break;
+    	 case 5:
+    		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60);
+        	 this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2);
+        	 this.damage = 16;
+        	 this.kbResist = 0.15f;
+    		 break;
+    	 }
          return spawnDataIn;
          
     }
@@ -77,6 +115,11 @@ public class EntityDemonEye extends FlyingEntity {
     	if (this.money > 0)
     	if (rand.nextDouble() <= 0.333f)
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.LENS, 1, null));
+    	if (Util.isChristmas()) {
+			if (rand.nextDouble() <= 0.0769) {
+				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
+			}
+		}
     }
     
     
@@ -262,6 +305,10 @@ public class EntityDemonEye extends FlyingEntity {
 					motionX = Math.cos(Math.toRadians(this.getRevengeTarget().rotationYaw + 90)) * 0.25f * Math.cos(Math.toRadians(-this.getRevengeTarget().rotationPitch));
 					motionZ = Math.sin(Math.toRadians(this.getRevengeTarget().rotationYaw + 90)) * 0.25f * Math.cos(Math.toRadians(-this.getRevengeTarget().rotationPitch));
 					motionY = Math.sin(Math.toRadians(-this.getRevengeTarget().rotationPitch)) * 0.25f;
+					
+					motionX *= 1.0f - kbResist;
+					motionY *= 1.0f - kbResist;
+					motionZ *= 1.0f - kbResist;
 				}
 			}
 		}
@@ -280,8 +327,16 @@ public class EntityDemonEye extends FlyingEntity {
     
     protected int getAttackStrength()
     {
-        return 18;
+        return damage;
     }
     
+    public static final DataParameter<Integer> type_data = EntityDataManager.createKey(EntityDemonEye.class, DataSerializers.VARINT);
+    
+    @Override
+	protected void registerData() {
+		super.registerData();
+		this.dataManager.register(type_data, 1);
+	}
+	
     
 }

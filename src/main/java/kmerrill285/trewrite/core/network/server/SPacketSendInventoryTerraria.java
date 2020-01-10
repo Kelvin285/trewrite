@@ -30,13 +30,13 @@ public class SPacketSendInventoryTerraria {
     }
 	
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		System.out.println("got inventory packet");
+//		System.out.println("got inventory packet");
 		ctx.get().enqueueWork(() -> {
 			  Minecraft mc = Minecraft.getInstance();
 			  if (mc != null) {
 				  if (mc.player != null) {
 					  if (player.contentEquals(mc.player.getScoreboardName())) {
-						  System.out.println("getting inventory from packet");
+//						  System.out.println("getting inventory from packet");
 						  ContainerTerrariaInventory.inventory.loadFromString(data);
 						  System.out.println("loaded inventory from packet");
 					  }

@@ -7,10 +7,15 @@ import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
+import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
+import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Axe;
@@ -26,26 +31,46 @@ import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.dimension.DimensionRegistry;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.FlyingEntity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -55,11 +80,24 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EntityEvents {
+	
+	@SubscribeEvent
+	public static void handleBlockBreak(BreakEvent e) {
+		if (!(e.getState().getBlock() instanceof BlockT)) {
+    		if (e.getState().getMaterial() == Material.ROCK || e.getState().getMaterial() == Material.IRON)
+    		if (Item.getItemFromBlock(e.getState().getBlock()) != null) {
+    			Item item = Item.getItemFromBlock(e.getState().getBlock());
+    			EntityItemT.spawnItem(e.getWorld().getWorld(), e.getPos(), new ItemStackT(item, 1));
+    		}
+		}
+	}
 	
 	@SubscribeEvent
 	public static void handleItemToss(ItemTossEvent event) {
@@ -68,16 +106,17 @@ public class EntityEvents {
 			PlayerEntity player = event.getPlayer();
 			
 			if (player.world.isRemote) { 
-				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 				
 				if (Util.terrariaInventory) {
 					event.setCanceled(true);
 				}
 			} else {
-				InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
-				
-				if (inventory.open) {
-					event.setCanceled(true);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				if (inventory != null) {
+					if (inventory.open) {
+						event.setCanceled(true);
+					}
 				}
 			}
 		}
@@ -85,6 +124,13 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handleEntitySpawns(EntityJoinWorldEvent event) {
+		
+		if (event.getEntity() instanceof ItemEntity) {
+			ItemEntity item = (ItemEntity)event.getEntity();
+			EntityItemT.spawnItem(event.getWorld(), item.getPosition(), new ItemStackT(item.getItem().getItem(), item.getItem().getCount()));
+			
+			event.getEntity().remove();
+		}
 		
 		if (event.getEntity() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntity();
@@ -100,6 +146,9 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleEntitySpawnsClient(EntityJoinWorldEvent event) {
+		
+		
+		
 		if (event.getEntity() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntity();
 			if (Minecraft.getInstance() != null)
@@ -138,7 +187,7 @@ public class EntityEvents {
 				if (event.getEntityLiving() instanceof PlayerEntity)
 				if (!event.getEntityLiving().world.isRemote) {
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-					InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+					InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 					if (inventory != null) {
 						boolean hasSkull = false;
 						for (int i = 0; i < inventory.accessory.length; i++) {
@@ -184,7 +233,7 @@ public class EntityEvents {
 						double attackMul = 1.0;
 						InventoryTerraria inventory = null;
 						if (!player.world.isRemote) {
-							inventory = WorldEvents.inventories.get(player.getScoreboardName());
+							inventory = WorldEvents.getOrLoadInventory(player, player.world);
 						}
 						else {
 							inventory = ContainerTerrariaInventory.inventory;
@@ -216,7 +265,7 @@ public class EntityEvents {
 			
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				inventory = WorldEvents.getOrLoadInventory(player, player.world);
 			}
 			else {
 				inventory = ContainerTerrariaInventory.inventory;
@@ -243,7 +292,7 @@ public class EntityEvents {
 			double attackMul = 1.0;
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				inventory = WorldEvents.getOrLoadInventory(player, player.world);
 			}
 			else {
 				inventory = ContainerTerrariaInventory.inventory;
@@ -297,9 +346,130 @@ public class EntityEvents {
 		}
 	}
 	
+	//public ItemUseContext(PlayerEntity player, Hand handIn, BlockRayTraceResult rayTraceResultIn) {
 	@SubscribeEvent
-	public static void handleInteract(PlayerInteractEvent.RightClickBlock event) {
+	public static void handleInteract(PlayerInteractEvent.RightClickBlock event) {		
+		
+		
 		if (event.getItemStack() != null) {
+			
+			if (event.getItemStack().getItem() == Items.BUCKET ||
+					event.getItemStack().getItem() == Items.WATER_BUCKET ||
+					event.getItemStack().getItem() == Items.LAVA_BUCKET) {
+				ActionResult<ItemStack> result = event.getItemStack().getItem().onItemRightClick(event.getWorld(), event.getEntityPlayer(), event.getHand());
+				if (result.getType() == ActionResultType.SUCCESS) {
+					PlayerEntity player = event.getEntityPlayer();
+					
+					
+					if (player != null) {
+						if (event.getWorld().isRemote) {
+							InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+							if (inventory != null) {
+								
+								if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
+									if (result.getResult().getItem() != Items.BUCKET) {
+										
+										player.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.BUCKET));
+						    			
+						    			
+									} else {
+										inventory.hotbar[inventory.hotbarSelected].stack = new ItemStackT(result.getResult().getItem(), 1);
+									}
+								}
+							
+
+								return;
+							}
+						} 
+						else {
+							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+							
+							
+							
+								if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
+									if (result.getResult().getItem() != Items.BUCKET) {
+										
+										if (inventory.hotbar[inventory.hotbarSelected].stack.size > 0) {
+											inventory.hotbar[inventory.hotbarSelected].decrementStack(1);
+								 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SPacketSyncInventoryTerraria(0, inventory.hotbar[inventory.hotbarSelected].area, inventory.hotbar[inventory.hotbarSelected].id, inventory.hotbar[inventory.hotbarSelected].stack));
+
+											
+//											EntityItemT.spawnItem(player.world, player.getPosition(), new ItemStackT(inventory.hotbar[inventory.hotbarSelected].stack.item, inventory.hotbar[inventory.hotbarSelected].stack.size-1), 0);
+							    			EntityItemT.spawnItem(player.world, player.getPosition(), new ItemStackT(result.getResult().getItem()), 0);
+										}
+						    			
+						    			
+						    			
+									} else {
+										inventory.hotbar[inventory.hotbarSelected].stack = new ItemStackT(result.getResult().getItem(), 1);
+									}
+								}
+							
+
+							return;
+						}
+						
+					}
+					
+					
+					
+				} else {
+					event.setCanceled(true);
+				}
+			}
+			Item item = event.getItemStack().getItem();
+			
+			if (item instanceof BlockItem) {
+				BlockItem block = (BlockItem)item.getItem();
+				if (block.onItemRightClick(event.getWorld(), event.getEntityPlayer(), event.getHand()).getType() == ActionResultType.PASS) {
+					PlayerEntity player = event.getEntityPlayer();
+					
+
+					
+					if (player != null) {
+						if (event.getWorld().isRemote) {
+							if (Util.terrariaInventory) {
+								InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+								if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
+									inventory.hotbar[inventory.hotbarSelected].stack.size --;
+									event.getItemStack().grow(1);
+									if (inventory.hotbar[inventory.hotbarSelected].stack.size <= 0) {
+										inventory.hotbar[inventory.hotbarSelected].stack = null;
+										event.getItemStack().shrink(1);
+									}
+								}
+							} else {
+								event.getItemStack().shrink(1);
+							}
+						} else {
+							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+							if (inventory != null && inventory.open == true) {
+								if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
+									inventory.hotbar[inventory.hotbarSelected].stack.size --;
+									event.getItemStack().grow(1);
+									if (inventory.hotbar[inventory.hotbarSelected].stack.size <= 0) {
+										inventory.hotbar[inventory.hotbarSelected].stack = null;
+										event.getItemStack().shrink(1);
+									}
+								}
+								
+							} else {
+								event.getItemStack().shrink(1);
+							}
+							
+							NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, inventory.hotbar[inventory.hotbarSelected].area, inventory.hotbar[inventory.hotbarSelected].id, inventory.hotbar[inventory.hotbarSelected].stack));
+						}
+						
+					}
+					
+					
+					
+				} else {
+					event.setCanceled(true);
+				}
+				return;
+			}
+			
 			if (event.getItemStack().getItem() instanceof ItemT) {
 				if (event.getHand() == Hand.OFF_HAND) {
 					event.setCanceled(true);
@@ -307,6 +477,19 @@ public class EntityEvents {
 				}
 				((ItemT)event.getItemStack().getItem()).onUse(null, event.getPos(), event.getEntityPlayer(), event.getWorld(), event.getHand());
 				
+				if (OverlayEvents.blockHit != null)
+					if (OverlayEvents.blockHit.getType() == RayTraceResult.Type.BLOCK)
+				if (event.getItemStack().getItem() instanceof ItemBlockT) {
+					if (event.getPos().getY() > 254 || event.getPos().getY() < 1) {
+						
+						ItemBlockT block = (ItemBlockT)event.getItemStack().getItem();
+						
+						ItemUseContext context = new ItemUseContext(event.getPlayer(), event.getHand(), (BlockRayTraceResult) OverlayEvents.blockHit);
+						
+						System.out.println(block.tryPlace(new BlockItemUseContext(context)));
+					}
+				}
+				if (event.getItemStack().getItem() != Items.AIR)
 				if (((ItemT)event.getItemStack().getItem()).consumable) {
 					boolean shrink = false;
 					
@@ -360,7 +543,7 @@ public class EntityEvents {
 									event.getItemStack().shrink(1);
 								}
 							} else {
-								InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 								if (inventory != null && inventory.open == true) {
 									if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 										inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -421,7 +604,7 @@ public class EntityEvents {
 									itemEvent.getItemStack().shrink(1);
 								}
 							} else {
-								InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 								if (inventory != null && inventory.open == true) {
 									if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 										inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -481,7 +664,7 @@ public class EntityEvents {
 										itemEvent.getItemStack().shrink(1);
 									}
 								} else {
-									InventoryTerraria inventory = WorldEvents.inventories.get(player.getScoreboardName());
+									InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 									if (inventory != null && inventory.open == true) {
 										if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 											inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -503,9 +686,19 @@ public class EntityEvents {
 	@SubscribeEvent
 	public static void handleMining(BreakSpeed event) {
 		
+		if (OverlayEvents.blockHit != null) {
+			if (OverlayEvents.blockHit.getType() == RayTraceResult.Type.BLOCK) {
+				event.setNewSpeed(-1);
+				return;
+			}
+		}
+		
+		getMiningSpeed(event);
 		
 		
-		
+	}
+	
+	public static void getMiningSpeed(BreakSpeed event) {
 		if (event.getEntityPlayer() != null) {
 			PlayerEntity player = event.getEntityPlayer();
 			
@@ -515,7 +708,7 @@ public class EntityEvents {
 				double speedMul = 1.0;
 				InventoryTerraria inventory = null;
 				if (!player.world.isRemote) {
-					inventory = WorldEvents.inventories.get(player.getScoreboardName());
+					inventory = WorldEvents.getOrLoadInventory(player, player.world);
 				}
 				else {
 					inventory = ContainerTerrariaInventory.inventory;
@@ -573,11 +766,27 @@ public class EntityEvents {
 							event.setNewSpeed(-1);
 						}
 					}
+				} else {
+					if (_item instanceof ItemT) {
+						ItemT item = (ItemT)_item;
+						
+						float miningSpeed = BlocksT.DIRT_BLOCK.getMiningSpeed(item);
+						if (miningSpeed > 0) miningSpeed *= speedMul;
+						event.setNewSpeed(miningSpeed * 0.35f);
+						
+						if (blockstate.getMaterial() == Material.ROCK || blockstate.getMaterial() == Material.IRON) {
+							miningSpeed = BlocksT.STONE_BLOCK.getMiningSpeed(item);
+							if (miningSpeed > 0) miningSpeed *= speedMul;
+							event.setNewSpeed(miningSpeed * 3.0f);
+						}
+						
+					} else {
+						event.setNewSpeed(-1);
+					}
 				}
 				
 			}
 		}
-		
 	}
 	
 	
@@ -655,7 +864,20 @@ public class EntityEvents {
 	@SubscribeEvent
 	public static void handleLivingEvent(LivingEvent event) {
 		
-		
+		if (event.getEntity() != null && !(event.getEntity() instanceof PlayerEntity)) {
+			DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+			Entity entity = event.getEntity();
+			if (entity.dimension.getId() == sky.getId()) {
+				if (entity.posY < 0) {
+					entity.changeDimension(DimensionType.OVERWORLD);
+				}
+			}
+			if (entity.dimension.getId() == DimensionType.OVERWORLD.getId()) {
+				if (entity.posY > 255) {
+					entity.changeDimension(sky);
+				}
+			}
+		}
 		if (event.getEntity() != null) {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
@@ -677,7 +899,7 @@ public class EntityEvents {
 				double knockbackMul = 1.0;
 				InventoryTerraria inventory = null;
 				if (!player.world.isRemote) {
-					inventory = WorldEvents.inventories.get(player.getScoreboardName());
+					inventory = WorldEvents.getOrLoadInventory(player, player.world);
 				}
 				else {
 					inventory = ContainerTerrariaInventory.inventory;
@@ -722,16 +944,23 @@ public class EntityEvents {
 			if (!(event.getEntity() instanceof FlyingEntity))
 				if (event.getEntity().getMotion().getY() > -Conversions.convertToIngame(Util.terminalVelocity));
 			Vec3d motion = event.getEntity().getMotion();
+			Entity entity = event.getEntity();
+			boolean falling = true;
+
+			
+			if (falling)
 			if (!event.getEntityLiving().isInWater()) {
 //				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
 				if (event.getEntity() instanceof PlayerEntity) {
 					boolean nope = false;
 					if (event.getEntity() instanceof ClientPlayerEntity) {
 						ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
+						
 						if (Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson()) {
 							event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 50.0f), motion.getZ()));
 							nope = true;
 						}
+						
 					}
 					if (!nope) {
 						event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
@@ -747,11 +976,216 @@ public class EntityEvents {
 					event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().x, 0, event.getEntityLiving().getMotion().z);
 				}
 			}
+			
+			
+			
+			if (!entity.getEntityWorld().isRemote)
+			{
+				DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+				ServerWorld world = null;
+				int height = 0;
+				if (entity.dimension.getId() == DimensionType.OVERWORLD.getId()) {
+					if (entity.posY > 150) {
+						if (sky != null) {
+							DimensionManager.keepLoaded(sky, true);
+							world = DimensionManager.getWorld(entity.getServer(), sky, true, true);
+							DimensionManager.keepLoaded(sky, true);
+							height = 256;
+						}
+					}
+				}
+				if (entity.dimension.getId() == sky.getId()) {
+					if (entity.posY < 50) {
+						if (DimensionType.OVERWORLD != null) {
+							DimensionManager.keepLoaded(DimensionType.OVERWORLD, true);
+							world = DimensionManager.getWorld(entity.getServer(), DimensionType.OVERWORLD, true, true);
+							DimensionManager.keepLoaded(DimensionType.OVERWORLD, true);
+							height = -256;
+						}
+					}
+				}
+				
+				if (world != null) {
+					
+					for (int i = 0; i < 2; i++) {
+			    		double wall = 0.25;
+			    		if (entity.getMotion().x < 0) {
+			    			
+			    		    BlockPos pos = entity.getPosition().up(i).add(entity.getMotion().x + 0.5, 0, 0).subtract(new Vec3i(0, height, 0));
+			    	    	if (world.isAreaLoaded(pos, pos)) {
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			
+			    	    			if (entity.posX < pos.getX() + 1) {
+			    	    				
+			    	    				if (entity.posZ > pos.getZ() + wall && entity.posZ < pos.getZ() + 1 - wall) {
+			    	    					if (entity.posY >= pos.getY() + height && entity.posY < pos.getY() + height + 0.5) {
+			    	    						
+			    	    						moveEntity(entity, (pos.getX() + 1) - entity.posX, 0, 0, false);
+			    		    	    			if (world.isAreaLoaded(pos.up(), pos.up())) {
+			    		    	    				if (world.getBlockState(pos.up()).getMaterial().blocksMovement() == false) {
+			    		    	    					moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, false);
+			    		    	    				}
+			    		    	    			}
+			    	    					}
+			    	    					if (entity.posY + 1 >= pos.getY() + height && entity.posY + 1 < pos.getY() + height + 0.5) {
+			    		    	    			moveEntity(entity, (pos.getX() + 1) - entity.posX, 0, 0, false);
+			    	    					}
+			    	    				}
+					    				
+			    	    			}
+			    	    		}
+			    	    	}
+			    		}
+			    		if (entity.getMotion().x > 0) {
+			    		    BlockPos pos = entity.getPosition().up(i).add(entity.getMotion().x, 0, 0).subtract(new Vec3i(0, height, 0));
+			    	    	if (world.isAreaLoaded(pos, pos)) {
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			if (entity.posX > pos.getX()) {
+			    	    				if (entity.posZ > pos.getZ() + wall && entity.posZ < pos.getZ() + 1 - wall) {
+			    	    					if (entity.posY >= pos.getY() + height && entity.posY < pos.getY() + height + 0.5) {
+
+			    	    						moveEntity(entity, pos.getX() - entity.posX, 0, 0, false);
+			    		    	    			if (world.isAreaLoaded(pos.up(), pos.up())) {
+			    		    	    				if (world.getBlockState(pos.up()).getMaterial().blocksMovement() == false) {
+			    		    	    					moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, false);
+			    		    	    				}
+			    		    	    			}
+			    	    					}
+			    	    					if (entity.posY + 1 >= pos.getY() + height && entity.posY + 1 < pos.getY() + height + 0.5) {
+			    		    	    			moveEntity(entity, pos.getX() - entity.posX, 0, 0, false);
+			    	    					}
+			    	    				}
+					    				
+			    	    			}
+			    	    		}
+			    	    	}
+			    		}
+			    		
+			    		if (entity.getMotion().z < 0) {
+			    		    BlockPos pos = entity.getPosition().up(i).add(0, 0, entity.getMotion().z + 0.5).subtract(new Vec3i(0, height, 0));
+			    	    	if (world.isAreaLoaded(pos, pos)) {
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			if (entity.posZ < pos.getZ() + 1) {
+			    	    				if (entity.posX > pos.getX() + wall && entity.posX < pos.getX() + 1 - wall) {
+			    	    					if (entity.posY >= pos.getY() + height && entity.posY < pos.getY() + height + 0.5) {
+
+			    	    						moveEntity(entity, 0, 0, (pos.getZ() + 1) - entity.posZ, false);
+			    		    	    			if (world.isAreaLoaded(pos.up(), pos.up())) {
+			    		    	    				if (world.getBlockState(pos.up()).getMaterial().blocksMovement() == false) {
+			    		    	    					moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, false);
+			    		    	    				}
+			    		    	    			}
+			    	    					}
+			    	    					if (entity.posY + 1 >= pos.getY() + height && entity.posY + 1 < pos.getY() + height + 0.5) {
+			    		    	    			moveEntity(entity, 0, 0, (pos.getZ() + 1) - entity.posZ, false);
+			    	    					}
+			    	    				}
+					    				
+			    	    			}
+			    	    		}
+			    	    	}
+			    		}
+			    		
+			    		if (entity.getMotion().z > 0) {
+			    		    BlockPos pos = entity.getPosition().up(i).add(0, 0, entity.getMotion().z).subtract(new Vec3i(0, height, 0));
+			    	    	if (world.isAreaLoaded(pos, pos)) {
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			if (entity.posZ > pos.getZ()) {
+			    	    				if (entity.posX > pos.getX() + wall && entity.posX < pos.getX() + 1 - wall) {
+			    	    					if (entity.posY >= pos.getY() + height && entity.posY < pos.getY() + height + 0.5) {
+
+			    	    						moveEntity(entity, 0, 0, pos.getZ() - entity.posZ, false);
+			    		    	    			
+			    		    	    			if (world.isAreaLoaded(pos.up(), pos.up())) {
+			    		    	    				if (world.getBlockState(pos.up()).getMaterial().blocksMovement() == false) {
+			    		    	    					moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, false);
+			    		    	    				}
+			    		    	    			}
+			    		    	    			
+			    	    					}
+			    	    					if (entity.posY + 1 >= pos.getY() + height && entity.posY + 1 < pos.getY() + height + 0.5) {
+			    		    	    			moveEntity(entity, 0, 0, pos.getZ() - entity.posZ, false);
+			    	    					}
+			    	    				}
+					    				
+			    	    			}
+			    	    		}
+			    	    		
+			    	    	}
+			    		}
+			    		if (entity.getMotion().y < 0) {
+			    			
+			    		    BlockPos pos = entity.getPosition().up(i).add(0, entity.getMotion().y + 0.5f, 0).subtract(new Vec3i(0, height, 0));
+		    	    		BlockState state = world.getBlockState(pos);
+		    	    		
+		    	    		if (state.getMaterial().blocksMovement()) {
+		    	    			
+		    	    			if (entity.posY < pos.getY() + height + 1) {
+		    	    				
+		    	    				moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, true);
+			    	    			falling = false;
+
+		    	    			}
+		    	    			
+		    	    		}
+			    		}
+			    		
+			    		if (entity.getMotion().y > 0) {
+			    			
+			    		    BlockPos pos = entity.getPosition().up(i).add(0, entity.getMotion().y, 0).subtract(new Vec3i(0, height, 0));
+			    	    	if (world.isAreaLoaded(pos, pos)) {
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			if (entity.posY + 1 > pos.getY() + height - 1) {
+			    	    				if (entity.posX > pos.getX() && entity.posX < pos.getX() + 1) {
+			    	    					if (entity.posZ > pos.getZ() && entity.posZ < pos.getZ() + 1) {
+			    	    	    				moveEntity(entity, 0, (pos.getY() + height - 1) - (entity.posY + 1), 0, false);
+			    	    					}
+			    	    				}
+			    	    			}
+			    	    		}
+			    	    	}
+			    		}
+			    		
+			    	}
+				}
+			}
 		}
 		
 		
 	}
 	
+	
+	public static void moveEntity(Entity entity, double x, double y, double z, boolean onGround) {
+		if (entity == null) return;
+		if (entity instanceof PlayerEntity) {
+			if (entity.world.isRemote) {
+				entity.move(MoverType.PISTON, new Vec3d(x, y, z));
+				entity.setMotion(new Vec3d(x != 0 ? 0 : entity.getMotion().x, y != 0 ? 0 : entity.getMotion().y, z != 0 ? 0 : entity.getMotion().z));
+			} else {
+				entity.move(MoverType.PISTON, new Vec3d(x*0.75, y*0.75, z*0.75));
+				entity.setMotion(new Vec3d(x != 0 ? 0 : entity.getMotion().x, y != 0 ? 0 : entity.getMotion().y, z != 0 ? 0 : entity.getMotion().z));
+				if (entity == null) return;
+				try {
+					NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)entity), new SPacketForceMovement(x, y, z, onGround));
+				}catch (Exception e) {
+					
+				}
+			}
+		} else {
+			entity.move(MoverType.PISTON, new Vec3d(x, y, z));
+			entity.setMotion(new Vec3d(x != 0 ? 0 : entity.getMotion().x, y != 0 ? 0 : entity.getMotion().y, z != 0 ? 0 : entity.getMotion().z));
+		}
+		if (onGround) {
+			entity.onGround = true;
+			entity.isAirBorne = false;
+			entity.fallDistance = 0;
+ 		}
+	}
 	//Minecraft Falling Damage =(number of blocks fallen x ½) - 1½
 	//Terraria falling damage = 10(h - 25)
 	
@@ -762,7 +1196,7 @@ public class EntityEvents {
 			PlayerEntity player = (PlayerEntity) event.getEntity();
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.inventories.get(player.getScoreboardName());
+				inventory = WorldEvents.getOrLoadInventory(player, player.world);
 			}
 			else {
 				break A;

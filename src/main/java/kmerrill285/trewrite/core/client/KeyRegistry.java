@@ -19,8 +19,14 @@
 
 package kmerrill285.trewrite.core.client;
 
+import java.lang.reflect.Field;
+
 import org.lwjgl.glfw.GLFW;
 
+import kmerrill285.trewrite.Trewrite;
+import kmerrill285.trewrite.util.Util;
+import net.minecraft.client.GameSettings;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -56,7 +62,16 @@ public class KeyRegistry {
     public static KeyBinding hotbar9;
 
     public static void registerKeys() {
-        openInventory = registerKeybinding(new KeyBinding("key.trewrite.open.desc", GLFW.GLFW_KEY_N,
+    	try {
+    		Field f = GameSettings.class.getDeclaredField(Trewrite.DEBUG ? "keyBindInventory" : "field_151445_Q");
+    		Util.makeFieldAccessible(f);
+    		f.set(Minecraft.getInstance().gameSettings, 
+    				registerKeybinding(new KeyBinding("key.trewrite.openvanilla.desc", GLFW.GLFW_KEY_N,
+    		                "key.trewrite.category")));
+    	}catch (Exception e) {
+    		System.exit(1);
+    	}
+        openInventory = registerKeybinding(new KeyBinding("key.trewrite.open.desc", GLFW.GLFW_KEY_E,
                 "key.trewrite.category"));
         swapHotbars = registerKeybinding(new KeyBinding("key.trewrite.swap.desc", GLFW.GLFW_KEY_M,
                 "key.trewrite.category"));

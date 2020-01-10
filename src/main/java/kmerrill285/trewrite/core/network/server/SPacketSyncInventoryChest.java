@@ -29,7 +29,7 @@ public class SPacketSyncInventoryChest {
 		buf.writeInt(inventoryArea);
         buf.writeInt(slotId);
         if (stack != null) {
-        	buf.writeString(stack.item.itemName);
+        	buf.writeString(ItemsT.getStringForItem(stack.item));
             buf.writeInt(stack.size);
             buf.writeInt(stack.modifier);
         } else {
@@ -64,22 +64,22 @@ public class SPacketSyncInventoryChest {
 			InventoryTerraria inventoryPlayer = ContainerTerrariaInventory.inventory;
 			switch (invArea) {
 			case 0:
-				System.out.println("SLOT MAIN IN CHEST " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+				System.out.println("SLOT MAIN IN CHEST " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.main[i].stack = stack;
 				inventoryPlayer.main[i].stack = stack;
 				break;
 			case 1:
-				System.out.println("SLOT HOTBAR IN CHEST " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+				System.out.println("SLOT HOTBAR IN CHEST " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.hotbar[i].stack = stack;
 				inventoryPlayer.hotbar[i].stack = stack;
 				break;
 			case 2:
-				System.out.println("SLOT TRASH IN CHEST SET TO " + (stack != null ? stack.item.itemName : null));
+				System.out.println("SLOT TRASH IN CHEST SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.trash.stack = stack;
 				inventoryPlayer.trash.stack = stack;
 				break;
 			case 3:
-				System.out.println("SLOT CHEST IN CHEST " + i + " SET TO " + (stack != null ? stack.item.itemName : null));
+				System.out.println("SLOT CHEST IN CHEST " + i + " SET TO " + (stack != null ? ItemsT.getStringForItem(stack.item) : null));
 				inventory.chest[i].stack = stack;
 				break;
 			}

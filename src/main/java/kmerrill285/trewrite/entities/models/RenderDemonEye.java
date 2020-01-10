@@ -9,8 +9,15 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderDemonEye extends MobRenderer<EntityDemonEye, ModelDemonEye>
 {
-    private ResourceLocation eyeTexture = new ResourceLocation("trewrite:textures/entity/eyes/eye.png");
-
+    private ResourceLocation[] eyeTexture = {
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye.png"),
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye_cataract.png"),
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye_dilated.png"),
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye_green.png"),
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye_purple.png"),
+    		new ResourceLocation("trewrite:textures/entity/eyes/eye_sleepy.png")
+    };
+    
     public RenderDemonEye(EntityRendererManager renderManagerIn)
     {
     	
@@ -48,6 +55,8 @@ public class RenderDemonEye extends MobRenderer<EntityDemonEye, ModelDemonEye>
      */
     protected ResourceLocation getEntityTexture(EntityDemonEye entity)
     {
-        return eyeTexture;
+    	int type = entity.getDataManager().get(EntityDemonEye.type_data).intValue();
+    	
+        return eyeTexture[type];
     }
 }

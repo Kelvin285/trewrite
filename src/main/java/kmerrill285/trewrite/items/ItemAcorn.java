@@ -119,8 +119,7 @@ public class ItemAcorn extends ItemT {
 			            }
 		            }
 		            if (!world.isRemote) {
-		            	String name = playerentity.getScoreboardName();
-		            	InventoryTerraria inventory = WorldEvents.inventories.get(name);
+		            	InventoryTerraria inventory = WorldEvents.getOrLoadInventory(playerentity, playerentity.world);
 		            	
 		            	if (inventory.open == false) {
 		            		itemstack.shrink(1);

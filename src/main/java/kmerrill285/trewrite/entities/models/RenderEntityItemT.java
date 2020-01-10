@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +35,7 @@ public class RenderEntityItemT extends EntityRenderer<EntityItemT> {
 
 	   private int transformModelCount(EntityItemT itemIn, double p_177077_2_, double p_177077_4_, double p_177077_6_, float p_177077_8_, IBakedModel p_177077_9_) {
 	      ItemStackT itemstack = itemIn.getItem();
-	      ItemT item = itemstack.item;
+	      Item item = itemstack.item;
 	      if (item == null) {
 	         return 0;
 	      } else {

@@ -42,7 +42,7 @@ public class SuspiciousLookingEye extends ItemT {
 			 worldIn.playSound((PlayerEntity)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			    InventoryTerraria inv = null;
 			    if (!worldIn.isRemote()) {
-					inv = WorldEvents.inventories.get(player.getScoreboardName());
+					inv = WorldEvents.getOrLoadInventory(player, player.world);
 				} else {
 					inv = ContainerTerrariaInventory.inventory;
 				}

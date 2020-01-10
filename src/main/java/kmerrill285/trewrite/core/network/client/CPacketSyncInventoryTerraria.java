@@ -32,7 +32,7 @@ public class CPacketSyncInventoryTerraria {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.inventoryArea);
         buf.writeInt(this.slotId);
-        buf.writeString(this.stack.item.itemName);
+        buf.writeString(ItemsT.getStringForItem(this.stack.item));
         buf.writeInt(this.stack.size);
         buf.writeInt(this.stack.modifier);
     }
@@ -45,15 +45,14 @@ public class CPacketSyncInventoryTerraria {
 		ctx.get().enqueueWork(() -> {
 			ServerPlayerEntity sender = ctx.get().getSender();
 			if (sender != null) {
-				String name = sender.getScoreboardName();
 				int i = this.slotId;
 				ItemStackT stack = this.stack;
 				if (stack.size < 0) {
 					stack = null;
 				}
-				InventoryTerraria inventory = WorldEvents.inventories.get(name);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
 				if (inventory != null) {
-					System.out.println("INVENTORY EXISTS.  SYNCING FROM CLIENT TO SERVER");
+//					System.out.println("INVENTORY EXISTS.  SYNCING FROM CLIENT TO SERVER: " + i);
 				} else return;
 				
 				if (this.inventoryArea == 8) {

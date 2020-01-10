@@ -38,7 +38,7 @@ public class Bow extends ItemT {
 	      
 	      InventoryTerraria inventory = null;
 	      if (!worldIn.isRemote) {
-	    	  inventory = WorldEvents.inventories.get(playerIn.getScoreboardName());
+	    	  inventory = WorldEvents.getOrLoadInventory(playerIn, playerIn.world);
 	      } else 
 	      {
 	    	  inventory = ContainerTerrariaInventory.inventory;

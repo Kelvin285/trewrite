@@ -9,6 +9,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
@@ -62,12 +63,12 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 		super(EntitiesT.ITEM, worldIn);
 		this.setPosition(x, y, z);
 		if (stack == null) {
-			this.item = ItemsT.DIRT_BLOCK.itemName;
+			this.item = ItemsT.getStringForItem(ItemsT.DIRT_BLOCK);
 			this.stack = 1;
 			this.modifier = -1;
 		} else {
-			this.item = stack.item.itemName;
-			this.stack = stack.item.stackSize;
+			this.item = ItemsT.getStringForItem(stack.item);
+			this.stack = stack.size;
 			this.modifier = stack.modifier;
 		}
 		this.hitGround = true;
@@ -87,9 +88,14 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 	}
 	
 	public void setItem(ItemStackT item) {
-		this.item = item.item.itemName;
+		
+		this.item = ItemsT.getStringForItem(item.item);
 		this.stack = item.size;
 		this.modifier = item.modifier;
+		
+		if (item.size == 1) {
+			this.stack = 1;
+		}
 	}
 	
 	public ItemStackT getItem() {
@@ -138,6 +144,7 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 		}
 	}
 	
+	public boolean grabbed = false;
 	@Override
 	public void tick() {
 		if (this.onGround) hitGround = true;
@@ -195,8 +202,7 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 				}
 			}
 			if (closest != null && dist < 2.0f) {
-				String name = closest.getScoreboardName();
-				InventoryTerraria inventory = WorldEvents.inventories.get(name);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(closest, closest.world);
 				if (world.isRemote) inventory = ContainerTerrariaInventory.inventory;
 				if (inventory != null && ItemsT.getItemFromString(item) != null && dead == false) {
 					
@@ -207,9 +213,16 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 							slot = inventory.hotbar[i];
 						}
 						if (inventory.hotbar[i].stack != null && inventory.hotbar[i].stack.item == ItemsT.getItemFromString(item)) {
-							if (inventory.hotbar[i].stack.size < inventory.hotbar[i].stack.item.maxStack) {
-								slot = inventory.hotbar[i];
-								break;
+							if (inventory.hotbar[i].stack.item instanceof ItemT) {
+								if (inventory.hotbar[i].stack.size < ((ItemT)inventory.hotbar[i].stack.item).maxStack) {
+									slot = inventory.hotbar[i];
+									break;
+								}
+							} else {
+								if (inventory.hotbar[i].stack.size < inventory.hotbar[i].stack.itemForRender.getMaxStackSize()) {
+									slot = inventory.hotbar[i];
+									break;
+								}
 							}
 						}
 					}
@@ -220,9 +233,16 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 							slot = inventory.main[i];
 						}
 						if (inventory.main[i].stack != null && inventory.main[i].stack.item == ItemsT.getItemFromString(item)) {
-							if (inventory.main[i].stack.size < inventory.main[i].stack.item.maxStack) {
-								slot = inventory.main[i];
-								break;
+							if (inventory.main[i].stack.item instanceof ItemT) {
+								if (inventory.main[i].stack.size < ((ItemT)inventory.main[i].stack.item).maxStack) {
+									slot = inventory.main[i];
+									break;
+								}
+							} else {
+								if (inventory.main[i].stack.size < inventory.main[i].stack.itemForRender.getMaxStackSize()) {
+									slot = inventory.main[i];
+									break;
+								}
 							}
 						}
 					}
@@ -239,17 +259,28 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 						
 						if (dist < 0.25f) {
 							if (slot.stack == null) {
-								if (!world.isRemote)
-								slot.stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
-								stack = 0;
+								if (!world.isRemote && grabbed == false) {
+									slot.stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+									stack = 0;
+									
+								}
 							} else {
-								if (!world.isRemote) {
+								if (!world.isRemote && grabbed == false) {
 									slot.stack.size += stack;
-									if (slot.stack.size > slot.stack.item.maxStack) {
-										stack = slot.stack.size - slot.stack.item.maxStack;
-										slot.stack.size = slot.stack.item.maxStack;
+									if (slot.stack.item instanceof ItemT) {
+										if (slot.stack.size > ((ItemT)slot.stack.item).maxStack) {
+											stack = slot.stack.size - ((ItemT)slot.stack.item).maxStack;
+											slot.stack.size = ((ItemT)slot.stack.item).maxStack;
+										} else {
+											stack = 0;
+										}
 									} else {
-										stack = 0;
+										if (slot.stack.size > slot.stack.itemForRender.getMaxStackSize()) {
+											stack = slot.stack.size - slot.stack.itemForRender.getMaxStackSize();
+											slot.stack.size = slot.stack.itemForRender.getMaxStackSize();
+										} else {
+											stack = 0;
+										}
 									}
 								} else {
 									stack = 0;
@@ -263,7 +294,11 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 
 //								this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.4F, 2.0F + this.rand.nextFloat() * 2.0F);
 					            	}
-					 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketSyncInventoryTerraria(0, slot.area, slot.id, slot.stack));
+					            if (grabbed == false) {
+					            	NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketSyncInventoryTerraria(0, slot.area, slot.id, slot.stack));
+					            	grabbed = true;
+					            	this.remove();
+					            }
 							} else {
 //					               this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
 
@@ -339,16 +374,17 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 	
 	
 
-	public static void spawnItem(World worldIn, BlockPos pos, ItemStackT stack, int pickupDelay) {
+	public static EntityItemT spawnItem(World worldIn, BlockPos pos, ItemStackT stack, int pickupDelay) {
 		EntityItemT item = EntitiesT.ITEM.create(worldIn, null, null, null, pos, SpawnReason.EVENT, false, false);
 		item.setItem(stack);
 //		EntityItemT item = new EntityItemT(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), stack);
 		item.pickupDelay = pickupDelay;
 		worldIn.addEntity(item);
+		return item;
 	}
 	
-	public static void spawnItem(World worldIn, BlockPos pos, ItemStackT stack) {
-		EntityItemT.spawnItem(worldIn, pos, stack, 0);
+	public static EntityItemT spawnItem(World worldIn, BlockPos pos, ItemStackT stack) {
+		return EntityItemT.spawnItem(worldIn, pos, stack, 0);
 	}
 
 	@Override

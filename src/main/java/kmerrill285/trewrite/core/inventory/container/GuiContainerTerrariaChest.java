@@ -32,8 +32,10 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryChest;
+import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -345,6 +347,8 @@ public class GuiContainerTerrariaChest extends ContainerScreen<ContainerTerraria
 	        			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryChest(0, selectedSlot.area, selectedSlot.id, selectedSlot.stack, ContainerTerrariaChest.position));
 	        			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryChest(0, trashSlot.area, trashSlot.id, trashSlot.stack, ContainerTerrariaChest.position));
 	                	ContainerTerrariaInventory.inventory.trash.stack = trashSlot.stack;
+	        			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, ContainerTerrariaInventory.inventory.trash.area, ContainerTerrariaInventory.inventory.trash.id, ContainerTerrariaInventory.inventory.trash.stack));
+
 	        		}
 	        		return true;
 	        	}
@@ -381,9 +385,16 @@ public class GuiContainerTerrariaChest extends ContainerScreen<ContainerTerraria
     				inventory.holdingSlot.stack = new ItemStackT(selectedSlot.stack.item, ItemModifier.getModifier(selectedSlot.stack.modifier));
     				selectedSlot.decrementStack(1);
     			} else {
-    				if (inventory.holdingSlot.stack.size + 1 < inventory.holdingSlot.stack.item.maxStack) {
-    					inventory.holdingSlot.stack.size++;
-    					selectedSlot.decrementStack(1);
+    				if (inventory.holdingSlot.stack.item instanceof ItemT) {
+	    				if (inventory.holdingSlot.stack.size + 1 < ((ItemT)inventory.holdingSlot.stack.item).maxStack) {
+	    					inventory.holdingSlot.stack.size++;
+	    					selectedSlot.decrementStack(1);
+	    				}
+    				} else {
+    					if (inventory.holdingSlot.stack.size + 1 < inventory.holdingSlot.stack.itemForRender.getMaxStackSize()) {
+    						inventory.holdingSlot.stack.size++;
+    						selectedSlot.decrementStack(1);
+    					}
     				}
     			}
     		}

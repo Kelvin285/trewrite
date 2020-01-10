@@ -33,7 +33,7 @@ public class CPacketSyncInventoryChest {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.inventoryArea);
         buf.writeInt(this.slotId);
-        buf.writeString(this.stack.item.itemName);
+        buf.writeString(ItemsT.getStringForItem(this.stack.item));
         buf.writeInt(this.stack.size);
         buf.writeInt(this.stack.modifier);
         buf.writeString(this.pos);
@@ -47,7 +47,6 @@ public class CPacketSyncInventoryChest {
 		ctx.get().enqueueWork(() -> {
 			ServerPlayerEntity sender = ctx.get().getSender();
 			if (sender != null) {
-				String name = sender.getScoreboardName();
 				int i = this.slotId;
 				ItemStackT stack = this.stack;
 				if (stack.size < 0) {
@@ -55,13 +54,14 @@ public class CPacketSyncInventoryChest {
 				}
 				String pos = this.pos;
 				InventoryChestTerraria inventory = WorldEvents.chests.get(pos);
-				InventoryTerraria inventoryPlayer = WorldEvents.inventories.get(sender.getScoreboardName());
+				InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender, sender.world);
 				if (inventory != null && inventoryPlayer != null) {
 					System.out.println("INVENTORY CHEST EXISTS.  SYNCING FROM CLIENT TO SERVER");
 				} else return;
 				
 				if (this.inventoryArea == 2) {
 					inventory.trash.stack = stack;
+					inventoryPlayer.trash.stack = stack;
 				} else {
 					InventorySlot[] slots = null;
 					int area = this.inventoryArea;

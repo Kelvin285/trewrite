@@ -5,11 +5,13 @@ import java.util.Set;
 
 import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.event.world.WorldEvent.Save;
 import net.minecraftforge.event.world.WorldEvent.Unload;
@@ -20,7 +22,44 @@ public class WorldEvents {
 	public static HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
 	public static HashMap<String, InventoryChestTerraria> chests = new HashMap<String, InventoryChestTerraria>();
 
+	public static InventoryTerraria getOrLoadInventory(PlayerEntity player, World w) {
+		if (!(w instanceof ServerWorld)) {
+			return null;
+		}
+		InventoryTerraria a = inventories.get(player.getScoreboardName());
+		if (a != null) return a;
+		World world = (ServerWorld)w;
+		InventoryTerraria inventory = new InventoryTerraria();
+		inventory.load(player.getScoreboardName(), world.getServer().getFolderName());
+		return inventory;
+	}
 	
+	@SubscribeEvent
+	@OnlyIn(value=Dist.CLIENT)
+	public static void loadChunkEvent(ChunkEvent.Load event) {
+//		IChunk chunk = event.getChunk();
+//		if (OverlayEvents.renderWorld != null) {
+//			if (!OverlayEvents.renderWorld.chunkExists(chunk.getPos().x, chunk.getPos().z) ||
+//					OverlayEvents.renderWorld.getChunk(chunk.getPos().x, chunk.getPos().z) instanceof EmptyChunk)
+//			{
+//				NetworkHandler.INSTANCE.sendToServer(new CPacketRequestChunks(chunk.getPos().x, chunk.getPos().z));
+//			}
+//			
+//		}
+	}
+	
+	@SubscribeEvent
+	@OnlyIn(value=Dist.CLIENT)
+	public static void unloadChunkEvent(ChunkEvent.Unload event) {
+//		IChunk chunk = event.getChunk();
+//		if (OverlayEvents.renderWorld != null) {
+//			if (OverlayEvents.renderWorld.chunkExists(chunk.getPos().x, chunk.getPos().z) &&
+//					!(OverlayEvents.renderWorld.getChunk(chunk.getPos().x, chunk.getPos().z) instanceof EmptyChunk)) {
+//				System.out.println("UNCHUNK THE LOAD");
+//			}
+////			OverlayEvents.renderWorld.chunkProvider.unloadChunk(chunk.getPos().x, chunk.getPos().z);
+//		}
+	}
 	
 	@SubscribeEvent
 	public static void blockHarvestEvent(HarvestDropsEvent event) {
@@ -65,6 +104,10 @@ public class WorldEvents {
 	
 	@SubscribeEvent
 	public static void worldUnloadEvent(Unload event) {
+		OverlayEvents.setupWorld = false;
+		OverlayEvents.startSetup = false;
+		OverlayEvents.finishSetup = false;
+		OverlayEvents.renderWorld = null;
 		if (!event.getWorld().isRemote()) {
 			System.out.println("WORLD UNLOADED");
 			for (String player : inventories.keySet()) {

@@ -16,7 +16,7 @@ public class RenderEntitySlime extends MobRenderer<SlimeEntity, SlimeModel<Slime
 	   private ResourceLocation SLIME_TEXTURES = new ResourceLocation("textures/entity/slime/slime.png");
 
 	   public RenderEntitySlime(EntityRendererManager renderManagerIn, String texture) {
-	      super(renderManagerIn, new SlimeModel<>(16), 0.25F);
+	      super(renderManagerIn, new SlimeModelT<>(16), 0.25F);
 	      SLIME_TEXTURES = new ResourceLocation("trewrite:textures/entity/"+texture+".png");
 	      this.addLayer(new SlimeGelLayer<>(this));
 	   }

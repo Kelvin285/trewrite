@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -24,7 +25,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockT extends Block implements IWaterLoggable {
+public class BlockT extends Block {
 
 	public int buy, sell;
 	public float difficulty = 1;
@@ -62,21 +63,30 @@ public class BlockT extends Block implements IWaterLoggable {
 //		b.onBlockHarvested(worldIn, pos, state, player);
 	}
 	
-	public static final BooleanProperty field_220119_b = BlockStateProperties.WATERLOGGED;
+//	public static final BooleanProperty field_220119_b = BlockStateProperties.WATERLOGGED;
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(field_220119_b);
+//        builder.add(field_220119_b);
      }
 	
+	
+	
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (newState != Blocks.AIR.getDefaultState()) return;
+		if (newState.getBlock() != Blocks.AIR) return;
 		if (!isMoving)
 		if (!worldIn.isRemote)
 			
 			if (state.getBlock() instanceof BlockT) {
+				
 				if (state != null)
 				if (state.getBlock() != null)
 				if (ItemsT.getItemFromString(((BlockT)state.getBlock()).drop) != null) {
-					ItemT drop = ItemsT.getItemFromString(((BlockT)state.getBlock()).drop);
+					String drp = "";
+					drp = ((BlockT)state.getBlock()).drop;
+					if (!drp.contains("trewrite:")) {
+						drp = "trewrite:"+drp;
+					}
+					
+					Item drop = ItemsT.getItemFromString(drp);
 					EntityItemT.spawnItem(worldIn, pos, new ItemStackT(drop, 1));
 				}
 				
@@ -116,7 +126,12 @@ public class BlockT extends Block implements IWaterLoggable {
 			 if (state != null)
 				if (state.getBlock() instanceof BlockT) {
 					if (ItemsT.getItemFromString(((BlockT)state.getBlock()).drop) != null) {
-						ItemT drop = ItemsT.getItemFromString(((BlockT)state.getBlock()).drop);
+						String drp = "";
+						drp = ((BlockT)state.getBlock()).drop;
+						if (!drp.contains("trewrite:")) {
+							drp = "trewrite:"+drp;
+						}
+						Item drop = ItemsT.getItemFromString(drp);
 						EntityItemT.spawnItem(worldIn, pos, new ItemStackT(drop, 1));
 					}
 				}

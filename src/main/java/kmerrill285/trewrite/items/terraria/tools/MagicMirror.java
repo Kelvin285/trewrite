@@ -17,8 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MagicMirror extends ItemT {
-	public MagicMirror() {
-		super(new Properties().group(ItemGroup.TOOLS), "magic_mirror");
+	public MagicMirror(String name) {
+		super(new Properties().group(ItemGroup.TOOLS), name);
 		this.setBuySell(10000);
 		this.setTooltip("Gaze in the mirror to return home");
 		this.useTime = 90;

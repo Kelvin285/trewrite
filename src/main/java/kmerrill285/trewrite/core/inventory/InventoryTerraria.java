@@ -130,8 +130,10 @@ public class InventoryTerraria {
 		}
 		
 		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 3; j++)
-			main[i + j * 10] = new InventorySlot(ItemType.ANY, INVENTORY_TOPLEFT[0] + i * 16 + i * 2, INVENTORY_TOPLEFT[1] + j * 16 + j * 2, 0, i);
+			for (int j = 0; j < 3; j++) {
+			main[i + j * 10] = new InventorySlot(ItemType.ANY, INVENTORY_TOPLEFT[0] + i * 16 + i * 2, INVENTORY_TOPLEFT[1] + j * 16 + j * 2, 0, i + j * 10);
+			
+			}
 		}
 		
 		armor[0] = new InventorySlot(ItemType.HEAD, TOP_ARMOR[0], TOP_ARMOR[1], 2, 0);
@@ -248,7 +250,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						main[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						main[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: MAIN " + i + " SET TO " + item);
 					}
 					i++;
@@ -264,7 +266,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						hotbar[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						hotbar[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: HOTBAR " + i + " SET TO " + item);
 					}
 					i++;
@@ -279,7 +281,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						armor[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						armor[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ARMOR " + i + " SET TO " + item);
 					}
 					i++;
@@ -294,7 +296,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						armorVanity[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						armorVanity[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ARMOR VANITY " + i + " SET TO " + item);
 					}
 					i++;
@@ -309,7 +311,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						armorDyes[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						armorDyes[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ARMOR DYES " + i + " SET TO " + item);
 					}
 					i++;
@@ -324,7 +326,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						accessory[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						accessory[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ACCESSORY " + i + " SET TO " + item);
 					}
 					i++;
@@ -339,7 +341,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						accessoryVanity[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						accessoryVanity[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ACCESSORY VANITY " + i + " SET TO " + item);
 					}
 					i++;
@@ -354,7 +356,7 @@ public class InventoryTerraria {
 						String item = data[0];
 						int stack = Integer.parseInt(data[1]);
 						int modifier = Integer.parseInt(data[2]);
-						accessoryDyes[i].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
+						accessoryDyes[Integer.parseInt(data[3])].stack = new ItemStackT(ItemsT.getItemFromString(item), stack, ItemModifier.getModifier(modifier));
 						//System.out.println("SERVER: ACCESSORY DYES " + i + " SET TO " + item);
 					}
 					i++;
@@ -388,62 +390,64 @@ public class InventoryTerraria {
 		for (int i = 0; i < main.length; i++) {
 			if (main[i].stack == null)
 				savedata += "null\n";
-			else
-			savedata += main[i].stack.item.itemName + "," + main[i].stack.size + "," + main[i].stack.modifier + "\n";
+			else {
+			savedata += ItemsT.getStringForItem(main[i].stack.item) + "," + main[i].stack.size + "," + main[i].stack.modifier + "," + i + "\n";
+			System.out.println(i);
+			}
 		}
 		
 		for (int i = 0; i < hotbar.length; i++) {
 			if (hotbar[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += hotbar[i].stack.item.itemName + "," + hotbar[i].stack.size + "," + hotbar[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(hotbar[i].stack.item) + "," + hotbar[i].stack.size + "," + hotbar[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < armor.length; i++) {
 			if (armor[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += armor[i].stack.item.itemName + "," + armor[i].stack.size + "," + armor[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(armor[i].stack.item) + "," + armor[i].stack.size + "," + armor[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < armorVanity.length; i++) {
 			if (armorVanity[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += armorVanity[i].stack.item.itemName + "," + armorVanity[i].stack.size + "," + armorVanity[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(armorVanity[i].stack.item) + "," + armorVanity[i].stack.size + "," + armorVanity[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < armorDyes.length; i++) {
 			if (armorDyes[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += armorDyes[i].stack.item.itemName + "," + armorDyes[i].stack.size + "," + armorDyes[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(armorDyes[i].stack.item) + "," + armorDyes[i].stack.size + "," + armorDyes[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < accessory.length; i++) {
 			if (accessory[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += accessory[i].stack.item.itemName + "," + accessory[i].stack.size + "," + accessory[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(accessory[i].stack.item) + "," + accessory[i].stack.size + "," + accessory[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < accessoryVanity.length; i++) {
 			if (accessoryVanity[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += accessoryVanity[i].stack.item.itemName + "," + accessoryVanity[i].stack.size + "," + accessoryVanity[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(accessoryVanity[i].stack.item) + "," + accessoryVanity[i].stack.size + "," + accessoryVanity[i].stack.modifier + "," + i +  "\n";
 		}
 		
 		for (int i = 0; i < accessoryDyes.length; i++) {
 			if (accessoryDyes[i].stack == null)
 				savedata += "null\n";
 			else
-			savedata += accessoryDyes[i].stack.item.itemName + "," + accessoryDyes[i].stack.size + "," + accessoryDyes[i].stack.modifier +  "\n";
+			savedata += ItemsT.getStringForItem(accessoryDyes[i].stack.item) + "," + accessoryDyes[i].stack.size + "," + accessoryDyes[i].stack.modifier + "," + i +  "\n";
 		}
 		if (trash.stack == null)
 			savedata += "null\n";
 		else
-		savedata += trash.stack.item.itemName + "," + trash.stack.size + "," + trash.stack.modifier +  "\n";
+		savedata += ItemsT.getStringForItem(trash.stack.item) + "," + trash.stack.size + "," + trash.stack.modifier +  "\n";
 		return savedata;
 	}
 }
