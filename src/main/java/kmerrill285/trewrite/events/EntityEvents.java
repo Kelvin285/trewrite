@@ -477,8 +477,8 @@ public class EntityEvents {
 				}
 				((ItemT)event.getItemStack().getItem()).onUse(null, event.getPos(), event.getEntityPlayer(), event.getWorld(), event.getHand());
 				
-				if (OverlayEvents.blockHit != null)
-					if (OverlayEvents.blockHit.getType() == RayTraceResult.Type.BLOCK)
+				if (Util.blockHit != null)
+					if (Util.blockHit.getType() == RayTraceResult.Type.BLOCK)
 				if (event.getItemStack().getItem() instanceof ItemBlockT) {
 					if (event.getPos().getY() > 254 || event.getPos().getY() < 1) {
 						
@@ -686,8 +686,8 @@ public class EntityEvents {
 	@SubscribeEvent
 	public static void handleMining(BreakSpeed event) {
 		
-		if (OverlayEvents.blockHit != null) {
-			if (OverlayEvents.blockHit.getType() == RayTraceResult.Type.BLOCK) {
+		if (Util.blockHit != null) {
+			if (Util.blockHit.getType() == RayTraceResult.Type.BLOCK) {
 				event.setNewSpeed(-1);
 				return;
 			}
@@ -816,6 +816,7 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleClientLivingEvent(LivingEvent event) {
+		if (event.getEntity().world.isRemote == false) return;
 		if (event.getEntity() != null) {
 			event.getEntity().setNoGravity(true);
 			if (event.getEntityLiving() instanceof PlayerEntity) {
@@ -953,6 +954,7 @@ public class EntityEvents {
 //				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
 				if (event.getEntity() instanceof PlayerEntity) {
 					boolean nope = false;
+					if (event.getEntity().world.isRemote)
 					if (event.getEntity() instanceof ClientPlayerEntity) {
 						ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
 						
@@ -1117,21 +1119,41 @@ public class EntityEvents {
 			    	    		
 			    	    	}
 			    		}
-			    		if (entity.getMotion().y < 0) {
-			    			
-			    		    BlockPos pos = entity.getPosition().up(i).add(0, entity.getMotion().y + 0.5f, 0).subtract(new Vec3i(0, height, 0));
-		    	    		BlockState state = world.getBlockState(pos);
-		    	    		
-		    	    		if (state.getMaterial().blocksMovement()) {
-		    	    			
-		    	    			if (entity.posY < pos.getY() + height + 1) {
-		    	    				
-		    	    				moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, true);
-			    	    			falling = false;
+			    		if (entity.posY <= 0) {
+			    			if (entity.getMotion().y < 0) {
+				    			
+				    		    BlockPos pos = entity.getPosition().up(i).add(0, entity.getMotion().y + 0.5f, 0).subtract(new Vec3i(0, height, 0));
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			
+			    	    			if (entity.posY - 1 < pos.getY() + height + 1) {
+			    	    				
+			    	    				moveEntity(entity, 0, (pos.getY()) + height + 1 - entity.posY - 1, 0, true);
+				    	    			falling = false;
 
-		    	    			}
-		    	    			
-		    	    		}
+			    	    			}
+			    	    			
+			    	    		}
+				    		}
+			    		}
+			    		else {
+			    			if (entity.getMotion().y < 0) {
+				    			
+				    		    BlockPos pos = entity.getPosition().up(i).add(0, entity.getMotion().y + 0.5f, 0).subtract(new Vec3i(0, height, 0));
+			    	    		BlockState state = world.getBlockState(pos);
+			    	    		
+			    	    		if (state.getMaterial().blocksMovement()) {
+			    	    			
+			    	    			if (entity.posY < pos.getY() + height + 1) {
+			    	    				
+			    	    				moveEntity(entity, 0, pos.getY() + height + 1 - entity.posY, 0, true);
+				    	    			falling = false;
+
+			    	    			}
+			    	    			
+			    	    		}
+				    		}
 			    		}
 			    		
 			    		if (entity.getMotion().y > 0) {

@@ -46,9 +46,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
-
+@OnlyIn(value=Dist.CLIENT)
 public class TerrariaChunkRenderer {
 	
 	public static int NO_DIMENSION = -2;
@@ -74,7 +76,7 @@ public class TerrariaChunkRenderer {
 		
 		if (OverlayEvents.renderWorld == null) {
 			OverlayEvents.renderWorld = new RenderWorld(Minecraft.getInstance().getConnection(), new WorldSettings(0L, GameType.CREATIVE, false, false, WorldType.FLAT), DimensionType.OVERWORLD, 3, Minecraft.getInstance().getProfiler(), OverlayEvents.worldRenderer);
-			OverlayEvents.renderWorld.setProfile(Minecraft.getInstance().getProfiler());	
+			((RenderWorld)OverlayEvents.renderWorld).setProfile(Minecraft.getInstance().getProfiler());	
 		}
 		
 		if (OverlayEvents.worldRenderer == null) {
@@ -82,7 +84,7 @@ public class TerrariaChunkRenderer {
 			OverlayEvents.worldRenderer.setWorldAndLoadRenderers((ClientWorld)OverlayEvents.renderWorld);
 		}
 		
-		OverlayEvents.renderWorld.setProfile(Minecraft.getInstance().getProfiler());
+		((RenderWorld)OverlayEvents.renderWorld).setProfile(Minecraft.getInstance().getProfiler());
 	     
 		
 			
@@ -116,7 +118,7 @@ public class TerrariaChunkRenderer {
 					
 					if (OverlayEvents.reloadOverworld == false) {
 						OverlayEvents.reloadOverworld = true;
-						OverlayEvents.worldRenderer.setWorldAndLoadRenderers(OverlayEvents.renderWorld);
+						OverlayEvents.worldRenderer.setWorldAndLoadRenderers((RenderWorld)OverlayEvents.renderWorld);
 					}
 				} else {
 					OverlayEvents.renderWorld = null;
@@ -129,7 +131,7 @@ public class TerrariaChunkRenderer {
 				if (entity.posY < 50) {
 					if (OverlayEvents.reloadOverworld == false) {
 						OverlayEvents.reloadOverworld = true;
-						OverlayEvents.worldRenderer.setWorldAndLoadRenderers(OverlayEvents.renderWorld);
+						OverlayEvents.worldRenderer.setWorldAndLoadRenderers((RenderWorld)OverlayEvents.renderWorld);
 					}
 				} else {
 					OverlayEvents.renderWorld = null;
@@ -143,7 +145,7 @@ public class TerrariaChunkRenderer {
 			
 			
 			if (OverlayEvents.loadRenderers) {
-				OverlayEvents.worldRenderer.loadRenderers();
+				OverlayEvents.worldRenderer.setWorldAndLoadRenderers((RenderWorld)OverlayEvents.renderWorld);
 				OverlayEvents.loadRenderers = false;
 			}
 			
@@ -162,7 +164,7 @@ public class TerrariaChunkRenderer {
 				}.start();
 			}
 		  if (TerrariaChunkRenderer.resetWorldRenderer) {
-			  OverlayEvents.worldRenderer.setWorldAndLoadRenderers(OverlayEvents.renderWorld);
+			  OverlayEvents.worldRenderer.setWorldAndLoadRenderers((RenderWorld)OverlayEvents.renderWorld);
 			  TerrariaChunkRenderer.resetWorldRenderer = false;
 			  
 		  }
@@ -238,8 +240,9 @@ public class TerrariaChunkRenderer {
 	    	  if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown()) {
 	    		  
 	    		  if (result.getType() == RayTraceResult.Type.BLOCK) {
+	    			  
 		    		  BlockRayTraceResult r = (BlockRayTraceResult)result;
-		    		  
+		    		  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16, 0, 0), OverlayEvents.renderWorld.getBlockState(r.getPos()));
 		    		  if (Minecraft.getInstance().player.swingProgressInt == 3) {
 		    			  Minecraft.getInstance().world.playSound(r.getPos().add(0, height, 0), OverlayEvents.renderWorld.getBlockState(r.getPos()).getSoundType().getHitSound(), SoundCategory.PLAYERS, 1.0F, 1.0F, true);
 		    		  }
@@ -266,7 +269,7 @@ public class TerrariaChunkRenderer {
 						  System.out.println(r.getPos());
 		    			  NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(r.getPos().getX(), r.getPos().getY(), r.getPos().getZ(), dimension, Blocks.AIR.getDefaultState(), height, false));
 						  OverlayEvents.loadRenderers = true;
-		    			  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16, 0, 0), Blocks.AIR.getDefaultState());
+		    			  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16,0,-16), Blocks.AIR.getDefaultState());
 		    		  }
 		    		  
 	    		  }
@@ -277,6 +280,7 @@ public class TerrariaChunkRenderer {
 	    		  vec = vec.subtract(p.getX(), p.getY(), p.getZ());
 	    		  if (Minecraft.getInstance().player.isSwingInProgress == false)
 		    	  if (result.getType() == RayTraceResult.Type.BLOCK) {
+		    		  
 		    		  BlockRayTraceResult r = (BlockRayTraceResult)result;
 		    		  try {
 							Field y = Vec3d.class.getDeclaredField(Trewrite.DEBUG ? "y" : "field_72448_b");
@@ -292,7 +296,8 @@ public class TerrariaChunkRenderer {
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
-		    		  System.out.println(r.getPos().getY());
+		    		  System.out.println(r.getPos().add(-16, 0, 0).getY());
+		    		  OverlayEvents.renderWorld.setBlockState(r.getPos(), OverlayEvents.renderWorld.getBlockState(r.getPos()));
 		    		  Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
 		    		  net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock evt = net.minecraftforge.common.ForgeHooks
 		    	                 .onRightClickBlock(Minecraft.getInstance().player, Hand.MAIN_HAND, r.getPos(), r.getFace());
@@ -489,7 +494,7 @@ public class TerrariaChunkRenderer {
 				if (OverlayEvents.worldRenderer == null) {
 					OverlayEvents.worldRenderer = new WorldRenderer(Minecraft.getInstance());
 				}
-				OverlayEvents.renderWorld.worldRenderer = OverlayEvents.worldRenderer;
+				((RenderWorld)OverlayEvents.renderWorld).worldRenderer = OverlayEvents.worldRenderer;
 				
 			}
 			if (OverlayEvents.loadingChunks == false) {
@@ -511,9 +516,9 @@ public class TerrariaChunkRenderer {
 //									}
 								} else {
 									if (OverlayEvents.renderWorld != null)
-									if (OverlayEvents.renderWorld.chunkProvider != null)
-									if (OverlayEvents.renderWorld.chunkProvider.chunkExists(X, Z))
-									OverlayEvents.renderWorld.chunkProvider.unloadChunk(X, Z);
+									if (((RenderWorld)OverlayEvents.renderWorld).chunkProvider != null)
+									if (((RenderWorld)OverlayEvents.renderWorld).chunkProvider.chunkExists(X, Z))
+										((RenderWorld)OverlayEvents.renderWorld).chunkProvider.unloadChunk(X, Z);
 								}
 								try {
 									Thread.sleep(5);

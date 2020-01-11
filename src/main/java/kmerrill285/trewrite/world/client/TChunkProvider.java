@@ -22,7 +22,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
+@OnlyIn(value=Dist.CLIENT)
 public class TChunkProvider extends ClientChunkProvider {
 
 	

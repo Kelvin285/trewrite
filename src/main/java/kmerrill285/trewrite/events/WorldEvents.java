@@ -5,7 +5,11 @@ import java.util.Set;
 
 import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
+import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,6 +21,7 @@ import net.minecraftforge.event.world.WorldEvent.Save;
 import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class WorldEvents {
 	public static HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
@@ -101,13 +106,21 @@ public class WorldEvents {
 		
 		
 	}
-	
+	@OnlyIn(value=Dist.CLIENT)
+	@SubscribeEvent
+	public static void worldUnloadEventClient(Unload event) {
+		Util.refreshDimensionRenderer = true;
+	}
 	@SubscribeEvent
 	public static void worldUnloadEvent(Unload event) {
-		OverlayEvents.setupWorld = false;
-		OverlayEvents.startSetup = false;
-		OverlayEvents.finishSetup = false;
-		OverlayEvents.renderWorld = null;
+		if (!event.getWorld().isRemote())
+		for (int i = 0; i < event.getWorld().getPlayers().size(); i++) {
+			if (event.getWorld().getPlayers().get(i) != null) {
+				final int I = i;
+				
+				NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getWorld().getPlayers().get(I)), new SPacketRefreshDimensionRenderer());
+			}
+		}
 		if (!event.getWorld().isRemote()) {
 			System.out.println("WORLD UNLOADED");
 			for (String player : inventories.keySet()) {

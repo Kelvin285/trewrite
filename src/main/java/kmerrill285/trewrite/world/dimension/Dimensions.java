@@ -1,6 +1,9 @@
 package kmerrill285.trewrite.world.dimension;
 
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
+import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
 import kmerrill285.trewrite.events.OverlayEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -13,6 +16,7 @@ import net.minecraftforge.event.world.RegisterDimensionsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 @EventBusSubscriber(modid="trewrite", bus=Bus.FORGE)
 public class Dimensions {
@@ -33,12 +37,12 @@ public class Dimensions {
 
 	public static void teleportPlayer(ServerPlayerEntity player, DimensionType destinationType, BlockPos destinationPos)
 	{
-		OverlayEvents.renderWorld = null;
 		ServerWorld nextWorld = player.getServer().getWorld(destinationType);
 		nextWorld.getChunk(destinationPos);	// make sure the chunk is loaded
 		
+		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketRefreshDimensionRenderer());
 		player.teleport(nextWorld, destinationPos.getX(), destinationPos.getY(), destinationPos.getZ(), player.rotationYaw, player.rotationPitch);
-		OverlayEvents.renderWorld = null;
+
 		
 		player.setPositionAndUpdate(destinationPos.getX(), destinationPos.getY(), destinationPos.getZ());
 		if (player.getPosition().getY() == 0) {
@@ -53,30 +57,7 @@ public class Dimensions {
 		} else {
 			nextWorld.setBlockState(pos2, BlocksT.DIMENSION_BLOCK.getDefaultState());
 		}
-//		
-//		new Thread() {
-//			public void run() {
-//				while(true) {
-//					
-//					
-//					player.setPositionAndUpdate(destinationPos.getX(), destinationPos.getY()+1, destinationPos.getZ());
-//					if (player.onGround == true) {
-//						break;
-//					}
-//					if (OverlayEvents.renderWorld != null) {
-//						if (OverlayEvents.renderWorld.chunkProvider != null) {
-//							if (OverlayEvents.renderWorld.chunkProvider.getChunk(player.chunkCoordX, player.chunkCoordZ, true) instanceof EmptyChunk == false) {
-//								break;
-//							}
-//						}
-//					}
-//					try {
-//						Thread.sleep(5);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}.start();
+		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketRefreshDimensionRenderer());
+		
 	}
 }

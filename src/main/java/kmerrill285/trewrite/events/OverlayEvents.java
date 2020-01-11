@@ -7,6 +7,7 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
@@ -15,16 +16,18 @@ import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
-import kmerrill285.trewrite.world.client.RenderWorld;
+import kmerrill285.trewrite.world.client.ChunkEncoder;
+import kmerrill285.trewrite.world.client.TChunkProvider;
 import kmerrill285.trewrite.world.client.TerrariaChunkRenderer;
-import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -35,7 +38,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class OverlayEvents {
 
 	public static boolean debug = false;
@@ -55,10 +58,8 @@ public class OverlayEvents {
 	public static boolean finishSetup = false;
 	public static boolean startSetup = false;
 	public static boolean reloadOverworld = false;
-	
-	public static RenderWorld renderWorldTop;
-	public static RenderWorld renderWorldBottom;
-	public static RenderWorld renderWorld;
+
+	public static World renderWorld;
 	
 	public static boolean loadingChunks = false;
 	
@@ -70,6 +71,30 @@ public class OverlayEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleWorldRenderEvent(RenderWorldLastEvent event) {
 		
+		
+		
+		if (Util.refreshDimensionRenderer) {
+			Util.chunksend.clear();
+			OverlayEvents.renderWorld = null;
+			OverlayEvents.loadRenderers = true;
+			Util.refreshDimensionRenderer = false;
+		}
+		
+		for (int i = 0; i < Util.chunksend.size(); i++) {
+			SPacketSendChunk packet = Util.chunksend.get(i);
+			if (OverlayEvents.renderWorld != null) {
+				try {
+					((TChunkProvider)OverlayEvents.renderWorld.getChunkProvider()).func_217250_a(OverlayEvents.renderWorld, packet.x, packet.z, packet.buf, new CompoundNBT(), 0, true);
+					
+				}catch (Exception e) {
+					
+				}
+				
+				ChunkEncoder.readIntoChunk(OverlayEvents.renderWorld.getChunk(packet.x, packet.z), packet.buf);
+			}
+			Util.chunksend.remove(i);
+		}
+//		OverlayEvents.loadRenderers = true;
 		if (Minecraft.getInstance().world.dimension.getType().getId() == 0) {
 			try {
 				TerrariaChunkRenderer.update(event, 2, 256, true);
@@ -87,6 +112,8 @@ public class OverlayEvents {
 				TerrariaChunkRenderer.rendering = false;
 			}
 		}
+		
+		Util.blockHit = OverlayEvents.blockHit;
 	}
 	
 	@SubscribeEvent

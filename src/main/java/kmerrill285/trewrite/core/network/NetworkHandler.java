@@ -18,10 +18,11 @@ import kmerrill285.trewrite.core.network.client.CPacketSaveChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryChest;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
+import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
+import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.core.network.server.SPacketSendInventoryTerraria;
-import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryChest;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
 import net.minecraft.network.PacketBuffer;
@@ -64,6 +65,7 @@ public class NetworkHandler {
         registerMessage(SPacketSendAccessories.class, SPacketSendAccessories::encode, SPacketSendAccessories::new, SPacketSendAccessories::handle);
         registerMessage(SPacketSendChunk.class, SPacketSendChunk::encode, SPacketSendChunk::new, SPacketSendChunk::handle);
         registerMessage(SPacketForceMovement.class, SPacketForceMovement::encode, SPacketForceMovement::new, SPacketForceMovement::handle);
+        registerMessage(SPacketRefreshDimensionRenderer.class, SPacketRefreshDimensionRenderer::encode, SPacketRefreshDimensionRenderer::new, SPacketRefreshDimensionRenderer::handle);
 
 
 	}

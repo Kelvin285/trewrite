@@ -40,9 +40,7 @@ public class CPacketRequestChunks {
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		
 		ctx.get().enqueueWork(() -> {
-			if (Minecraft.getInstance().world == null) {
-				return;
-			}
+			
 			ServerPlayerEntity player = ctx.get().getSender();
 			
 			DimensionType t = null;

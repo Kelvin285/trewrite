@@ -166,7 +166,6 @@ public class InventoryTerraria {
 
 	public void save(String player, String world) {
 		
-		System.out.println("GAME DIR: " + Minecraft.getInstance().gameDir);
 		
 		//System.out.println("SAVING INVENTORY FOR ["+player+"] IN WORLD ["+world+"]");
 		File file = new File("saves/"+world+"/playerdata/"+player+".inventory");
