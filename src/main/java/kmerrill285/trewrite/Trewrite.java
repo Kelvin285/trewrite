@@ -37,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
@@ -144,15 +145,25 @@ public class Trewrite
 		World world = event.world;
 		
 		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
-		
+		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+
 		
 		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
 
 		for (PlayerEntity player : world.getPlayers()) {
 			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, world);
-			if (player.getPosition().getY() < -3) {
+			if (player.getPosition().getY() < 0) {
 				if (player.dimension == sky) {
 					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
+					return;
+				}
+				if (player.dimension == DimensionType.OVERWORLD) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, underground, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
+					return;
+				}
+				if (player.dimension == underground) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, underworld, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
 					return;
 				}
 			}
@@ -161,6 +172,14 @@ public class Trewrite
 			if (player.getPosition().getY() > 255) {
 				if (player.dimension == DimensionType.OVERWORLD) {
 					Dimensions.teleportPlayer((ServerPlayerEntity)player, sky, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
+					return;
+				}
+				if (player.dimension == underground) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
+					return;
+				}
+				if (player.dimension == underworld) {
+					Dimensions.teleportPlayer((ServerPlayerEntity)player, underground, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
 					return;
 				}
 			}
@@ -206,7 +225,7 @@ public class Trewrite
 							oncePerDay = true;
 							if (world.rand.nextInt(10) == 0) {
 								spawningEye = true;
-						    	world.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"You feel an evil presence watching you.\",\"bold\":true,\"color\":\"blue\"}"));
+						    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("You feel an evil presence watching you.").applyTextStyles(TextFormatting.BLUE, TextFormatting.BOLD));
 							}
 						}
 					}

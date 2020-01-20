@@ -1,6 +1,9 @@
 package kmerrill285.trewrite.world;
 
+import java.util.HashMap;
+
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -33,6 +36,7 @@ public class WorldStateHolder extends WorldSavedData {
 	public int stardustEnemiesDefeated = 0;
 	public int invasionEnemiesDefeated = 0;
 	
+	public HashMap<String, BlockPos> spawnPositions = new HashMap<String, BlockPos>();
 	
 	public class WorldState {
 		
@@ -85,6 +89,23 @@ public class WorldStateHolder extends WorldSavedData {
 		nebulaEnemiesDefeated = nbt.getInt("nebulaEnemiesDefeated");
 		stardustEnemiesDefeated = nbt.getInt("stardustEnemiesDefeated");
 		invasionEnemiesDefeated = nbt.getInt("invasionEnemiesDefeated");
+		
+		int size = nbt.getInt("sposLength");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("spawnpos["+i+"]").trim();
+			String[] data = s.split(",");
+			String name = data[0];
+			if (data[1].contentEquals("null")) {
+				spawnPositions.put(name, null);
+			} else {
+				int x = Integer.parseInt(data[1]);
+				int y = Integer.parseInt(data[2]);
+				int z = Integer.parseInt(data[3]);
+				spawnPositions.put(name, new BlockPos(x, y, z));
+			}
+			
+		}
+		
 	}
 
 	@Override
@@ -108,7 +129,17 @@ public class WorldStateHolder extends WorldSavedData {
 		compound.putInt("nebulaEnemiesDefeated", nebulaEnemiesDefeated);
 		compound.putInt("stardustEnemiesDefeated", stardustEnemiesDefeated);
 		compound.putInt("invasionEnemiesDefeated", invasionEnemiesDefeated);
-
+		compound.putInt("sposLength", spawnPositions.size());
+		int i = 0;
+		for (String p : spawnPositions.keySet()) {
+			BlockPos pos = spawnPositions.get(p);
+			if (pos == null) {
+				compound.putString("spawnpos["+i+"]", p+",null");
+			} else {
+				compound.putString("spawnpos["+i+"]", p+","+pos.getX()+","+pos.getY()+","+pos.getZ());
+			}
+			i++;
+		}
 		return compound;
 	}
 	

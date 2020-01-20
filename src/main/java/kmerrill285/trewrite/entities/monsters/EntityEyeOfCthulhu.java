@@ -28,6 +28,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -74,7 +75,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 	    worldIn.playSound((PlayerEntity)null, posX, posY, posZ, SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 2.0F, 0.5F);
 	    
 	    if (!worldIn.isRemote()) {
-			worldIn.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"The Eye of Cthulhu has awoken!\",\"bold\":true,\"color\":\"blue\"}"));
+	    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("The Eye of Cthulhu has awoken!").applyTextStyles(TextFormatting.BLUE, TextFormatting.BOLD));
 	    }
 	    
 	    this.maxHealth = 2800 + (500 * (worldIn.getPlayers().size() - 1));
@@ -116,8 +117,8 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		this.dropItem(Items.shield_of_cthulu, this.worldObj.playerEntities.size());
     	WorldStateHolder.get(world).eyeDefeated = true;
     	if (!world.isRemote()) {
-    		world.getServer().sendMessage(new StringTextComponent("/tellraw @a {\"text\":\"The Eye of Cthulhu has been defeated!\",\"bold\":true,\"color\":\"blue\"}"));
-	    }
+	    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("The Eye of Cthulhu has been defeated!").applyTextStyles(TextFormatting.BLUE, TextFormatting.BOLD));
+    	}
 		EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.DEMONITE_ORE, this.rand.nextInt(87 - 30) + 30, null));
 		
 		if (Util.isChristmas()) {

@@ -92,6 +92,8 @@ public class BiomeT {
 	public static Biome SHALLOW_OCEAN = Biomes.DEFAULT;
 	public static Biome DEEP_WARM_OCEAN = Biomes.DEFAULT;
 	public static Biome SKY_ISLANDS = Biomes.DEFAULT;
+	public static Biome UNDERGROUND = Biomes.DEFAULT;
+	public static Biome UNDERWORLD = Biomes.DEFAULT;
 
 	public static ArrayList<Biome> biomes = new ArrayList<Biome>();
 
@@ -159,7 +161,10 @@ public class BiomeT {
 		registerBiome(GLACIERS = new Glaciers(), "glaciers", 10, BiomeManager.BiomeType.ICY,Type.BEACH);
 		registerBiome(SHALLOW_OCEAN = new ShallowOcean(), "shallow_ocean", 10, BiomeManager.BiomeType.WARM,Type.BEACH);
 		registerBiome(WARM_OCEAN = new WarmOcean(), "warm_ocean", 10, BiomeManager.BiomeType.WARM,Type.BEACH);
-		registerBiome(SKY_ISLANDS = new SkyIslandsBiome(), "sky_islands", 10, BiomeManager.BiomeType.WARM, Type.HILLS);
+		registerBiome(SKY_ISLANDS = new SkyIslandsBiome(), "sky_islands", 10, BiomeManager.BiomeType.WARM, Type.END);
+		registerBiome(UNDERGROUND = new UndergroundBiome(), "underground", 10, BiomeManager.BiomeType.WARM, Type.NETHER);
+		registerBiome(UNDERWORLD = new UnderworldBiome(), "underworld", 10, BiomeManager.BiomeType.WARM, Type.NETHER);
+
 		for (Biome biome : biomes) 
 		{
 			

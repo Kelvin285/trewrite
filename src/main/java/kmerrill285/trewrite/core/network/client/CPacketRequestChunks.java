@@ -57,10 +57,15 @@ public class CPacketRequestChunks {
 				case 2:
 					t = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 					break;
+				case 3:
+					t = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+					break;
+				case 4:
+					t = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+					break;
 				default:
 					t = DimensionType.OVERWORLD;
 			}
-			
 			if (t == null) return;
 			DimensionManager.keepLoaded(t, true);
 			ServerWorld dim = DimensionManager.getWorld(player.getServer(), t, true, true);

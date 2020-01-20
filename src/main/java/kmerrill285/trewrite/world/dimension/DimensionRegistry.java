@@ -11,11 +11,17 @@ import net.minecraftforge.registries.ObjectHolder;
 public class DimensionRegistry {
 	 @ObjectHolder("trewrite:sky")
     public static final ModDimension skyDimension = null;
+	 @ObjectHolder("trewrite:underground")
+	 public static final ModDimension undergroundDimension = null;
+	 @ObjectHolder("trewrite:the_underworld")
+	 public static final ModDimension underworldDimension = null;
 
   @SubscribeEvent
 	public static void onDimensionRegistryEvent(RegistryEvent.Register<ModDimension> event)
 	{
 		event.getRegistry().register(new SkyDimension().setRegistryName("trewrite:sky"));
+		event.getRegistry().register(new UndergroundDimension().setRegistryName("trewrite:underground"));
+		event.getRegistry().register(new UnderworldDimension().setRegistryName("trewrite:the_underworld"));
 	}
 
 }

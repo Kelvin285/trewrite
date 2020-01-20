@@ -83,7 +83,6 @@ public class ItemBlockT extends ItemT {
 	public ActionResultType tryPlace(BlockItemUseContext context) {
 		  
 	      if (!context.canPlace() && context.getPos().getY() <= 255) {
-
 	         return ActionResultType.FAIL;
 	      } else {
 	         BlockItemUseContext blockitemusecontext = this.func_219984_b(context);
@@ -185,6 +184,9 @@ public class ItemBlockT extends ItemT {
 		   
 			if (p_195941_1_.getPos().getY() > 255) {
 				DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+				DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+				DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+
 				if (p_195941_1_.getWorld().getDimension().getType().getId() == DimensionType.OVERWORLD.getId()) {
 					
 					if (p_195941_1_.getWorld().getServer() != null) {
@@ -206,11 +208,57 @@ public class ItemBlockT extends ItemT {
 						}
 					}
 				}
+				
+				if (p_195941_1_.getWorld().getDimension().getType().getId() == underground.getId()) {
+					
+					if (p_195941_1_.getWorld().getServer() != null) {
+						World world = DimensionManager.getWorld(p_195941_1_.getWorld().getServer(), DimensionType.OVERWORLD, true, true);
+//						return world.setBlockState(p_195941_1_.getPos(), p_195941_2_, 11);
+					} else {
+						World world = OverlayEvents.renderWorld;
+						if (world != null) {
+							
+							//	public CPacketChangeBlock(int x, int y, int z, int dimension, BlockState block) {
+							BlockPos pos = new BlockPos(p_195941_1_.getPos().getX(), p_195941_1_.getPos().getY() - 256, p_195941_1_.getPos().getZ());
+							if (world.getBlockState(pos).getMaterial().isReplaceable() == true) {
+								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(pos.getX(), pos.getY(), pos.getZ(), 0, p_195941_2_, false));
+								OverlayEvents.loadRenderers = true;
+							    return world.setBlockState(pos.add(-16, 0, 0), p_195941_2_, 11);
+							}
+							
+							
+						}
+					}
+				}
+				
+				if (p_195941_1_.getWorld().getDimension().getType().getId() == underworld.getId()) {
+					
+					if (p_195941_1_.getWorld().getServer() != null) {
+						World world = DimensionManager.getWorld(p_195941_1_.getWorld().getServer(), underground, true, true);
+//						return world.setBlockState(p_195941_1_.getPos(), p_195941_2_, 11);
+					} else {
+						World world = OverlayEvents.renderWorld;
+						if (world != null) {
+							
+							//	public CPacketChangeBlock(int x, int y, int z, int dimension, BlockState block) {
+							BlockPos pos = new BlockPos(p_195941_1_.getPos().getX(), p_195941_1_.getPos().getY() - 256, p_195941_1_.getPos().getZ());
+							if (world.getBlockState(pos).getMaterial().isReplaceable() == true) {
+								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(pos.getX(), pos.getY(), pos.getZ(), 3, p_195941_2_, false));
+								OverlayEvents.loadRenderers = true;
+							    return world.setBlockState(pos.add(-16, 0, 0), p_195941_2_, 11);
+							}
+							
+							
+						}
+					}
+				}
 			}
-			
+
 			if (p_195941_1_.getPos().getY() < 0) {
-				System.out.println("rehh");
 				DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+				DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+				DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+
 				if (p_195941_1_.getWorld().getDimension().getType().getId() == sky.getId()) {
 					
 					if (p_195941_1_.getWorld().getServer() != null) {
@@ -226,6 +274,56 @@ public class ItemBlockT extends ItemT {
 								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(pos.getX(), pos.getY(), pos.getZ(), 0, p_195941_2_, false));
 								OverlayEvents.loadRenderers = true;
 							    return world.setBlockState(pos.add(-16, 0, 0), p_195941_2_, 11);
+							}
+							
+							
+						}
+					}
+				}
+				
+				if (p_195941_1_.getWorld().getDimension().getType().getId() == DimensionType.OVERWORLD.getId()) {
+					
+					if (p_195941_1_.getWorld().getServer() != null) {
+						
+						World world = DimensionManager.getWorld(p_195941_1_.getWorld().getServer(), underground, true, true);
+//						return world.setBlockState(p_195941_1_.getPos(), p_195941_2_, 11);
+					} else {
+						
+						World world = OverlayEvents.renderWorld;
+						if (world != null) {
+							
+							//	public CPacketChangeBlock(int x, int y, int z, int dimension, BlockState block) {
+							BlockPos pos = new BlockPos(p_195941_1_.getPos().getX() + p_195941_1_.getFace().getXOffset(), p_195941_1_.getPos().getY() + 255 + p_195941_1_.getFace().getYOffset(), p_195941_1_.getPos().getZ() + p_195941_1_.getFace().getZOffset());
+							
+							if (world.getBlockState(pos).getMaterial().isReplaceable() == true) {
+								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(pos.getX(), pos.getY(), pos.getZ(), 3, p_195941_2_, false));
+								OverlayEvents.loadRenderers = true;
+							    return world.setBlockState(pos.add(0, 0, 0), p_195941_2_, 11);
+							}
+							
+							
+						}
+					}
+				}
+				
+				if (p_195941_1_.getWorld().getDimension().getType().getId() == underground.getId()) {
+					
+					if (p_195941_1_.getWorld().getServer() != null) {
+						
+						World world = DimensionManager.getWorld(p_195941_1_.getWorld().getServer(), underworld, true, true);
+//						return world.setBlockState(p_195941_1_.getPos(), p_195941_2_, 11);
+					} else {
+						
+						World world = OverlayEvents.renderWorld;
+						if (world != null) {
+							
+							//	public CPacketChangeBlock(int x, int y, int z, int dimension, BlockState block) {
+							BlockPos pos = new BlockPos(p_195941_1_.getPos().getX() + p_195941_1_.getFace().getXOffset(), p_195941_1_.getPos().getY() + 255 + p_195941_1_.getFace().getYOffset(), p_195941_1_.getPos().getZ() + p_195941_1_.getFace().getZOffset());
+							
+							if (world.getBlockState(pos).getMaterial().isReplaceable() == true) {
+								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(pos.getX(), pos.getY(), pos.getZ(), 4, p_195941_2_, false));
+								OverlayEvents.loadRenderers = true;
+							    return world.setBlockState(pos.add(0, 0, 0), p_195941_2_, 11);
 							}
 							
 							

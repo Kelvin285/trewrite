@@ -61,8 +61,15 @@ public class Bow extends ItemT {
 	      if (bowSlot.stack == null) {
 	    	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 	      }
-	      
+	      if (!(bowSlot.stack.item == this)) {
+	    	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+	      }
+	      if (ItemModifier.getModifier(bowSlot.stack.modifier) == null) {
+	    	  bowSlot.stack.reforge(bowSlot.stack.item);
+	    	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+	      }
 	      if (bowSlot.stack != null) {
+	    	  
 	    	  if (bowSlot.stack.item instanceof Bow) {
 	    		  velocity += velocity * (ItemModifier.getModifier(bowSlot.stack.modifier).velocity / 100.0);
 	    	  }

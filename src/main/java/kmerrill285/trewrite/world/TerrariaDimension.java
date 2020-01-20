@@ -54,11 +54,6 @@ public class TerrariaDimension extends OverworldDimension {
 			return MusicType.MENU;
 		}
 		
-		if (Minecraft.getInstance().player != null) {
-			if (Minecraft.getInstance().player.posY < Util.caveLevel) {
-				return MusicType.NETHER;
-			}
-		}
 		return MusicType.CREATIVE;
 	}
 	

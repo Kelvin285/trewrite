@@ -7,7 +7,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import kmerrill285.trewrite.Trewrite;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.client.CPacketChangeBlock;
-import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketRequestChunks;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.events.EntityEvents;
@@ -58,10 +57,8 @@ public class TerrariaChunkRenderer {
 	public static boolean resetWorldRenderer = false;
 	public static void update (RenderWorldLastEvent event, int dimension, int height, boolean up) {
 		
-		
 		Entity entity = Minecraft.getInstance().getRenderViewEntity();
 
-		
 	      
 		rendering = false;
 		if (rendering == true) return;
@@ -173,17 +170,18 @@ public class TerrariaChunkRenderer {
 			
 	      
 	      OverlayEvents.tRenderInfo.update(OverlayEvents.camera.world, OverlayEvents.camera, true, true, event.getPartialTicks());
-		  Vec3d eyePos = entity.getEyePosition(event.getPartialTicks());
-
-		  OverlayEvents.tRenderInfo.setPosition(new Vec3d(eyePos.x, eyePos.y - height, eyePos.z));
+	      Vec3d eyePos = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+	      OverlayEvents.tRenderInfo.setPosition(new Vec3d(eyePos.x, eyePos.y - height, eyePos.z));
 		  if ((Minecraft.getInstance().gameSettings.thirdPersonView == 1)) {
 			  Vec3d f = entity.getForward();
 			  double zoom = 4;
+			  zoom = 0;
 			  OverlayEvents.tRenderInfo.setPosition(new Vec3d(eyePos.x - f.x * zoom, eyePos.y - height - f.y * zoom, eyePos.z - f.z * zoom));
 		  }
 		  if ((Minecraft.getInstance().gameSettings.thirdPersonView == 2)) {
 			  Vec3d f = entity.getForward();
 			  double zoom = -4;
+			  zoom = 0;
 			  OverlayEvents.tRenderInfo.setPosition(new Vec3d(eyePos.x - f.x * zoom, eyePos.y - height - f.y * zoom, eyePos.z - f.z * zoom));
 		  }
 			OverlayEvents.tRenderInfo.setDirection(0, 0);
@@ -238,8 +236,24 @@ public class TerrariaChunkRenderer {
 	    	  OverlayEvents.blockHit = result;
 	    	  A:
 	    	  if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown()) {
-	    		  
 	    		  if (result.getType() == RayTraceResult.Type.BLOCK) {
+	    			  
+		    		  new Thread() {
+		    				public void run() {
+		    					try {
+		    						Thread.sleep(500);
+		    					} catch (InterruptedException e) {
+		    						e.printStackTrace();
+		    					}
+		    					OverlayEvents.loadRenderers = true;
+		    					try {
+		    						Thread.sleep(500);
+		    					} catch (InterruptedException e) {
+		    						e.printStackTrace();
+		    					}
+		    					OverlayEvents.loadRenderers = true;
+		    				}
+		    			}.start();
 	    			  
 		    		  BlockRayTraceResult r = (BlockRayTraceResult)result;
 		    		  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16, 0, 0), OverlayEvents.renderWorld.getBlockState(r.getPos()));
@@ -266,7 +280,6 @@ public class TerrariaChunkRenderer {
 		    			  OverlayEvents.blockMiningProgress = 0;
 		    			  Minecraft.getInstance().world.playSound(r.getPos().add(0, height, 0), OverlayEvents.renderWorld.getBlockState(r.getPos()).getSoundType().getBreakSound(), SoundCategory.PLAYERS, 1.0F, 1.0F, true);
 						  OverlayEvents.loadRenderers = true;
-						  System.out.println(r.getPos());
 		    			  NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(r.getPos().getX(), r.getPos().getY(), r.getPos().getZ(), dimension, Blocks.AIR.getDefaultState(), height, false));
 						  OverlayEvents.loadRenderers = true;
 		    			  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16,0,-16), Blocks.AIR.getDefaultState());
@@ -274,12 +287,35 @@ public class TerrariaChunkRenderer {
 		    		  
 	    		  }
 	    	  }
+	    	  if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && entity instanceof PlayerEntity) {
+		    	  if (result.getType() == RayTraceResult.Type.BLOCK) {
+		    		  System.out.println("wryyy");
+		    		  OverlayEvents.loadRenderers = true;
+		    	  }
+	    	  }
 	    	  if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && entity instanceof PlayerEntity && ((PlayerEntity)entity).getHeldItemMainhand().getItem() instanceof ItemBlockT) {
 	    		  Vec3d vec = new Vec3d(result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 	    		  BlockPos p = new BlockPos(vec);
 	    		  vec = vec.subtract(p.getX(), p.getY(), p.getZ());
 	    		  if (Minecraft.getInstance().player.isSwingInProgress == false)
 		    	  if (result.getType() == RayTraceResult.Type.BLOCK) {
+		    		  
+		    		  new Thread() {
+		    				public void run() {
+		    					try {
+		    						Thread.sleep(500);
+		    					} catch (InterruptedException e) {
+		    						e.printStackTrace();
+		    					}
+		    					OverlayEvents.loadRenderers = true;
+		    					try {
+		    						Thread.sleep(500);
+		    					} catch (InterruptedException e) {
+		    						e.printStackTrace();
+		    					}
+		    					OverlayEvents.loadRenderers = true;
+		    				}
+		    			}.start();
 		    		  
 		    		  BlockRayTraceResult r = (BlockRayTraceResult)result;
 		    		  try {
@@ -296,7 +332,6 @@ public class TerrariaChunkRenderer {
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
-		    		  System.out.println(r.getPos().add(-16, 0, 0).getY());
 		    		  OverlayEvents.renderWorld.setBlockState(r.getPos(), OverlayEvents.renderWorld.getBlockState(r.getPos()));
 		    		  Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
 		    		  net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock evt = net.minecraftforge.common.ForgeHooks
@@ -485,6 +520,7 @@ public class TerrariaChunkRenderer {
 	    	}
 	    		
 	    }
+	    
 		OverlayEvents.ticks++;
 		if (OverlayEvents.ticks > 0) {
 
@@ -502,7 +538,7 @@ public class TerrariaChunkRenderer {
 				final int HEIGHT = height;
 				new Thread() {
 					public void run() {
-						int distmin = 8;
+						int distmin = 4;
 						int dist = distmin + 4;
 						for (int x = -dist; x < dist; x++) {
 							for (int z = -dist; z < dist; z++) {

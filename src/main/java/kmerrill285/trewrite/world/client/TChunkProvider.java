@@ -8,12 +8,12 @@ import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.ClientChunkProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.SectionPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TChunkProvider extends ClientChunkProvider {
 
 	
+	public static Biome[] biomes = new Biome[256];
 
 
 	public ChunkArray array;
@@ -37,7 +38,9 @@ public class TChunkProvider extends ClientChunkProvider {
 		super(renderWorld, viewDistance);
 		this.world = renderWorld;
 	      this.array = new ChunkArray(adjustViewDistance(viewDistance));
-
+	      for (int i = 0; i < 256; i++) {
+	    	  TChunkProvider.biomes[i] = Biomes.DEFAULT;
+			}
 		empty = new EmptyChunk(renderWorld, new ChunkPos(0, 0));
 	    this.lightManager = new WorldLightManager(this, true, renderWorld.getDimension().hasSkyLight());
 	}
@@ -73,7 +76,7 @@ public class TChunkProvider extends ClientChunkProvider {
 	               System.out.println("not enough data");
 	               return null;
 	            }
-	            chunk = new Chunk(world, new ChunkPos(x, z), new Biome[256]);
+	            chunk = new Chunk(world, new ChunkPos(x, z), TChunkProvider.biomes);
 	            
 //	            chunk.read(buf, nbt, sections, load);
 	            this.array.replace(i, chunk);

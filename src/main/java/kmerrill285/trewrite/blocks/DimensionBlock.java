@@ -33,6 +33,11 @@ public class DimensionBlock extends BlockT {
 		this.hammer = true;
 	}
 	
+	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
+	       entityIn.fall(fallDistance, 0.0F);
+	       worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+	   }
+	
 	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
 		Vec3d p = new Vec3d(pos);
 		boolean close = false;

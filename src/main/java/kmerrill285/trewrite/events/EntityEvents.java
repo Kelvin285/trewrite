@@ -1,5 +1,6 @@
 package kmerrill285.trewrite.events;
 
+import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.Chest;
@@ -31,6 +32,7 @@ import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.BlockState;
@@ -71,6 +73,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -139,8 +142,21 @@ public class EntityEvents {
 			if (player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() < 100) {
 				player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100);
 				player.setHealth(100);
+			} else {
+				player.setHealth((float)player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() / 2.0f);
 			}
 			
+			if (!event.getWorld().isRemote) {
+				BlockPos pos = WorldStateHolder.get(event.getWorld().getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
+				if (pos != null) {
+					if ((player.world.getBlockState(pos).getBlock() instanceof Bed)) {
+						player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+					} else {
+						Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, player.getPosition());
+						player.setSpawnDimenion(DimensionType.OVERWORLD);
+					}
+				}
+			}
 		}
 	}
 	@OnlyIn(value=Dist.CLIENT)
@@ -486,7 +502,7 @@ public class EntityEvents {
 						
 						ItemUseContext context = new ItemUseContext(event.getPlayer(), event.getHand(), (BlockRayTraceResult) OverlayEvents.blockHit);
 						
-						System.out.println(block.tryPlace(new BlockItemUseContext(context)));
+						block.tryPlace(new BlockItemUseContext(context));
 					}
 				}
 				if (event.getItemStack().getItem() != Items.AIR)
@@ -816,6 +832,8 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleClientLivingEvent(LivingEvent event) {
+		if (event.getEntity() == null) return;
+		if (event.getEntity().world == null) return;
 		if (event.getEntity().world.isRemote == false) return;
 		if (event.getEntity() != null) {
 			event.getEntity().setNoGravity(true);
@@ -861,24 +879,28 @@ public class EntityEvents {
 		
 
 	}
-	
+
+	@SubscribeEvent
+	public static void handleEntityEvent(EntityEvent event) {
+//		if (event.getEntity() != null && !(event.getEntity() instanceof PlayerEntity)) {
+//			DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+//			Entity entity = event.getEntity();
+//			if (entity.dimension.getId() == sky.getId()) {
+//				if (entity.posY < 0) {
+//					entity.changeDimension(DimensionType.OVERWORLD);
+//				}
+//			}
+//			if (entity.dimension.getId() == DimensionType.OVERWORLD.getId()) {
+//				if (entity.posY > 255) {
+//					entity.changeDimension(sky);
+//				}
+//			}
+//		}
+	}
 	@SubscribeEvent
 	public static void handleLivingEvent(LivingEvent event) {
 		
-		if (event.getEntity() != null && !(event.getEntity() instanceof PlayerEntity)) {
-			DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
-			Entity entity = event.getEntity();
-			if (entity.dimension.getId() == sky.getId()) {
-				if (entity.posY < 0) {
-					entity.changeDimension(DimensionType.OVERWORLD);
-				}
-			}
-			if (entity.dimension.getId() == DimensionType.OVERWORLD.getId()) {
-				if (entity.posY > 255) {
-					entity.changeDimension(sky);
-				}
-			}
-		}
+		
 		if (event.getEntity() != null) {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
@@ -1219,6 +1241,13 @@ public class EntityEvents {
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
 				inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				for (int i = 0; i < 3; i++) {
+					BlockPos pos = new BlockPos(player.getPosition().down(i));
+					if (player.world.getBlockState(pos).getBlock() == BlocksT.DIMENSION_BLOCK) {
+						player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+						break;
+					}
+				}
 			}
 			else {
 				break A;

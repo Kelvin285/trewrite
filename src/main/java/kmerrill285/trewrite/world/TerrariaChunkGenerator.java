@@ -96,7 +96,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 		  
 //		   super.generateSurface(chunkIn);
 		   this.createSurface(chunkIn);
-		   
+		   BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(0, 0, 0);
 		   for (int x = 0; x < 16; x++) {
 			   for (int z = 0; z < 16; z++) {
 				   int k1 = x + chunkIn.getPos().x * 16;
@@ -132,39 +132,8 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 							   }
 			            }
 					   	
-					   
-					   
-					    BlockPos pos = new BlockPos(x, y, z);
-					    double underworldCeiling = this.genElevation.getValue(k1 / 10.0f, l1 / 10.0f) * 5.0f;
-					    double underworldFloor = this.genTemperature.getValue(k1 / 100.0f, l1 / 100.0f) * 15.0f + underworldCeiling + 15;
-					    //int undernoise = (int)(2.5f * perlin.func_151601_a((double)(x + X * 16) / 10d, (double)(z + Z * 16) / 10d));
-
-					    
-					    if (y < kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling &&
-					    		y > kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 10) {
-					    	chunkIn.setBlockState(new BlockPos(x, y, z), BlocksT.ASH_BLOCK.getDefaultState(), false);
-					    }
-					    
-					    if (y == (int)kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 8) {
-					    	if (world.getRandom().nextInt(25) == 0)
-					    		for (int yy = y; yy > kmerrill285.trewrite.util.Util.underworldLevel + 15; yy--)
-					    			chunkIn.setBlockState(new BlockPos(x, yy, z), Blocks.LAVA.getDefaultState(), false);
-					    }
-					    
-					    if (y <= kmerrill285.trewrite.util.Util.caveLevel + underworldCeiling - 10) {
-					    	chunkIn.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState(), false);
-					    }
-					    
-					    if (y <= kmerrill285.trewrite.util.Util.underworldLevel + 15) {
-					    	chunkIn.setBlockState(new BlockPos(x, y, z), Blocks.LAVA.getDefaultState(), false);
-					    }
-					    
-					    if (y <= kmerrill285.trewrite.util.Util.underworldLevel + underworldFloor) {
-					    	chunkIn.setBlockState(new BlockPos(x, y, z), BlocksT.ASH_BLOCK.getDefaultState(), false);
-					    }
-					   
-					   if (chunkIn.getBlockState(new BlockPos(x, y, z)) == Blocks.STONE.getDefaultState()) {
-						   chunkIn.setBlockState(new BlockPos(x, y, z), BlocksT.STONE_BLOCK.getDefaultState(),false);
+					   if (chunkIn.getBlockState(pos.setPos(x, y, z)) == Blocks.STONE.getDefaultState()) {
+						   chunkIn.setBlockState(pos.setPos(x, y, z), BlocksT.STONE_BLOCK.getDefaultState(),false);
 					   }
 					   
 					   

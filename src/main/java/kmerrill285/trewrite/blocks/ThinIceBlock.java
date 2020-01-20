@@ -2,20 +2,16 @@ package kmerrill285.trewrite.blocks;
 
 import java.util.Random;
 
-import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.items.ItemT;
-import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BubbleColumnBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -40,13 +36,19 @@ public class ThinIceBlock extends BlockT {
 
 	}
 	
-   public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-	   if (!worldIn.isRemote()) {
-		   if (entityIn.getMotion().y < 0f) {
-		    	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
-		      }
+   public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
+	   entityIn.fall(fallDistance, 0.0F);
+	   if (entityIn instanceof PlayerEntity) {
+		   PlayerEntity player = (PlayerEntity)entityIn;
+	       if (!worldIn.isRemote()) {
+	    	   System.out.println(entityIn.getMotion().y);
+			   if (entityIn.getMotion().y < 0.08f) {
+				   	  worldIn.playSound(player, pos, this.soundType.getBreakSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
+			    	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			      }
+		   }
 	   }
-     
+       
    }
    
    public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {

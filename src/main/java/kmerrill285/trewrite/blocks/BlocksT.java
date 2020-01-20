@@ -185,6 +185,9 @@ public class BlocksT {
 	
 	public static BlockT DIMENSION_BLOCK;
 	
+	public static BlockT OBSIDIAN_BED;
+	public static BlockT OBSIDIAN_CLOCK;
+	
 	
 	public static float mul = 1.5f;
 	public static float GROUND_HARDNESS = 30.0f * mul, STONE_HARDNESS = 45.0f * mul, ORE_HARDNESS = 50.0f * mul, DUNGEON_HARDNESS = 60.0f * mul;
@@ -329,7 +332,9 @@ public class BlocksT {
 					OBSIDIAN_LANTERN = new CeilingCrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_lantern", "obsidian_lantern").setShape(Shape.BLOCK),
 					OBSIDIAN_CANDELABRA = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candelabra", "obsidian_candelabra").setShape(Shape.BLOCK),
 					OBSIDIAN_CANDLE = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candle", "obsidian_candle").setShape(Shape.BLOCK),
-					DIMENSION_BLOCK = (BlockT) new DimensionBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setRegistryName("dimension_block")
+					DIMENSION_BLOCK = (BlockT) new DimensionBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setRegistryName("dimension_block"),
+					OBSIDIAN_BED = (Bed) new Bed(GROUND_HARDNESS, 15, "obsidian_bed").setSell(400),
+					OBSIDIAN_CLOCK = (GrandfatherClock) new GrandfatherClock(GROUND_HARDNESS, 15, "obsidian_clock").setSell(60)
 
 
 

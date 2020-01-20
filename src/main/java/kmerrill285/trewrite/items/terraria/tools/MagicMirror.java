@@ -1,8 +1,13 @@
 package kmerrill285.trewrite.items.terraria.tools;
 
+import java.util.HashMap;
+
+import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.items.ItemT;
-import net.minecraft.entity.MoverType;
+import kmerrill285.trewrite.world.WorldStateHolder;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -15,6 +20,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.Heightmap;
 
 public class MagicMirror extends ItemT {
 	public MagicMirror(String name) {
@@ -58,12 +65,32 @@ public class MagicMirror extends ItemT {
 						e.printStackTrace();
 					}
 					 
-					 playerIn.setPositionAndUpdate(bedPos.getX(), bedPos.getY(), bedPos.getZ());
-					 playerIn.noClip = false;
-					 
-					 
+					try {
+					 if (playerIn instanceof ServerPlayerEntity)
 					 if (playerIn.dimension != playerIn.getSpawnDimension())
-						 playerIn.changeDimension(playerIn.getSpawnDimension());
+						 Dimensions.teleportPlayer((ServerPlayerEntity)playerIn, playerIn.getSpawnDimension(), bedPos);
+					 
+					 HashMap<String, BlockPos> spawns = WorldStateHolder.get(worldIn.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions;
+					 BlockPos spawn = spawns.get(playerIn.getScoreboardName());
+					 if (spawn == null || !(worldIn.getBlockState(spawn).getBlock() instanceof Bed)) {
+						 int Y = playerIn.world.getChunkAt(bedPos).getTopBlockY(Heightmap.Type.MOTION_BLOCKING, bedPos.getX() % 15, bedPos.getZ() % 15);
+
+						 playerIn.setPositionAndUpdate(bedPos.getX(), Y+1, bedPos.getZ());
+						 playerIn.setSpawnDimenion(DimensionType.OVERWORLD);
+					 } else {
+						 playerIn.setPositionAndUpdate(spawn.getX(), spawn.getY(), spawn.getZ());
+						 playerIn.world.getChunkAt(spawn).getTopBlockY(Heightmap.Type.MOTION_BLOCKING, spawn.getX() % 15, spawn.getZ() % 15);
+					 }
+					 
+					 
+					 
+					 
+					 
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+					 playerIn.noClip = false;
+					
 				 }
 			 }.start();
 			

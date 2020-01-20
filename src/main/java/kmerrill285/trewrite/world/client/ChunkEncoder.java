@@ -44,6 +44,11 @@ public class ChunkEncoder {
 		
 		
 		for (int i = 0; i < storage.length; i++) {
+			if (i != 0 && i != storage.length-1)
+			{
+				buf.writeInt(0);
+				continue;
+			}
 			if (storage[i] != Chunk.EMPTY_SECTION) {
 				buf.writeInt(1);
 			} else {
@@ -52,6 +57,11 @@ public class ChunkEncoder {
 		}
 		
 		for (int i = 0; i < storage.length; i++) {
+			if (i != 0 && i != storage.length-1)
+			{
+				buf.writeInt(0);
+				continue;
+			}
 			if (storage[i] != Chunk.EMPTY_SECTION) {
 				buf.writeInt(storage[i].getYLocation());
 			} else {
@@ -60,6 +70,10 @@ public class ChunkEncoder {
 		}
 		
 		for (int i = 0; i < storage.length; i++) {
+			if (i != 0 && i != storage.length-1)
+			{
+				continue;
+			}
 			if (storage[i] != Chunk.EMPTY_SECTION) {
 				storage[i].write(buf);
 			}

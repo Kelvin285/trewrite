@@ -63,11 +63,7 @@ public class CPacketChangeBlock {
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		
 		ctx.get().enqueueWork(() -> {
-			if (Minecraft.getInstance().world == null) {
-				return;
-			}
 			ServerPlayerEntity player = ctx.get().getSender();
-			
 			DimensionType t = null;
 			switch (dimension) {
 				case -1:
@@ -82,18 +78,23 @@ public class CPacketChangeBlock {
 				case 2:
 					t = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 					break;
+				case 3:
+					t = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+					break;
+				case 4:
+					t = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+					break;
 				default:
 					t = DimensionType.OVERWORLD;
 			}
-			System.out.println(t);
 			if (t == null) return;
+			
 			DimensionManager.keepLoaded(t, true);
 			ServerWorld dim = DimensionManager.getWorld(player.getServer(), t, true, true);
 			DimensionManager.keepLoaded(t, true);
 			System.out.println("set bloch " + dim.getBlockState(new BlockPos(x, y, z)));
 			BlockState bstate = dim.getBlockState(new BlockPos(x, y, z));
 			//	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-			
 			dim.setBlockState(new BlockPos(x, y, z), Block.getStateById(state), moving ? 64 : 1);
         });
         ctx.get().setPacketHandled(true);

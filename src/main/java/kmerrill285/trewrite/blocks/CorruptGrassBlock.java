@@ -53,7 +53,7 @@ public class CorruptGrassBlock extends DirtBlock {
 	}
 	
 	public int tickRate (IWorldReader world) {
-		return 0;
+		return 10;
 	}
 	
 	public boolean getTickRandomly(BlockState state) {

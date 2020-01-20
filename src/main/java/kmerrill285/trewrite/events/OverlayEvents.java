@@ -23,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -79,7 +80,6 @@ public class OverlayEvents {
 			OverlayEvents.loadRenderers = true;
 			Util.refreshDimensionRenderer = false;
 		}
-		
 		for (int i = 0; i < Util.chunksend.size(); i++) {
 			SPacketSendChunk packet = Util.chunksend.get(i);
 			if (OverlayEvents.renderWorld != null) {
@@ -95,23 +95,60 @@ public class OverlayEvents {
 			Util.chunksend.remove(i);
 		}
 //		OverlayEvents.loadRenderers = true;
-		if (Minecraft.getInstance().world.dimension.getType().getId() == 0) {
-			try {
-				TerrariaChunkRenderer.update(event, 2, 256, true);
-			}catch (Exception e) {
-				e.printStackTrace();
-				TerrariaChunkRenderer.rendering = false;
+		Entity entity = Minecraft.getInstance().renderViewEntity;
+		if (entity.posY >= 255 || entity.posY <= 0) return;
+		
+		if (entity != null) {
+			if (Minecraft.getInstance().world.dimension.getType().getId() == 0) {
+				try {
+					if (entity.posY > 225)
+					TerrariaChunkRenderer.update(event, 2, 256, true);
+					else if (entity.posY < 25) {
+						TerrariaChunkRenderer.update(event, 3, -256, false);
+					}
+				}catch (Exception e) {
+					e.printStackTrace();
+					TerrariaChunkRenderer.rendering = false;
+					OverlayEvents.worldRenderer = null;
+				}
+			}
+			
+			if (Minecraft.getInstance().world.dimension.getType().getId() == 3) {
+				try {
+					if (entity.posY > 225)
+					TerrariaChunkRenderer.update(event, 0, 256, true);
+					else if (entity.posY < 25)
+					TerrariaChunkRenderer.update(event, 4, -256, false);
+				}catch (Exception e) {
+					e.printStackTrace();
+					TerrariaChunkRenderer.rendering = false;
+					OverlayEvents.worldRenderer = null;
+				}
+			}
+			
+			if (Minecraft.getInstance().world.dimension.getType().getId() == 4) {
+				try {
+					if (entity.posY > 225)
+					TerrariaChunkRenderer.update(event, 3, 256, true);
+				}catch (Exception e) {
+					e.printStackTrace();
+					TerrariaChunkRenderer.rendering = false;
+					OverlayEvents.worldRenderer = null;
+				}
+			}
+			
+			if (Minecraft.getInstance().world.dimension.getType().getId() == 2) {
+				try {
+					if (entity.posY < 100)
+					TerrariaChunkRenderer.update(event, 0, -256, false);
+				}catch (Exception e) {
+					e.printStackTrace();
+					TerrariaChunkRenderer.rendering = false;
+					OverlayEvents.worldRenderer = null;
+				}
 			}
 		}
 		
-		if (Minecraft.getInstance().world.dimension.getType().getId() == 2) {
-			try {
-				TerrariaChunkRenderer.update(event, 0, -256, false);
-			}catch (Exception e) {
-				e.printStackTrace();
-				TerrariaChunkRenderer.rendering = false;
-			}
-		}
 		
 		Util.blockHit = OverlayEvents.blockHit;
 	}

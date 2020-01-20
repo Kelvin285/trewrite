@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=east,half=lower":  { "model": "trewrite:block/clocks/obsidian/bottom", "y": 270 },
+        "facing=south,half=lower": { "model": "trewrite:block/clocks/obsidian/bottom"},
+        "facing=west,half=lower":  { "model": "trewrite:block/clocks/obsidian/bottom", "y": 90 },
+        "facing=north,half=lower": { "model": "trewrite:block/clocks/obsidian/bottom", "y": 180 },
+        "facing=east,half=upper":  { "model": "trewrite:block/clocks/obsidian/top", "y": 270 },
+        "facing=south,half=upper": { "model": "trewrite:block/clocks/obsidian/top" },
+        "facing=west,half=upper":  { "model": "trewrite:block/clocks/obsidian/top", "y": 90 },
+        "facing=north,half=upper": { "model": "trewrite:block/clocks/obsidian/top", "y": 180 }
+    }
+}

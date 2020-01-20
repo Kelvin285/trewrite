@@ -217,6 +217,8 @@ public class ItemsT {
 	public static ItemT OBSIDIAN_LANTERN;
 	public static ItemT OBSIDIAN_CANDELABRA;
 	public static ItemT OBSIDIAN_CANDLE;
+	public static ItemT OBSIDIAN_BED;
+	public static ItemT OBSIDIAN_CLOCK;
 
 
 
@@ -393,7 +395,9 @@ public class ItemsT {
 				OBSIDIAN_CHANDELIER = new ItemBlockT(BlocksT.OBSIDIAN_CHANDELIER, "obsidian_chandelier"),
 				OBSIDIAN_LANTERN = new ItemBlockT(BlocksT.OBSIDIAN_LANTERN, "obsidian_lantern"),
 						OBSIDIAN_CANDELABRA = new ItemBlockT(BlocksT.OBSIDIAN_CANDELABRA, "obsidian_candelabra"),
-				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle")
+				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle"),
+				OBSIDIAN_BED = new ItemBlockT(BlocksT.OBSIDIAN_BED, "obsidian_bed"),
+				OBSIDIAN_CLOCK = new ItemBlockT(BlocksT.OBSIDIAN_CLOCK, "obsidian_clock")
 
 
 				);
