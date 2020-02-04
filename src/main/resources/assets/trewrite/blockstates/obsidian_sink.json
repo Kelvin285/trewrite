@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "trewrite:block/sinks/obsidian", "y": 180 },
+        "facing=south": { "model": "trewrite:block/sinks/obsidian" },
+        "facing=west":  { "model": "trewrite:block/sinks/obsidian", "y": 90 },
+        "facing=east":  { "model": "trewrite:block/sinks/obsidian", "y": 270 }
+    }
+}

@@ -29,7 +29,10 @@ public class EntitiesT {
 	   public static EntityType<EntityZombieT> ZOMBIE;
 	   public static EntityType<EntityDrownedT> DROWNED;
 	   public static EntityType<EntityBunnyT> BUNNY;
-	   
+	   public static EntityType<EntityHeart> HEART;
+	   public static EntityType<EntityCoin> COIN;
+
+
 	   
 	   @SubscribeEvent
 		public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
@@ -46,7 +49,9 @@ public class EntitiesT {
 		 EntitiesT.DROWNED = register("trewrite" + ":drowned", EntityType.Builder.<EntityDrownedT>create(EntityDrownedT::new, EntityClassification.MISC).setCustomClientFactory((spawnEntity, world) -> new EntityDrownedT(world)));
 		 EntitiesT.BUNNY = register("trewrite" + ":bunny", EntityType.Builder.<EntityBunnyT>create(EntityBunnyT::new, EntityClassification.MISC).setCustomClientFactory((spawnEntity, world) -> new EntityBunnyT(world)));
 		 
-		 
+		 EntitiesT.HEART = register("trewrite" + ":entityheart", EntityType.Builder.<EntityHeart>create(EntityHeart::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityHeart(world)));
+		 EntitiesT.COIN = register("trewrite" + ":entitycoin", EntityType.Builder.<EntityCoin>create(EntityCoin::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityCoin(world)));
+
 		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
 		 SpawnCondition.spawnConditions.put(EntitiesT.DEMON_EYE, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
 		 SpawnCondition.spawnConditions.put(EntitiesT.BUNNY, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));

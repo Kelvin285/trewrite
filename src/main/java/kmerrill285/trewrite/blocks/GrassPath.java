@@ -17,7 +17,6 @@ public class GrassPath extends DirtBlock {
 	
 	public GrassPath(Properties properties) {
 		super(properties);
-		
 	}
 	@OnlyIn(value=Dist.CLIENT)
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {

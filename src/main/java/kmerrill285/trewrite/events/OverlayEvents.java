@@ -19,6 +19,7 @@ import kmerrill285.trewrite.world.TRenderInfo;
 import kmerrill285.trewrite.world.client.ChunkEncoder;
 import kmerrill285.trewrite.world.client.TChunkProvider;
 import kmerrill285.trewrite.world.client.TerrariaChunkRenderer;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -91,6 +92,10 @@ public class OverlayEvents {
 				}
 				
 				ChunkEncoder.readIntoChunk(OverlayEvents.renderWorld.getChunk(packet.x, packet.z), packet.buf);
+				if (packet.markDirty) {
+					OverlayEvents.loadRenderers = true;
+					OverlayEvents.renderWorld.getChunk(packet.x, packet.z).markDirty();
+				}
 			}
 			Util.chunksend.remove(i);
 		}
@@ -375,21 +380,205 @@ public class OverlayEvents {
 				
 					
 				//RENDER BUFFS / DEBUFFS
-				int debuff = 0;
+				int effectCounter = 0;
 				if (Util.renderPotionSickness > 0) {
 					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
-					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * debuff) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
-					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * debuff) + accessory * textSize, 12 * 0, 27 + 12 * 1, 12, 12); //debuff image
-					instance.ingameGUI.drawString(instance.fontRenderer, "Potion Sickness ["+Util.getTimerString(Util.renderPotionSickness)+"]", 5 + 12 + 3, 12 * 2 + 12 * debuff + 3 + accessory * textSize, 0xFFFFFF);
-					debuff++;
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderPotionSickness)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
 				}
 				
 				if (Util.renderManaSickness > 0) {
 					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
-					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * debuff) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
-					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * debuff) + accessory * textSize, 12 * 1, 27 + 12 * 1, 12, 12); //debuff image
-					instance.ingameGUI.drawString(instance.fontRenderer, "Mana Sickness x"+Util.renderManaSicknessEffect+" ["+Util.getTimerString(Util.renderManaSickness)+"]", 5 + 12 + 3, 12 * 2 + 12 * debuff + 3 + accessory * textSize, 0xFFFFFF);
-					debuff++;
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "x"+Util.renderManaSicknessEffect+" ["+Util.getTimerString(Util.renderManaSickness)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderBuild > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 2, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderBuild)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderCalming > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 3, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderCalming)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderIronskin > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 4, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderIronskin)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderNightOwl > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 5, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderNightOwl)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderShine > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 3, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderShine)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderSwiftness > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 7, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderSwiftness)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderMining > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 8, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderMining)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderArchery > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 9, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderArchery)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderHunter > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 10, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderHunter)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderGills > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 11, 27 + 12 * 1, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderGills)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderRegeneration > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderRegeneration)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderFeatherfall > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderFeatherfall)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderFlipper > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 2, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderFlipper)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderGravitation > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 3, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderGravitation)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderHeartreach > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 4, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderHeartreach)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderInvisibility > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 5, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderInvisibility)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderThorns > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 6, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderThorns)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderMagicPower > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 7, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderMagicPower)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderManaRegeneration > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 8, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderManaRegeneration)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderObsidianSkin > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 9, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderObsidianSkin)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderTitan > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 10, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderTitan)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderWaterWalking > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 11, 27 + 12 * 2, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderWaterWalking)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderBattle > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 3, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderBattle)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
 				}
 				
 				GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -438,7 +627,8 @@ public class OverlayEvents {
 				int X = xx;
 				int Y = yy+10;
 				
-				
+				if (player.getAir() < player.getMaxAir() || player.world.getBlockState(player.getPosition().up(1)).getBlock() == Blocks.WATER)
+				Y = yy;
 				
 				for (int i = 0; i < len2; i++) {
 					if (i <= 10) {

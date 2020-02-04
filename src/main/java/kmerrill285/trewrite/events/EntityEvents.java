@@ -4,6 +4,7 @@ import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.Chest;
+import kmerrill285.trewrite.blocks.Tree;
 import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
@@ -17,6 +18,7 @@ import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Axe;
@@ -42,9 +44,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FlyingEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,6 +58,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ActionResult;
@@ -141,8 +147,10 @@ public class EntityEvents {
 			
 			if (player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() < 100) {
 				player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100);
-				player.setHealth(100);
 			} else {
+				if (player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() < 200) {
+					player.setHealth(100);
+				} else
 				player.setHealth((float)player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() / 2.0f);
 			}
 			
@@ -156,7 +164,33 @@ public class EntityEvents {
 						player.setSpawnDimenion(DimensionType.OVERWORLD);
 					}
 				}
+				
 			}
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.ARCHERY).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.POTION_SICKNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS_EFFECT).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BUILDER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FLIPPER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GILLS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GRAVITATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.HEARTREACH).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.INVISIBILITY).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MAGIC_POWER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_REGENERATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MINING).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.REGENERATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SHINE).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SWIFTNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.THORNS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).setScorePoints(0);
 		}
 	}
 	@OnlyIn(value=Dist.CLIENT)
@@ -191,6 +225,7 @@ public class EntityEvents {
 			if (event.getSource() == DamageSource.DROWN || event.getSource() == DamageSource.IN_WALL) {
 				if (!(event.getEntityLiving() instanceof PlayerEntity)) {
 					event.setCanceled(true);
+					return;
 				}
 			}
 			if (event.getSource() == DamageSource.LAVA) {
@@ -218,12 +253,24 @@ public class EntityEvents {
 						if (hasSkull) {
 							event.setAmount(0);
 							event.setCanceled(true);
+							return;
 						}
 					}
 				}
 			}
+			
+			if (event.getEntityLiving() instanceof PlayerEntity)
+				if (!event.getEntityLiving().world.isRemote) {
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).getScorePoints() > 0) {
+						event.setAmount(event.getAmount() - 5);
+						
+					}
+				}
+			
 		}
-		
+		if (event.getAmount() < 1 && event.isCanceled() == false)
+			event.setAmount(1);
 	}
 	
 	@SubscribeEvent
@@ -540,7 +587,6 @@ public class EntityEvents {
 						shrink = true;
 					}
 					if (shrink) {
-
 						PlayerEntity player = event.getEntityPlayer();
 						
 					    player.world.playSound((PlayerEntity)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1.0F, 1.0F);
@@ -599,6 +645,21 @@ public class EntityEvents {
 							itemEvent.getEntityPlayer().heal(((ItemT)itemEvent.getItemStack().getItem()).heal);
 							shrink = true;
 						}
+					}
+					Score mana = ScoreboardEvents.getScore(itemEvent.getEntityPlayer().getWorldScoreboard(), itemEvent.getEntityPlayer(), ScoreboardEvents.MANA);
+					Score maxMana = ScoreboardEvents.getScore(itemEvent.getEntityPlayer().getWorldScoreboard(), itemEvent.getEntityPlayer(), ScoreboardEvents.MAX_MANA);
+					if (mana.getScorePoints() < maxMana.getScorePoints()) {
+						Score manaSickness = ScoreboardEvents.getScore(itemEvent.getEntityPlayer().getWorldScoreboard(), itemEvent.getEntityPlayer(), ScoreboardEvents.MANA_SICKNESS);
+						Score manaSicknessEffect = ScoreboardEvents.getScore(itemEvent.getEntityPlayer().getWorldScoreboard(), itemEvent.getEntityPlayer(), ScoreboardEvents.MANA_SICKNESS_EFFECT);
+						if (manaSickness.getScorePoints() < 10 * 20) {
+							manaSickness.setScorePoints(manaSickness.getScorePoints() + 5 * 20);
+						} else {
+							manaSickness.setScorePoints(10 * 20);
+						}
+						if (manaSicknessEffect.getScorePoints() < 2)
+						manaSicknessEffect.setScorePoints(manaSicknessEffect.getScorePoints() + 1);
+						mana.setScorePoints(mana.getScorePoints() + ((ItemT)itemEvent.getItemStack().getItem()).manaHeal);
+						shrink = true;
 					}
 					
 					if (shrink) {
@@ -711,6 +772,20 @@ public class EntityEvents {
 		
 		getMiningSpeed(event);
 		
+		if (event.getEntity().world.getBlockState(event.getPos().up()).getBlock() instanceof Tree) {
+			if (event.getEntity().world.getBlockState(event.getPos().up()).getBlock() != BlocksT.CACTUS) {
+				event.setNewSpeed(-1);
+			}
+		}
+		
+		if (event.getNewSpeed() > 0) {
+			PlayerEntity player = event.getEntityPlayer();
+			int mining = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MINING).getScorePoints();
+			if (mining > 0) {
+				event.setNewSpeed(event.getNewSpeed() * 1.25f);
+			}
+
+		}
 		
 	}
 	
@@ -811,6 +886,7 @@ public class EntityEvents {
 		if (event.getPlayer() != null) {
 			PlayerEntity player = event.getPlayer();
 			
+			
 			player.setNoGravity(true);
 			
 			
@@ -832,6 +908,22 @@ public class EntityEvents {
 	@OnlyIn(value=Dist.CLIENT)
 	@SubscribeEvent
 	public static void handleClientLivingEvent(LivingEvent event) {
+		
+		{
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player != null) {
+				int hunter = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.HUNTER).getScorePoints();
+				if (hunter > 0) {
+					LivingEntity entity = event.getEntityLiving();
+					if (entity != null && entity instanceof MonsterEntity || entity instanceof EntityDemonEye) {
+						if (entity.isPotionActive(Effects.GLOWING) == false) {
+							entity.getActivePotionMap().put(Effects.GLOWING, new EffectInstance(Effects.GLOWING, hunter, 1, false, false));
+						}
+					}
+				}
+			}
+		}
+		
 		if (event.getEntity() == null) return;
 		if (event.getEntity().world == null) return;
 		if (event.getEntity().world.isRemote == false) return;
@@ -853,12 +945,15 @@ public class EntityEvents {
 						}
 					}
 				}
+				double speed = 0.0f;
 				if (hasBoots == false) {
 					HermesBoots HERMES_BOOTS = (HermesBoots)ItemsT.HERMES_BOOTS;
 					if (HERMES_BOOTS.baseSpeed != 0.0f) {
-						player.setAIMoveSpeed((float) HERMES_BOOTS.baseSpeed);
+						speed = HERMES_BOOTS.baseSpeed;
 					}
 				}
+				if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SWIFTNESS).getScorePoints() > 0) speed += 0.25;
+				player.setAIMoveSpeed((float) speed);
 				
 				World world = player.getEntityWorld();
 				Scoreboard scoreboard = player.getWorldScoreboard();
@@ -900,10 +995,45 @@ public class EntityEvents {
 	@SubscribeEvent
 	public static void handleLivingEvent(LivingEvent event) {
 		
-		
 		if (event.getEntity() != null) {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+				
+				int nightowl = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).getScorePoints();
+				if (nightowl > 0) {
+					if (player.isPotionActive(Effects.NIGHT_VISION) == false) {
+						player.getActivePotionMap().put(Effects.NIGHT_VISION, new EffectInstance(Effects.NIGHT_VISION, nightowl, 1, false, false));
+					}
+				} else {
+					if (player.isPotionActive(Effects.NIGHT_VISION))
+						player.getActivePotionMap().remove(Effects.NIGHT_VISION);
+				}
+				
+				int flipper = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FLIPPER).getScorePoints();
+				if (flipper > 0) {
+					if (player.isPotionActive(Effects.DOLPHINS_GRACE) == false) {
+						player.getActivePotionMap().put(Effects.DOLPHINS_GRACE, new EffectInstance(Effects.DOLPHINS_GRACE, 5, 1, false, false));
+					}
+				}
+				
+				
+				int regen = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.REGENERATION).getScorePoints();
+				if (regen > 0 && regen % 10 == 0) {
+					if (player.isPotionActive(Effects.REGENERATION) == false) {
+						player.getActivePotionMap().put(Effects.REGENERATION, new EffectInstance(Effects.REGENERATION, 1, 5, false, false));
+					}
+				}
+				
+				int gills = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GILLS).getScorePoints();
+				if (gills > 0) {
+					if (player.isPotionActive(Effects.WATER_BREATHING) == false) {
+						player.getActivePotionMap().put(Effects.WATER_BREATHING, new EffectInstance(Effects.WATER_BREATHING, gills, 1, false, false));
+					}
+				} else {
+					if (player.isPotionActive(Effects.WATER_BREATHING))
+					player.getActivePotionMap().remove(Effects.WATER_BREATHING);
+				}
+				
 				player.getAttribute(PlayerEntity.ENTITY_GRAVITY).setBaseValue(0.0f);
 				
 				
@@ -942,8 +1072,14 @@ public class EntityEvents {
 				}
 				
 				double baseReach = 2.0 * reachMul;
+				if (player.getHeldItemMainhand() != null) {
+					if (player.getHeldItemMainhand().getItem() instanceof ItemBlockT) {
+						if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BUILDER).getScorePoints() > 0) {
+							baseReach += 2.0;
+						}
+					}
+				}
 				player.getAttribute(PlayerEntity.REACH_DISTANCE).setBaseValue(baseReach + 4.0);
-				
 				
         		player.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(attackMul);
         		
@@ -970,24 +1106,57 @@ public class EntityEvents {
 			Entity entity = event.getEntity();
 			boolean falling = true;
 
+			float G = 9.82f;
+			if (entity.world.isRemote) {
+				if (event.getEntity() instanceof PlayerEntity) {
+					PlayerEntity player = (PlayerEntity)event.getEntity();
+					int featherfall = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).getScorePoints();
+					if (player.getMotion().y < 0)
+					if (featherfall > 0) {
+						G = 9.82f * 0.5f;
+						if (Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown()) {
+							G = 9.82f * 0.25f;
+						}
+						if (Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown()) {
+							G = 9.82f * 0.75f;
+						}
+					}
+				}
+			}
 			
 			if (falling)
 			if (!event.getEntityLiving().isInWater()) {
 //				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
 				if (event.getEntity() instanceof PlayerEntity) {
 					boolean nope = false;
+					PlayerEntity player = (PlayerEntity)event.getEntity();
+		    		Score grav = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GRAVITATION);
+		    		int mul = 1;
+		    		if (grav.getScorePoints() > 0) {
+		    			if (Util.INVERSE_GRAVITY)
+		    			mul = -1;
+		    		}
 					if (event.getEntity().world.isRemote)
 					if (event.getEntity() instanceof ClientPlayerEntity) {
-						ClientPlayerEntity player = (ClientPlayerEntity)event.getEntity();
-						
+						if (grav.getScorePoints() == 0) {
+							Util.INVERSE_GRAVITY = false;
+						}
 						if (Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson()) {
-							event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 50.0f), motion.getZ()));
+							float gravity = G / 50.0f;
+							if (event.getEntityLiving().isInLava()) {
+								gravity *= 0.25f;
+							}
+							event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(gravity) * mul, motion.getZ()));
 							nope = true;
 						}
 						
 					}
 					if (!nope) {
-						event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
+						float gravity = G / 20.0f;
+						if (event.getEntityLiving().isInLava()) {
+							gravity *= 0.25f;
+						}
+						event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(gravity) * mul, motion.getZ()));
 					}
 				} else {
 					event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
@@ -1288,6 +1457,13 @@ public class EntityEvents {
 			event.setDistance((heightInFeet - 25.0f) * Conversions.feetToMeters * 5);
 		} else {
 			event.setDistance(0);
+		}
+		if (event.getEntity() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)event.getEntity();
+			int featherfall = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).getScorePoints();
+			if (featherfall > 0) {
+				event.setDistance(0);
+			}
 		}
 	}
 }

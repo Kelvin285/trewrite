@@ -31,19 +31,27 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.client.CPacketAddScore;
+import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
+import kmerrill285.trewrite.core.network.client.CPacketHeal;
 import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.items.terraria.potions.Potion;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.scoreboard.Score;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.TickEvent;
@@ -124,25 +132,134 @@ public class EventHandlerClient {
         	} else {
         		cloud = false;
         	}
-        	if (mc.gameSettings.keyBindJump.isPressed() && !player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
-        		if (cloud == true) {
-        			
-        			player.setMotion(player.getMotion().x, 0.5f, player.getMotion().getZ());
-        			
-        			Random rand = new Random();
-        			for (int i = 0; i < 10; i++)
-        			player.world.addParticle(ParticleTypes.CLOUD, player.posX, player.posY, player.posZ, rand.nextDouble() - 0.5f,-0.1f, rand.nextDouble() - 0.5f);
-			 		NetworkHandler.INSTANCE.sendToServer(new CPacketNegateFall());
-			 		
-	    		    player.world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_SNOW_FALL, SoundCategory.PLAYERS, 1.0F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
-			 		
-			 		cloud = false;
-        		}
-            }
         	
-        	if (mc.gameSettings.keyBindJump.isKeyDown() && !player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
+        	if (KeyRegistry.autoBuff.isPressed()) {
+        		for (Potion p : Potion.buffs) {
+        			p.buff(player.getEntityWorld(), player, true);
+        		}
+        	}
+        	
+        	
+        	if (KeyRegistry.autoHeal.isPressed()) {
+        		InventorySlot slot = null;
+        		int heal = 0;
+        		for (int i = 0; i < inventory.main.length; i++) {
+        			if (inventory.main[i].stack != null) {
+        				Item item = inventory.main[i].stack.item;
+        				if (item instanceof ItemT) {
+        					if (((ItemT)item).heal > heal) {
+        						slot = inventory.main[i];
+        						heal = ((ItemT)item).heal;
+        					}
+        				}
+        			}
+        		}
+        		if (slot == null) {
+        			for (int i = 0; i < inventory.hotbar.length; i++) {
+            			if (inventory.hotbar[i].stack != null) {
+            				Item item = inventory.hotbar[i].stack.item;
+            				if (item instanceof ItemT) {
+            					if (((ItemT)item).heal > heal) {
+            						slot = inventory.hotbar[i];
+            						heal = ((ItemT)item).heal;
+            					}
+            				}
+            			}
+            		}
+        		}
+        		Score s = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.POTION_SICKNESS);
+        		if (s.getScorePoints() == 0 && player.getHealth() < player.getMaxHealth())
+        		if (slot != null) {
+        			if (heal > 0) {
+					    player.world.playSound((PlayerEntity)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        				ItemT item = (ItemT)slot.stack.item;
+        				NetworkHandler.INSTANCE.sendToServer(new CPacketHeal(heal));
+        				NetworkHandler.INSTANCE.sendToServer(new CPacketChangeScore(ScoreboardEvents.POTION_SICKNESS, item.potionSickness*20));
+        				slot.decrementStack(1);
+		    			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, slot.area, slot.id, slot.stack));
+        			}
+        		}
+        	}
+        	
+        	
+        	
+        	if (KeyRegistry.autoMana.isPressed()) {
+        		InventorySlot slot = null;
+        		int heal = 0;
+        		for (int i = 0; i < inventory.main.length; i++) {
+        			if (inventory.main[i].stack != null) {
+        				Item item = inventory.main[i].stack.item;
+        				if (item instanceof ItemT) {
+        					if (((ItemT)item).manaHeal > heal) {
+        						slot = inventory.main[i];
+        						heal = ((ItemT)item).manaHeal;
+        					}
+        				}
+        			}
+        		}
+        		if (slot == null) {
+        			for (int i = 0; i < inventory.hotbar.length; i++) {
+            			if (inventory.hotbar[i].stack != null) {
+            				Item item = inventory.hotbar[i].stack.item;
+            				if (item instanceof ItemT) {
+            					if (((ItemT)item).manaHeal > heal) {
+            						slot = inventory.hotbar[i];
+            						heal = ((ItemT)item).manaHeal;
+            					}
+            				}
+            			}
+            		}
+        		}
         		
-            }
+        		
+        		
+        		Score s = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS_EFFECT);
+        		Score m = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA);
+        		Score mm = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MAX_MANA);
+        		if (m.getScorePoints() < mm.getScorePoints())
+        		if (slot != null) {
+        			if (heal > 0) {
+
+					    player.world.playSound((PlayerEntity)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        				ItemT item = (ItemT)slot.stack.item;
+        				NetworkHandler.INSTANCE.sendToServer(new CPacketChangeScore(ScoreboardEvents.MANA_SICKNESS, item.manaSickness*20));
+        				if (s.getScorePoints() < 2)
+        				NetworkHandler.INSTANCE.sendToServer(new CPacketAddScore(ScoreboardEvents.MANA_SICKNESS_EFFECT, 1));
+        				NetworkHandler.INSTANCE.sendToServer(new CPacketAddScore(ScoreboardEvents.MANA, heal));
+
+        				slot.decrementStack(1);
+		    			NetworkHandler.INSTANCE.sendToServer(new CPacketSyncInventoryTerraria(0, slot.area, slot.id, slot.stack));
+        			}
+        		}
+        	}
+        	if (mc.gameSettings.keyBindJump.isPressed()) {
+        		Score s = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GRAVITATION);
+        		if (s.getScorePoints() > 0) {
+        			if (System.currentTimeMillis() - Util.LAST_SPACETAP <= 300) {
+        				Util.INVERSE_GRAVITY = !Util.INVERSE_GRAVITY;
+        			}
+        			Util.LAST_SPACETAP = System.currentTimeMillis();
+        		}
+	        	if (!player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
+	        		if (cloud == true) {
+	        			
+	        			player.setMotion(player.getMotion().x, 0.5f, player.getMotion().getZ());
+	        			
+	        			Random rand = new Random();
+	        			for (int i = 0; i < 10; i++)
+	        			player.world.addParticle(ParticleTypes.CLOUD, player.posX, player.posY, player.posZ, rand.nextDouble() - 0.5f,-0.1f, rand.nextDouble() - 0.5f);
+				 		NetworkHandler.INSTANCE.sendToServer(new CPacketNegateFall());
+				 		
+		    		    player.world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_SNOW_FALL, SoundCategory.PLAYERS, 1.0F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
+				 		
+				 		cloud = false;
+	        		}
+	            }
+	        	
+	        	if (mc.gameSettings.keyBindJump.isKeyDown() && !player.world.getBlockState(player.getPosition().down()).getMaterial().blocksMovement()) {
+	        		
+	            }
+	        }
         }
         
         

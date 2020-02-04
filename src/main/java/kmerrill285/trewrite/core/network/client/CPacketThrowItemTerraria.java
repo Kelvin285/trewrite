@@ -96,7 +96,8 @@ public class CPacketThrowItemTerraria {
 						EntityItemT.spawnItem(sender.world, sender.getPosition().up(), new ItemStackT(s.item, s.size, ItemModifier.getModifier(s.modifier)), this.delay);
 						System.out.println("drop item");
 					} else {
-						if (slots[i] != null) {
+						if (slots[i] != null && slots[i].stack != null) {
+							
 							ItemStackT s = new ItemStackT(slots[i].stack.item, slots[i].stack.size, ItemModifier.getModifier(slots[i].stack.modifier));
 							slots[i].stack = null;
 				 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSyncInventoryTerraria(0, area, i, slots[i].stack));

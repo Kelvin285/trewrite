@@ -44,6 +44,8 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -59,7 +61,6 @@ public class TerrariaChunkRenderer {
 		
 		Entity entity = Minecraft.getInstance().getRenderViewEntity();
 
-	      
 		rendering = false;
 		if (rendering == true) return;
 		rendering = true;
@@ -289,7 +290,6 @@ public class TerrariaChunkRenderer {
 	    	  }
 	    	  if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && entity instanceof PlayerEntity) {
 		    	  if (result.getType() == RayTraceResult.Type.BLOCK) {
-		    		  System.out.println("wryyy");
 		    		  OverlayEvents.loadRenderers = true;
 		    	  }
 	    	  }
@@ -533,6 +533,7 @@ public class TerrariaChunkRenderer {
 				((RenderWorld)OverlayEvents.renderWorld).worldRenderer = OverlayEvents.worldRenderer;
 				
 			}
+			
 			if (OverlayEvents.loadingChunks == false) {
 				OverlayEvents.loadingChunks = true;
 				final int HEIGHT = height;
@@ -545,11 +546,29 @@ public class TerrariaChunkRenderer {
 								int X = entity.chunkCoordX + x;
 								int Z = entity.chunkCoordZ + z;
 								if (Math.abs(x) < distmin && Math.abs(z) < distmin) {
-//									if (OverlayEvents.renderWorld.chunkExists(X, Z) == false ||
-//											OverlayEvents.renderWorld.getChunk(X, Z) instanceof EmptyChunk) {
+									if (OverlayEvents.renderWorld != null)
+									if (OverlayEvents.renderWorld.chunkExists(X, Z) == false ||
+											OverlayEvents.renderWorld.getChunk(X, Z) != null && OverlayEvents.renderWorld.getChunk(X, Z) instanceof EmptyChunk) {
 									if (entity != null)
 								    NetworkHandler.INSTANCE.sendToServer(new CPacketRequestChunks(entity.chunkCoordX + x, entity.chunkCoordZ + z, dimension));
-//									}
+									} else {
+										boolean dirty = false;
+										try {
+											Field d = Chunk.class.getDeclaredField(Trewrite.DEBUG ? "dirty" : "field_76643_l");
+											Util.makeFieldAccessible(d);
+											dirty = (boolean) d.get(OverlayEvents.renderWorld.getChunk(X, Z));
+										}catch (Exception e) {}
+										if (OverlayEvents.renderWorld.getChunk(X, Z) != null) {
+											if (entity != null)
+											NetworkHandler.INSTANCE.sendToServer(new CPacketRequestChunks(X, Z, dimension));
+											try {
+												Field d = Chunk.class.getDeclaredField(Trewrite.DEBUG ? "dirty" : "field_76643_l");
+												Util.makeFieldAccessible(d);
+												d.set(OverlayEvents.renderWorld.getChunk(X, Z), false);
+											}catch (Exception e) {}
+											
+										}
+									}
 								} else {
 									if (OverlayEvents.renderWorld != null)
 									if (((RenderWorld)OverlayEvents.renderWorld).chunkProvider != null)

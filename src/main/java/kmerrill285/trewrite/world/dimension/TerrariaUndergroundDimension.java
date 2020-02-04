@@ -2,8 +2,7 @@ package kmerrill285.trewrite.world.dimension;
 
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.util.Util;
-import kmerrill285.trewrite.world.biome.provider.SkyBiomeProvider;
-import kmerrill285.trewrite.world.biome.provider.TerrariaBiomeProvider;
+import kmerrill285.trewrite.world.biome.provider.UndergroundBiomeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -41,7 +40,7 @@ public class TerrariaUndergroundDimension extends OverworldDimension {
 	        biomeProviderSettings.setGeneratorSettings(overworldGenSettings);	
 //	        biomeProviderSettings.setBiome(BiomeT.LOWLANDS);
 	        
-	        return new TerrariaUndergroundChunkGenerator(world, new SkyBiomeProvider(biomeProviderSettings), overworldGenSettings);
+	        return new TerrariaUndergroundChunkGenerator(world, new UndergroundBiomeProvider(biomeProviderSettings), overworldGenSettings);
 	}
 	
 	public Vec3d getFogColor(float celestialAngle, float partialTicks) {
@@ -61,7 +60,7 @@ public class TerrariaUndergroundDimension extends OverworldDimension {
 	}
 	
 	public boolean isNether() {
-		return false;
+		return true;
 	}
 	
 	public MusicType getMusicType() {

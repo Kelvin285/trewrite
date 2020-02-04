@@ -14,6 +14,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.PaintingType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -107,7 +108,11 @@ public class Door extends BlockT {
 	   }
 
 	   public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-			
+		   if (newState.getBlock() != state.getBlock())
+			if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+				Item drop = ItemsT.getItemFromString(((BlockT)state.getBlock()).drop);
+				EntityItemT.spawnItem(worldIn, pos, new ItemStackT(drop, 1));
+			}
 		}
 	   
 	   /**

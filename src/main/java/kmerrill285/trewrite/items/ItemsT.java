@@ -2,8 +2,12 @@ package kmerrill285.trewrite.items;
 
 import java.util.HashMap;
 
+import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.crafting.Recipes;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.accessories.Accessory.WearSlot;
 import kmerrill285.trewrite.items.basic.BasicBroadsword;
@@ -24,21 +28,36 @@ import kmerrill285.trewrite.items.terraria.bows.WoodenBow;
 import kmerrill285.trewrite.items.terraria.broadswords.CopperBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
+import kmerrill285.trewrite.items.terraria.clickable.Coin;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
 import kmerrill285.trewrite.items.terraria.loot_bags.Present;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
+import kmerrill285.trewrite.items.terraria.potions.PotionTest;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
 import kmerrill285.trewrite.items.terraria.shortswords.IronShortsword;
 import kmerrill285.trewrite.items.terraria.throwable.Shuriken;
 import kmerrill285.trewrite.items.terraria.tools.MagicMirror;
+import kmerrill285.trewrite.world.WorldStateHolder;
+import kmerrill285.trewrite.world.dimension.Dimensions;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.scoreboard.Score;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -211,6 +230,7 @@ public class ItemsT {
 	public static ItemT OBSIDIAN_LAMP;
 	
 	public static ItemT OBSIDIAN_PIANO;
+	public static ItemT OBSIDIAN_CHAIR;
 	
 	public static ItemT OBSIDIAN_DOOR;
 	public static ItemT OBSIDIAN_CHANDELIER;
@@ -219,10 +239,19 @@ public class ItemsT {
 	public static ItemT OBSIDIAN_CANDLE;
 	public static ItemT OBSIDIAN_BED;
 	public static ItemT OBSIDIAN_CLOCK;
+	public static ItemT OBSIDIAN_SOFA, OBSIDIAN_WORKBENCH, OBSIDIAN_TABLE, OBSIDIAN_SINK, OBSIDIAN_BATHTUB, OBSIDIAN_DRESSER;
 
+	public static ItemT HEALING_POTION;
 
+	public static ItemT COPPER_COIN, SILVER_COIN, GOLD_COIN, PLATINUM_COIN;
 
-
+	public static ItemT BUILDER_POTION, CALMING_POTION, IRONSKIN_POTION,
+	SWIFTNESS_POTION, NIGHT_OWL_POTION, RECALL_POTION, GILLS_POTION,
+	REGENERATION_POTION, MINING_POTION, ARCHERY_POTION, HUNTER_POTION,
+	FEATHERFALL_POTION, FLIPPER_POTION, GRAVITATION_POTION,
+	HEARTREACH_POTION, INVISIBILITY_POTION, THORNS_POTION,
+	WATER_WALKING_POTION, SHINE_POTION, BATTLE_POTION, OBSIDIAN_SKIN_POTION,
+	MAGIC_POWER_POTION, MANA_REGENERATION_POTION, TITAN_POTION;
 	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
@@ -394,10 +423,89 @@ public class ItemsT {
 				OBSIDIAN_DOOR = new ItemBlockT(BlocksT.OBSIDIAN_DOOR, "obsidian_door"),
 				OBSIDIAN_CHANDELIER = new ItemBlockT(BlocksT.OBSIDIAN_CHANDELIER, "obsidian_chandelier"),
 				OBSIDIAN_LANTERN = new ItemBlockT(BlocksT.OBSIDIAN_LANTERN, "obsidian_lantern"),
-						OBSIDIAN_CANDELABRA = new ItemBlockT(BlocksT.OBSIDIAN_CANDELABRA, "obsidian_candelabra"),
+				OBSIDIAN_CANDELABRA = new ItemBlockT(BlocksT.OBSIDIAN_CANDELABRA, "obsidian_candelabra"),
 				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle"),
 				OBSIDIAN_BED = new ItemBlockT(BlocksT.OBSIDIAN_BED, "obsidian_bed"),
-				OBSIDIAN_CLOCK = new ItemBlockT(BlocksT.OBSIDIAN_CLOCK, "obsidian_clock")
+				OBSIDIAN_CLOCK = new ItemBlockT(BlocksT.OBSIDIAN_CLOCK, "obsidian_clock"),
+				OBSIDIAN_WORKBENCH = new ItemBlockT(BlocksT.OBSIDIAN_WORKBENCH, "obsidian_workbench"),
+				OBSIDIAN_TABLE = new ItemBlockT(BlocksT.OBSIDIAN_TABLE, "obsidian_table"),
+				OBSIDIAN_DRESSER = new ItemBlockT(BlocksT.OBSIDIAN_DRESSER, "obsidian_dresser"),
+				OBSIDIAN_CHAIR = new ItemBlockT(BlocksT.OBSIDIAN_CHAIR, "obsidian_chair"),
+				OBSIDIAN_SOFA = new ItemBlockT(BlocksT.OBSIDIAN_SOFA, "obsidian_sofa"),
+				OBSIDIAN_SINK = new ItemBlockT(BlocksT.OBSIDIAN_SINK, "obsidian_sink"),
+				OBSIDIAN_BATHTUB = new ItemBlockT(BlocksT.OBSIDIAN_BATHTUB, "obsidian_bathtub"),
+				HEALING_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "healing_potion").setMaterial().setConsumable().setPotionSickness(60).setHeal(100).setMaxStack(30).setBuySell(200),
+				COPPER_COIN = new Coin(1, "copper_coin"),
+				SILVER_COIN = new Coin(100, "silver_coin"),
+				GOLD_COIN = new Coin(10000, "gold_coin"),
+				PLATINUM_COIN = new Coin(1000000, "platinum_coin", 999),
+				BUILDER_POTION = new PotionTest(new Properties().group(ItemGroup.BREWING), "builder_potion", true, true) {
+					@Override
+					protected boolean doPotionStuff(World world, PlayerEntity player) {
+						if (!world.isRemote()) {
+							Score score = ScoreboardEvents.getScore(world.getScoreboard(), player, ScoreboardEvents.BUILDER);
+							score.setScorePoints(15*60*20);
+						} else {
+							NetworkHandler.INSTANCE.sendToServer(new CPacketChangeScore(ScoreboardEvents.BUILDER, 15*60*20));
+						}
+						
+						return true;
+					}
+				},
+				RECALL_POTION = new PotionTest(new Properties().group(ItemGroup.BREWING), "recall_potion", true, false) {
+					@Override
+					protected boolean doPotionStuff(World worldIn, PlayerEntity playerIn) {
+						if (!worldIn.isRemote) {
+						      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.PLAYERS, 1.0F, 0.5F);
+						      {
+						    	  BlockPos bedPos = playerIn.getBedLocation(playerIn.getSpawnDimension());
+									 if (bedPos == null) {
+										 bedPos = worldIn.getSpawnPoint();
+										 System.out.println(bedPos);
+									 }
+								  worldIn.playSound((PlayerEntity)null, bedPos.getX(), bedPos.getY(), bedPos.getZ(), SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.PLAYERS, 1.0F, 0.5F);
+
+						      }
+						     
+						     BlockPos bedPos = playerIn.getBedLocation(playerIn.getSpawnDimension());
+							 if (bedPos == null) {
+								 bedPos = worldIn.getSpawnPoint();
+								 System.out.println(bedPos);
+							 }
+							 playerIn.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 1 * 20, 1, true, true));
+							 
+							 
+							try {
+							 if (playerIn instanceof ServerPlayerEntity)
+							 if (playerIn.dimension != playerIn.getSpawnDimension())
+								 Dimensions.teleportPlayer((ServerPlayerEntity)playerIn, playerIn.getSpawnDimension(), bedPos);
+							 
+							 HashMap<String, BlockPos> spawns = WorldStateHolder.get(worldIn.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions;
+							 BlockPos spawn = spawns.get(playerIn.getScoreboardName());
+							 if (spawn == null || !(worldIn.getBlockState(spawn).getBlock() instanceof Bed)) {
+								 int Y = playerIn.world.getChunkAt(bedPos).getTopBlockY(Heightmap.Type.MOTION_BLOCKING, bedPos.getX() % 15, bedPos.getZ() % 15);
+
+								 playerIn.setPositionAndUpdate(bedPos.getX(), Y+1, bedPos.getZ());
+								 playerIn.setSpawnDimenion(DimensionType.OVERWORLD);
+							 } else {
+								 playerIn.setPositionAndUpdate(spawn.getX(), spawn.getY(), spawn.getZ());
+								 playerIn.world.getChunkAt(spawn).getTopBlockY(Heightmap.Type.MOTION_BLOCKING, spawn.getX() % 15, spawn.getZ() % 15);
+							 }
+							 
+							 
+							 
+							 
+							 
+							}catch (Exception e) {
+								e.printStackTrace();
+							}
+							 playerIn.noClip = false;
+						 }
+						
+						return true;
+					}
+				}
+
 
 
 				);

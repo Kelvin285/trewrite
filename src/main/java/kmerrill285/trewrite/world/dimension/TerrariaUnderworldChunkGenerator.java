@@ -1,5 +1,6 @@
 package kmerrill285.trewrite.world.dimension;
 
+import java.awt.Point;
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +39,7 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	            p_222575_0_[i + 2 + (j + 2) * 5] = f;
 	         }
 	      }
-
+	      
 	   });
 	   private final OctavesNoiseGenerator depthNoise;
 	   private final boolean field_222577_j;
@@ -56,6 +57,8 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	   private final SimplexNoiseGenerator genCorruption;
 	   
 	   private final INoiseGenerator surfaceDepthNoise;
+	   
+	   private final VoronoiTest voronoi;
 
 	   public TerrariaUnderworldChunkGenerator(IWorld worldIn, BiomeProvider provider, OverworldGenSettings settingsIn) {
 	      super(worldIn, provider, 4, 8, 256, settingsIn, true);
@@ -77,7 +80,8 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	      this.genCorruption = new SimplexNoiseGenerator(this.randomCorruption);
 	      boolean usePerlin = true;
 	      this.surfaceDepthNoise = (INoiseGenerator)(usePerlin ? new PerlinNoiseGenerator(this.randomSeed, 4) : new OctavesNoiseGenerator(this.randomSeed, 4));
-
+	      this.voronoi = new VoronoiTest();
+	      
 	   }
 
 	   public void spawnMobs(WorldGenRegion region) {
@@ -93,9 +97,14 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	   
 	   @Override
 		public void generateSurface(IChunk chunkIn) {
+		   
+		   
+		   
 //		   super.generateSurface(chunkIn);
 		   this.createSurface(chunkIn);
 		   BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(0, 0, 0);
+		   Random random = new Random();
+		   
 		   for (int x = 0; x < 16; x++) {
 			   for (int z = 0; z < 16; z++) {
 				   int k1 = x + chunkIn.getPos().x * 16;
@@ -113,13 +122,13 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 					    int top = 200;
 					    
 					    if (y < top + underworldCeiling &&
-					    		y > top + underworldCeiling - 10) {
+					    		y > top + underworldCeiling - 25) {
 					    	chunkIn.setBlockState(pos, BlocksT.ASH_BLOCK.getDefaultState(), false);
 					    }
 					    
-					    if (y == top + underworldCeiling - 8) {
-					    	if (world.getRandom().nextInt(25) == 0)
-					    		for (int yy = y; yy > top + 15; yy--)
+					    if (y == (int)(top + underworldCeiling - 10)) {
+					    	if (world.getRandom().nextInt(10000) == 0)
+					    		for (int yy = y; yy > 0; yy--)
 					    			chunkIn.setBlockState(pos.setPos(x, yy, z), Blocks.LAVA.getDefaultState(), false);
 					    }
 					    
@@ -131,9 +140,12 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 					    	chunkIn.setBlockState(pos.setPos(x, y, z), Blocks.LAVA.getDefaultState(), false);
 					    }
 					    
-					    if (y <= underworldFloor) {
+					    //hillFeature
+					    if (y <= underworldFloor * 1.5 - 8) {
 					    	chunkIn.setBlockState(pos.setPos(x, y, z), BlocksT.ASH_BLOCK.getDefaultState(), false);
 					    }
+					    
+					    
 					   
 					   if (chunkIn.getBlockState(pos.setPos(x, y, z)) == Blocks.STONE.getDefaultState()) {
 						   chunkIn.setBlockState(pos.setPos(x, y, z), BlocksT.STONE_BLOCK.getDefaultState(),false);
@@ -144,6 +156,128 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 				   }
 			   }
 		   }
+		   
+		   
+		   for (int x = 0; x < 16; x++) {
+			   for (int z = 0; z < 16; z++) {
+				   int k1 = x + chunkIn.getPos().x * 16;
+				   int l1 = z + chunkIn.getPos().z * 16;
+				   Biome biome = this.biomeProvider.getBiome(k1, l1);
+				   
+				   
+				   double dist = Integer.MAX_VALUE;
+				   int height = (int)this.voronoi.getVoronoiAt(k1, l1, this.voronoi.voronoiSize, 5f);
+
+				   double height2 = this.voronoi.getVoronoiAt(k1, l1, this.voronoi.voronoiSize / 2, 50.0f) - 25;
+				   
+				   Point p = this.voronoi.getPointAt(k1, l1, this.voronoi.voronoiSize / 2, 50.0f);
+				   
+				   
+				   int B = 25;
+				   for (int y = 0; y < 50; y++) {
+					   pos.setPos(k1, y, l1);
+					   
+					   if (height2 > -10) {
+						   
+						   for (int i = 0; i < B; i++)
+						   if (y <= height * 4) {
+							   
+							   boolean lessn10 = false;
+								int count = 0;
+								A:
+								for (int xx = -1; xx < 2; xx++) {
+									for (int yy = -1; yy < 2; yy++) {
+										double C = this.voronoi.getVoronoiAt(k1 + xx * (i * 2), l1 + yy * (i * 2), this.voronoi.voronoiSize / 2, 50.0f) - 25;
+										if (C <= -10) {
+											count++;
+											if (count > 3) {
+												lessn10 = true;
+												break A;
+											}
+										}
+									}
+								}
+								
+								if (!lessn10)
+								{
+								   int xx = k1 - p.x;
+								   int zz = l1 - p.y;
+								   
+								   chunkIn.setBlockState(pos.setPos(xx + p.x, y - i, zz + p.y), BlocksT.ASH_BLOCK.getDefaultState(), false);
+								   
+								}
+								
+						   }
+						   
+						   for (int i = 0; i < B; i++)
+							   if (y <= height * 4) {
+								   
+								   boolean lessn10 = false;
+									int count = 0;
+									A:
+									for (int xx = -1; xx < 2; xx++) {
+										for (int yy = -1; yy < 2; yy++) {
+											double C = this.voronoi.getVoronoiAt(k1 + xx * (i * 3), l1 + yy * (i * 3), this.voronoi.voronoiSize / 2, 50.0f) - 25;
+											if (C <= -10) {
+												count++;
+												if (count > 3) {
+													lessn10 = true;
+													break A;
+												}
+											}
+										}
+									}
+									
+									if (!lessn10)
+									{
+									   int xx = k1 - p.x;
+									   int zz = l1 - p.y;									   
+									   chunkIn.setBlockState(pos.setPos(xx + p.x, y + i, zz + p.y), BlocksT.ASH_BLOCK.getDefaultState(), false);
+									   pos.setPos(x, y, z);
+									   if (chunkIn.getBlockState(pos).getBlock() == BlocksT.ASH_BLOCK) {
+										   if (random.nextInt(10000) <= 2) {
+											  int rad = random.nextInt(5) + 5;
+											  for (int X = -rad; X < rad; X++) {
+												  for (int Y = -rad; Y < rad; Y++) {
+													  for (int Z = -rad; Z < rad; Z++) {
+														  double dist1 = Math.sqrt(X * X + Y * Y + Z * Z);
+														  if (dist1 <= rad) {
+															  pos.setPos(x + X, y + Y, z + Z);
+															  if (chunkIn.getBlockState(pos).getMaterial().blocksMovement() || chunkIn.getBlockState(pos).getBlock() == Blocks.LAVA) {
+																  pos.setPos(x + X, y + Y - 1, z + Z);
+																  if (chunkIn.getBlockState(pos).getMaterial().blocksMovement() || chunkIn.getBlockState(pos).getBlock() == Blocks.LAVA) {
+																	  pos.setPos(x + X, y + Y, z + Z);
+																	  chunkIn.setBlockState(pos, Blocks.LAVA.getDefaultState(), false);
+																  }
+															  }
+															  
+														  }
+													  }
+												  }
+											  }
+										   }
+									   }
+									}
+									
+							   }
+						   
+//						   if (y == 64 + height * 10) {
+//							   int xx = k1 - p.x;
+//							   int zz = l1 - p.y;
+//							   BlockPos pos2 = new BlockPos(xx + p.x, y + 1, zz + p.y);
+//							   
+//							   chunkIn.setBlockState(pos2, BlocksT.GRASS_BLOCK.getDefaultState(), false);
+//						   }
+					   }
+					   
+					   
+					   
+						   
+				   }
+				  
+			   }
+		   }
+		   
 		   
 	   }
 	   
@@ -173,329 +307,6 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 		   }
 	   
 	   public void variateSurface (IChunk chunkIn, int x, int z) {
-		   double X = x + chunkIn.getPos().x * 16;
-		   double Z = z + chunkIn.getPos().z * 16;
-		   
-		   double extra = genBiomeVariation.getValue(X / 10.0, Z / 10.0) * 0.2f;
-		   
-		   double temp = genTemperature.getValue(X / 1000.0, Z / 1000.0) + extra * 0.05f;
-		   double humidity = genHumidity.getValue(X / 1000.0, Z / 1000.0) + extra * 0.05f;
-		   double elevation = genElevation.getValue(X / 1000.0, Z / 1000.0) + extra * 0.05f;
-		   double landmass = genElevation.getValue(X / 5000.0, Z / 5000.0) + extra * 0.05f;
-		   double variation = genBiomeVariation.getValue(X / 500.0, Z / 500.0) + extra * 0.05f;
-		   double pvariation = genBiomeVariation.getValue(X / 100.0, Z / 100.0) + extra * 0.05f;
-		   double corruption = genCorruption.getValue(X / 500.0, Z / 500.0) + extra * 0.05f;
-		   
-		   double pathVariation = pvariation + extra * 0.25f;
-		   
-		   boolean corrupt = corruption > 0.5f;
-		   boolean alternate = variation > 0;
-		   boolean grasspath = pathVariation < 0.1f && pathVariation > -0.1f;
-		   
-		   Biome current = BiomeT.LOWLANDS;
-		   Biome overlay = null;
-		   
-		   int landState = 0;
-		   int OCEAN = -2, VERY_LOW = -1, LOWLANDS = 0, HILLS = 1, MOUNTAINS = 2;
-		   int humidState = 0;
-		   int DRY = 0, NORMAL = 1, HUMID = 2;
-		   int tempState = 0;
-		   int FREEZING = -1, COLD = -2, WARM = 1, HOT = 2;
-		   
-		   landState = VERY_LOW;
-		   if (elevation > -0.5F) landState = LOWLANDS;
-		   if (elevation > 0.0F) landState = HILLS;
-		   if (elevation > 0.5F) landState = MOUNTAINS;
-		   
-		   humidState = DRY;
-		   if (humidity > -0.5) humidState = NORMAL;
-		   if (humidity > 0.5) humidState = HUMID;
-		   
-		   tempState = FREEZING;
-		   if (temp > -0.5) tempState = COLD;
-		   if (temp > 0) tempState = WARM;
-		   if (temp > 0.5) tempState = HOT;
-		   
-		   if (grasspath) {
-			   if (tempState == FREEZING) {
-				   if (humidState == DRY) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-				   }
-				   if (humidState == NORMAL) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-				   }
-				   if (humidState == HUMID) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-				   }
-			   }
-			   if (tempState == COLD) {
-				   if (humidState == DRY) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == NORMAL) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == HUMID) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-			   }
-			   if (tempState == WARM) {
-				   if (humidState == DRY) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.COLD_STONE_PLAINS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == NORMAL) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == HUMID) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.JUNGLE;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.JUNGLE;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-			   }
-			   if (tempState == HOT) {
-				   if (humidState == DRY) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.COLD_STONE_PLAINS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.DESERT;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == NORMAL) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-				   }
-				   if (humidState == HUMID) {
-					   if (landState == VERY_LOW) {
-						   overlay = BiomeT.LOWLANDS;
-					   }
-					   if (landState == LOWLANDS) {
-						   overlay = BiomeT.MIDLANDS;
-					   }
-					   if (landState == HILLS) {
-						   overlay = BiomeT.HIGHLANDS;
-					   }
-					   if (landState == MOUNTAINS) {
-						   overlay = BiomeT.MIDLANDS;
-					   }
-				   }
-			   }
-		   }
-//		   if (overlay != null) {
-//			   ConfiguredSurfaceBuilder<?> surface = overlay.getSurfaceBuilder();
-//			   
-//			   BlockState overlayTop = surface.config.getTop();
-//			   BlockState overlayDirt = surface.config.getUnder();
-//			   for (int y = 254; y > -1; y--) {
-//				   BlockPos pos = new BlockPos(x, y, z);
-//				   BlockState block = chunkIn.getBlockState(pos);
-//				   if (block != Blocks.WATER.getDefaultState() && block != Blocks.LAVA.getDefaultState())
-//				   if (y + 1 < 255) {
-//					   if (chunkIn.getBlockState(new BlockPos(x, y + 1, z)) == Blocks.AIR.getDefaultState()) {
-//						   if (chunkIn.getBlockState(pos) != Blocks.AIR.getDefaultState()) {
-//							   chunkIn.setBlockState(pos, overlayTop, false);
-//						   }
-//					   } else {
-//						   if (block != Blocks.STONE.getDefaultState()) {
-//							   chunkIn.setBlockState(pos, overlayDirt, false);
-//						   }
-//					   }
-//				   }
-//				   
-//			   }
-//			   
-//		   }
-		   for (int y = 0; y < 255; y++) {
-			   if (corrupt) {
-				   BlockPos pos = new BlockPos(x, y, z);
-				   BlockState block = chunkIn.getBlockState(pos);
-				   if (block != Blocks.WATER.getDefaultState() && block != Blocks.LAVA.getDefaultState())
-				   {
-					   if (chunkIn.getBlockState(pos) == BlocksT.STONE_BLOCK.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.EBONSTONE.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.SAVANNA_GRASS.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.CORRUPT_GRASS.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.GRASS_BLOCK.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.CORRUPT_GRASS.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.JUNGLE_GRASS.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.CORRUPT_GRASS.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.HIGHLANDS_GRASS.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.CORRUPT_GRASS.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.SAND.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.EBONSAND.getDefaultState(), false);
-					   }
-					   if (chunkIn.getBlockState(pos) == BlocksT.ICE.getDefaultState()) {
-						   chunkIn.setBlockState(pos, BlocksT.PURPLE_ICE.getDefaultState(), false);
-					   }
-				   }
-			   }
-			   
-			   BlockPos pos = new BlockPos(x, y, z);
-			   if (random.nextInt(10) <= 8) {
-				   if (chunkIn.getBlockState(pos) == BlocksT.SAVANNA_GRASS.getDefaultState()) {
-					   if (pvariation < 0.5F)
-						   chunkIn.setBlockState(pos.up(), BlocksT.TALL_SAVANNA_GRASS.getDefaultState(), false);
-					   else if (random.nextInt(10) <= 1) {
-						   chunkIn.setBlockState(pos.up(), BlocksT.TALL_SAVANNA_GRASS.getDefaultState(), false);
-					   }
-				   }
-				   if (chunkIn.getBlockState(pos) == BlocksT.GRASS_BLOCK.getDefaultState() || chunkIn.getBlockState(pos) == BlocksT.JUNGLE_GRASS.getDefaultState()) {
-					   if (pvariation < 0.5F)
-					   {
-						   if (random.nextInt(10) <= 2)
-						   {
-						   chunkIn.setBlockState(pos.up(), BlocksT.TALL_GRASS.getDefaultState(), false);
-						   }
-					   }
-					   else if (random.nextInt(10) <= 1) {
-						   chunkIn.setBlockState(pos.up(), BlocksT.TALL_GRASS.getDefaultState(), false);
-					   }
-				   }
-				   if (chunkIn.getBlockState(pos) == BlocksT.GRASS_BLOCK.getDefaultState() ||
-						   chunkIn.getBlockState(pos) == BlocksT.HIGHLANDS_GRASS.getDefaultState() || 
-						   chunkIn.getBlockState(pos) == BlocksT.JUNGLE_GRASS.getDefaultState()) {
-					   if (random.nextInt(10) <= 1) {
-						   chunkIn.setBlockState(pos.up(), BlocksT.FLOWER.getDefaultState().with(BasicPlant.TYPE, random.nextInt(21)), false);
-							if (random.nextInt(15) == 0) {
-								chunkIn.setBlockState(pos.up(), BlocksT.MUSHROOM.getDefaultState(), false);
-							}
-					   }
-				   }
-				   
-				   if (chunkIn.getBlockState(pos) == BlocksT.CORRUPT_GRASS.getDefaultState()) {
-					   if (random.nextInt(10) <= 1) {
-						   chunkIn.setBlockState(pos.up(), BlocksT.CORRUPTION_PLANTS.getDefaultState().with(BasicPlant.TYPE, random.nextInt(17)), false);
-							if (random.nextInt(15) == 0) {
-								chunkIn.setBlockState(pos.up(), BlocksT.VILE_MUSHROOM.getDefaultState(), false);
-							}
-					   }
-				   }
-			   }
-			   
-			   
-			   
-		   }
-		   
-		   
-		   
 	   }
 
 	   protected void func_222548_a(double[] p_222548_1_, int p_222548_2_, int p_222548_3_) {
@@ -581,23 +392,6 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	   }
 
 	   public List<Biome.SpawnListEntry> getPossibleCreatures(EntityClassification creatureType, BlockPos pos) {
-//	      if (Feature.SWAMP_HUT.func_202383_b(this.world, pos)) {
-//	         if (creatureType == EntityClassification.MONSTER) {
-//	            return Feature.SWAMP_HUT.getSpawnList();
-//	         }
-//
-//	         if (creatureType == EntityClassification.CREATURE) {
-//	            return Feature.SWAMP_HUT.getCreatureSpawnList();
-//	         }
-//	      } else if (creatureType == EntityClassification.MONSTER) {
-//	         if (Feature.PILLAGER_OUTPOST.isPositionInStructure(this.world, pos)) {
-//	            return Feature.PILLAGER_OUTPOST.getSpawnList();
-//	         }
-//
-//	         if (Feature.OCEAN_MONUMENT.isPositionInStructure(this.world, pos)) {
-//	            return Feature.OCEAN_MONUMENT.getSpawnList();
-//	         }
-//	      }
 
 	      return super.getPossibleCreatures(creatureType, pos);
 	   }
@@ -614,43 +408,7 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 	      return 63 + 30;
 	   }
 	   
-//	   public void decorate(WorldGenRegion region) {
-////		   Random random = new Random();
-////		      for (int x = 0; x < 16; x++) {
-////		    	  for (int y = 0; y < 16; y++) {
-////		    		  for (int z = 0; z < 16; z++) {
-////		    			  BlockPos pos = new BlockPos(x, y, z);	
-////		    			  genForestFeatures(region, pos, x, y, z, random);
-////		    		  }
-////		    	  }
-////		      }
-//	   }
-	   
 	   public void genForestFeatures(WorldGenRegion region, BlockPos pos, int x, int y, int z, Random random) {
-		   if (region.getBlockState(pos) == BlocksT.GRASS_BLOCK.getDefaultState()) {
-				  if (random.nextInt(100) <= 10) {
-					region.setBlockState(pos.up(), BlocksT.FLOWER.getDefaultState().with(BasicPlant.TYPE, random.nextInt(21)), 2);
-					if (random.nextInt(15) == 0) {
-						region.setBlockState(pos.up(), BlocksT.MUSHROOM.getDefaultState(), 2);
-					}
-				}
-				  if (randomSeed.nextInt(250) <= 1 && y + 1 < 255) {
-						int tree = randomSeed.nextInt(5) + 5;
-						region.setBlockState(pos.up(), BlocksT.FOREST_TREE.getDefaultState().with(BasicPlant.TYPE, 0), 2);
-						for (int i = 2; i < tree; i++) {
-							
-							if (y + i < 255) {
-								if (randomSeed.nextInt(tree) <= 1) {
-									region.setBlockState(pos.up(i), BlocksT.FOREST_TREE.getDefaultState().with(BasicPlant.TYPE, randomSeed.nextInt(4) + 1), 2);
-								} else {
-									region.setBlockState(pos.up(i), BlocksT.FOREST_TREE.getDefaultState().with(BasicPlant.TYPE, 1), 2);
-								}
-							}
-						}
-						if (y + tree < 255 && randomSeed.nextInt(10) <= 8)
-							region.setBlockState(pos.up(tree), BlocksT.FOREST_TREE.getDefaultState().with(BasicPlant.TYPE, 6), 2);
-
-					}
-			  }
+		   
 	   }
 	}

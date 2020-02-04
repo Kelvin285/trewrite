@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.EntityCoin;
+import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -126,7 +128,19 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
 			}
 		}
+		
+		EntityCoin coins = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
+		coins.amount = 7;
+		coins.coin = EntityCoin.GOLD;
+		EntityCoin coins2 = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
+		coins2.amount = 50;
+		coins2.coin = EntityCoin.SILVER;
+		
+		for (int i = 0; i < 4; i++) {
+			EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition().add(rand.nextInt(2) - 1, 0, rand.nextInt(2) - 1));
+		}
     }
+    
     
     
     public void onCollideWithPlayer(PlayerEntity player)

@@ -1,12 +1,13 @@
 package kmerrill285.trewrite.entities.models;
 
+import kmerrill285.trewrite.entities.EntityCoin;
+import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.entities.passive.EntityBunnyT;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RabbitRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +28,8 @@ public class ModelRegistry
     	RenderingRegistry.registerEntityRenderingHandler(EntityDemonEye.class, manager -> new RenderDemonEye(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityEyeOfCthulhu.class, manager -> new RenderEOC(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityBunnyT.class, manager -> new RabbitRendererT(manager));
-
+    	RenderingRegistry.registerEntityRenderingHandler(EntityCoin.class, manager -> new RenderCoin(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityHeart.class, manager -> new RenderHeart(manager));
     }
 
 }

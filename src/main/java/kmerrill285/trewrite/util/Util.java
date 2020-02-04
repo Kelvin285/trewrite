@@ -37,6 +37,15 @@ public class Util {
 	public static ArrayList<SPacketSendChunk> chunksend = new ArrayList<SPacketSendChunk>();
 
 	public static RayTraceResult blockHit;
+
+	public static boolean INVERSE_GRAVITY = false;
+	public static long LAST_SPACETAP = 0;
+	
+	public static int renderBuild, renderCalming, renderIronskin, renderSwiftness,
+	renderNightOwl, renderGills, renderRegeneration, renderMining, renderArchery, renderHunter,
+	renderFeatherfall, renderFlipper, renderGravitation, renderHeartreach, renderInvisibility,
+	renderThorns, renderWaterWalking, renderShine, renderBattle, renderObsidianSkin, renderMagicPower,
+	renderManaRegeneration, renderTitan;
 	
 	public static boolean isChristmas() {
 		return LocalDateTime.now().getMonth() == Month.DECEMBER && LocalDateTime.now().getDayOfMonth() >= 15 && LocalDateTime.now().getDayOfMonth() <= 31;

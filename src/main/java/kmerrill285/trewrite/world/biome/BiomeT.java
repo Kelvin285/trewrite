@@ -6,6 +6,7 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.biome.features.TerrariaFeatures;
 import kmerrill285.trewrite.world.biome.features.TerrariaOreFeatureConfig;
+import kmerrill285.trewrite.world.biome.features.underworld.StalagmiteFeature;
 import kmerrill285.trewrite.world.biome.ocean.BeachBiome;
 import kmerrill285.trewrite.world.biome.ocean.ColdOcean;
 import kmerrill285.trewrite.world.biome.ocean.DeepColdOcean;
@@ -165,6 +166,9 @@ public class BiomeT {
 		registerBiome(UNDERGROUND = new UndergroundBiome(), "underground", 10, BiomeManager.BiomeType.WARM, Type.NETHER);
 		registerBiome(UNDERWORLD = new UnderworldBiome(), "underworld", 10, BiomeManager.BiomeType.WARM, Type.NETHER);
 
+		
+		UNDERWORLD.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(TerrariaFeatures.STALAGMITES, IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_HEIGHTMAP_DOUBLE, new FrequencyConfig(70)));
+		
 		for (Biome biome : biomes) 
 		{
 			

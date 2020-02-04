@@ -41,6 +41,7 @@ import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.items.terraria.clickable.Clickable;
 import kmerrill285.trewrite.items.terraria.loot_bags.LootBag;
 import kmerrill285.trewrite.items.terraria.loot_bags.LootStack;
 import net.minecraft.client.Minecraft;
@@ -52,6 +53,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -711,6 +713,11 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
     	if (mouseButton == 1) {
     		if (selectedSlot.stack != null && inventory.holdingSlot.stack == null) {
     			ItemStackT stack = selectedSlot.stack;
+    			
+    			if (stack.item instanceof Clickable) {
+    				((Clickable)stack.item).use(Minecraft.getInstance().player, selectedSlot);
+    			}
+    			
     			if (stack.item instanceof LootBag) {
     				
     				LootBag bag = (LootBag)stack.item;

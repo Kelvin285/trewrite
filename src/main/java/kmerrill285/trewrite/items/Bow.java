@@ -5,6 +5,7 @@ import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
@@ -147,7 +148,12 @@ public class Bow extends ItemT {
 //	 	         snowballentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
 	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
 	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
-	 	         arrowentity.setDamage((arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f));
+	 	         
+				int archer = ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.ARCHERY).getScorePoints();
+
+	 	         double damage = (arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
+	 	         if (archer > 0) damage *= 1.2;
+	 	         arrowentity.setDamage(damage);
 	 	         if (random.nextInt(100) <= this.critChance + crit) {
 	 	        	arrowentity.setDamage(this.damage + this.damage * dmg * 2);
 	 	         }

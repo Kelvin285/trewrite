@@ -17,6 +17,7 @@ import kmerrill285.trewrite.world.biome.features.savanna.SavannaShrubFeature;
 import kmerrill285.trewrite.world.biome.features.savanna.TermiteMoundFeature;
 import kmerrill285.trewrite.world.biome.features.taiga.SpruceTreeFeature;
 import kmerrill285.trewrite.world.biome.features.taiga.TaigaRocksFeature;
+import kmerrill285.trewrite.world.biome.features.underworld.StalagmiteFeature;
 import net.minecraft.world.gen.carver.WorldCarver;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -47,6 +48,7 @@ public class TerrariaFeatures {
 	public static TerrariaOreFeature ORES = new TerrariaOreFeature(TerrariaOreFeatureConfig::deserialize);
 	public static CorruptionSpireFeature CORRUPTION_SPIRE = new CorruptionSpireFeature(NoFeatureConfig::deserialize);
 	public static LifeCrystalFeature LIFE_CRYSTAL = new LifeCrystalFeature(NoFeatureConfig::deserialize);
+	public static StalagmiteFeature STALAGMITES = new StalagmiteFeature(NoFeatureConfig::deserialize);
 
 	
 	public static final WorldCarver<ProbabilityConfig> CAVE = new TerrariaCaveCarver(ProbabilityConfig::deserialize, 256);

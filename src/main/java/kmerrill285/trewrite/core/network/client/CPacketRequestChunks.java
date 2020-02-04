@@ -72,7 +72,7 @@ public class CPacketRequestChunks {
 			DimensionManager.keepLoaded(t, true);
 			
 			Chunk chunk = dim.getChunk(x, z);
-	 		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SPacketSendChunk(chunk, x, z));
+	 		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SPacketSendChunk(chunk, x, z, false));
 			
         });
         ctx.get().setPacketHandled(true);

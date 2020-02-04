@@ -1,6 +1,8 @@
 package kmerrill285.trewrite.entities.monsters;
 
 import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.entities.EntityCoin;
+import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -33,6 +35,19 @@ public class EntityDrownedT extends DrownedEntity {
 				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
 			}
 		}
+		
+		if (source.getImmediateSource() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)source.getImmediateSource();
+			if (player.getHealth() <= player.getMaxHealth()) {
+				if (rand.nextInt(12) == 0) {
+					EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition());
+				}
+			}
+		}
+		
+		EntityCoin coin = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
+		coin.amount = money;
+		coin.coin = EntityCoin.COPPER;
     }
 	
 	protected void registerAttributes() {
@@ -43,6 +58,6 @@ public class EntityDrownedT extends DrownedEntity {
 	      this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(rand.nextDouble() * 0.1 + 0.5);
 	      this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(rand.nextInt(7) + 12);
 	      
-	      money = rand.nextInt(20) + 50;
+	      money = rand.nextInt(20) + 65;
 	}
 }

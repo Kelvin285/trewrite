@@ -470,7 +470,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 				   if (chunkIn.getBlockState(pos) == BlocksT.GRASS_BLOCK.getDefaultState() ||
 						   chunkIn.getBlockState(pos) == BlocksT.HIGHLANDS_GRASS.getDefaultState() || 
 						   chunkIn.getBlockState(pos) == BlocksT.JUNGLE_GRASS.getDefaultState()) {
-					   if (random.nextInt(10) <= 1) {
+					   if (random.nextInt(50) <= 1) {
 						   chunkIn.setBlockState(pos.up(), BlocksT.FLOWER.getDefaultState().with(BasicPlant.TYPE, random.nextInt(21)), false);
 							if (random.nextInt(15) == 0) {
 								chunkIn.setBlockState(pos.up(), BlocksT.MUSHROOM.getDefaultState(), false);
@@ -479,7 +479,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 				   }
 				   
 				   if (chunkIn.getBlockState(pos) == BlocksT.CORRUPT_GRASS.getDefaultState()) {
-					   if (random.nextInt(10) <= 1) {
+					   if (random.nextInt(50) <= 1) {
 						   chunkIn.setBlockState(pos.up(), BlocksT.CORRUPTION_PLANTS.getDefaultState().with(BasicPlant.TYPE, random.nextInt(17)), false);
 							if (random.nextInt(15) == 0) {
 								chunkIn.setBlockState(pos.up(), BlocksT.VILE_MUSHROOM.getDefaultState(), false);

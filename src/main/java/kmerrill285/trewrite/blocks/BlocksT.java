@@ -6,6 +6,7 @@ import kmerrill285.trewrite.blocks.ores.DemoniteOre;
 import kmerrill285.trewrite.blocks.ores.GoldOre;
 import kmerrill285.trewrite.blocks.ores.IronOre;
 import kmerrill285.trewrite.blocks.ores.SilverOre;
+import kmerrill285.trewrite.blocks.pots.ObsidianPot;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
 import net.minecraft.block.SoundType;
@@ -187,7 +188,16 @@ public class BlocksT {
 	
 	public static BlockT OBSIDIAN_BED;
 	public static BlockT OBSIDIAN_CLOCK;
+	public static BlockT OBSIDIAN_WORKBENCH;
+	public static BlockT OBSIDIAN_TABLE;
+	public static BlockT OBSIDIAN_DRESSER;
+	public static BlockT OBSIDIAN_SOFA;
+	public static BlockT OBSIDIAN_BATHTUB;
+	public static BlockT OBSIDIAN_SINK;
+	public static BlockT OBSIDIAN_CHAIR;
 	
+	public static BlockT OBSIDIAN_POT;
+
 	
 	public static float mul = 1.5f;
 	public static float GROUND_HARDNESS = 30.0f * mul, STONE_HARDNESS = 45.0f * mul, ORE_HARDNESS = 50.0f * mul, DUNGEON_HARDNESS = 60.0f * mul;
@@ -334,7 +344,15 @@ public class BlocksT {
 					OBSIDIAN_CANDLE = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candle", "obsidian_candle").setShape(Shape.BLOCK),
 					DIMENSION_BLOCK = (BlockT) new DimensionBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setRegistryName("dimension_block"),
 					OBSIDIAN_BED = (Bed) new Bed(GROUND_HARDNESS, 15, "obsidian_bed").setSell(400),
-					OBSIDIAN_CLOCK = (GrandfatherClock) new GrandfatherClock(GROUND_HARDNESS, 15, "obsidian_clock").setSell(60)
+					OBSIDIAN_CLOCK = (GrandfatherClock) new GrandfatherClock(GROUND_HARDNESS, 15, "obsidian_clock").setSell(60),
+					OBSIDIAN_SINK = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_sink", "obsidian_sink").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_CHAIR = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_chair", "obsidian_chair").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT),
+					OBSIDIAN_TABLE = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_table", "obsidian_table").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_WORKBENCH = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_workbench", "obsidian_workbench").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(30),
+					OBSIDIAN_SOFA = new RightDouble(GROUND_HARDNESS, 15, "obsidian_sofa").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_BATHTUB = new ForwardDouble(GROUND_HARDNESS, 15, "obsidian_bathtub").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_DRESSER = new RightDouble(GROUND_HARDNESS, 15, "obsidian_dresser").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
+					OBSIDIAN_POT = new ObsidianPot(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement()).setShape(Shape.BLOCK)
 
 
 

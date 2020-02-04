@@ -319,10 +319,6 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 	    return (a * (1.0f - f)) + (b * f);
 	}
 	
-	public static DataParameter<Integer> stack_data = EntityDataManager.createKey(EntityItemT.class, DataSerializers.VARINT);
-	public static DataParameter<String> item_data = EntityDataManager.createKey(EntityItemT.class, DataSerializers.STRING);
-	public static DataParameter<Integer> pickup_delay = EntityDataManager.createKey(EntityItemT.class, DataSerializers.VARINT);
-
 	@Override
 	protected void registerData() {
 //		this.dataManager.register(stack_data, stack);

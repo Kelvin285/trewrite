@@ -15,6 +15,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.EntityEvents;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
@@ -29,7 +30,6 @@ import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -41,6 +41,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
@@ -64,12 +65,17 @@ public class Trewrite
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final boolean DEBUG = true;
+    public static boolean DEBUG = false;
     
    
     
     public Trewrite() {
-    	
+    	try {
+    		Field f = Chunk.class.getDeclaredField("field_76634_f");
+    	} catch (Exception e) {
+    		DEBUG = true;
+    		System.out.println("DEBUG!");
+    	}
     	new ItemModifier();
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -298,9 +304,15 @@ public class Trewrite
 				
 			
 			
-			if (world.rand.nextDouble() <= Util.entitySpawnRate) {
+			if (world.rand.nextDouble() <= Util.entitySpawnRate * 2) {
 				for (PlayerEntity player : world.getPlayers()) {
+					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints() == 0)
+					if (world.rand.nextBoolean()) continue;
+					
+					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).getScorePoints() > 0)
+						if (world.rand.nextBoolean()) continue;
 					double x = player.posX + world.rand.nextInt(180) - 90, y = player.posY + world.rand.nextInt(180) - 90, z = player.posZ + world.rand.nextInt(180) - 90;
+					
 					for (PlayerEntity p2 : world.getPlayers()) {
 						if (p2.getPositionVec().distanceTo(new Vec3d(x, y, z)) >= Util.minSpawnDistance) {
 							new Thread () {

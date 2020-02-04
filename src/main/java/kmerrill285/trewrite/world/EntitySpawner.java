@@ -6,6 +6,8 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.SpawnCondition;
 import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.dimension.DimensionRegistry;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -14,6 +16,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.DimensionManager;
 
 public class EntitySpawner {
 	
@@ -32,6 +36,11 @@ public class EntitySpawner {
 	public static void spawnEntities(PlayerEntity player, double x, double y, double z) {
 		World world = player.getEntityWorld();
 		
+		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+		
+		
 		List<EntityEyeOfCthulhu> eocs = player.world.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 150, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 150, player.posZ + 150)));
 		if (eocs.size() > 0) {
 			return;
@@ -41,16 +50,16 @@ public class EntitySpawner {
 		if (world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().expand(50, 50, 50)).size() <= 30) {
 			if (y <= Util.underworldLevel) return;
 			
-			if (player.posY >= Util.skyLevel) {
+			if (world.dimension.getType() == sky) {
 				if (!spawnSkyEntity(world, x, y, z)) spawnGroundEntity(world, x, y, z);
 			}
-			if (player.posY < Util.skyLevel && player.posY >= Util.surfaceLevel) {
+			if (world.dimension.getType() == DimensionType.OVERWORLD && y > Util.caveLevel) {
 				spawnGroundEntity(world, x, y, z);
 			}
-			if (player.posY < Util.surfaceLevel && player.posY >= Util.caveLevel) {
+			if (world.dimension.getType() == underground || world.dimension.getType() == DimensionType.OVERWORLD && y <= Util.caveLevel) {
 				spawnCaveEntity(world, x, y, z);
 			}
-			if (player.posY < Util.caveLevel) {
+			if (world.dimension.getType() == underworld) {
 				spawnUnderworldEntity(world, x, y, z);
 			}
 		}

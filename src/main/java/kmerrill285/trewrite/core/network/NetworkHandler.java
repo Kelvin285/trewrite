@@ -4,9 +4,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import kmerrill285.trewrite.core.network.client.CPacketAddScore;
 import kmerrill285.trewrite.core.network.client.CPacketChangeBlock;
+import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
+import kmerrill285.trewrite.core.network.client.CPacketHeal;
 import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
@@ -57,6 +60,9 @@ public class NetworkHandler {
         registerMessage(CPacketNegateFall.class, CPacketNegateFall::encode, CPacketNegateFall::new, CPacketNegateFall::handle);
         registerMessage(CPacketRequestChunks.class, CPacketRequestChunks::encode, CPacketRequestChunks::new, CPacketRequestChunks::handle);
         registerMessage(CPacketChangeBlock.class, CPacketChangeBlock::encode, CPacketChangeBlock::new, CPacketChangeBlock::handle);
+        registerMessage(CPacketAddScore.class, CPacketAddScore::encode, CPacketAddScore::new, CPacketAddScore::handle);
+        registerMessage(CPacketChangeScore.class, CPacketChangeScore::encode, CPacketChangeScore::new, CPacketChangeScore::handle);
+        registerMessage(CPacketHeal.class, CPacketHeal::encode, CPacketHeal::new, CPacketHeal::handle);
 
         registerMessage(SPacketSendInventoryTerraria.class, SPacketSendInventoryTerraria::encode, SPacketSendInventoryTerraria::new, SPacketSendInventoryTerraria::handle);
         registerMessage(SPacketSyncInventoryTerraria.class, SPacketSyncInventoryTerraria::encode, SPacketSyncInventoryTerraria::decode, SPacketSyncInventoryTerraria::handle);

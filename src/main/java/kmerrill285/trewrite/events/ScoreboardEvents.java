@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.events;
 
+import java.lang.reflect.Field;
+
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +24,18 @@ public class ScoreboardEvents {
 	
 	public static String POTION_SICKNESS = "PSN",
 			MANA = "MANA", LIFE_CRYSTALS = "LCRYSTALS", MAX_MANA = "MAXMANA", MANA_TIMER = "MANAT",
-			COINS = "COINS", DAYTIME = "DAYT", MANA_SICKNESS = "MS", MANA_SICKNESS_EFFECT = "ME";
+			COINS = "COINS", DAYTIME = "DAYT", MANA_SICKNESS = "MS", MANA_SICKNESS_EFFECT = "ME",
+			BUILDER = "BDR", CALMING = "CLM", IRONSKIN = "ISKN", SWIFTNESS = "SFT", NIGHT_OWL = "NOL",
+			GILLS = "GLS", REGENERATION = "REGEN",
+			MINING = "MINE", ARCHERY = "ARCH",
+			HUNTER = "HUNT", FEATHERFALL = "FTHR",
+			FLIPPER = "FLPR", GRAVITATION = "GRAV",
+			HEARTREACH = "HRCH", INVISIBILITY = "INVIS",
+			THORNS = "THRS", WATER_WALKING = "WATER",
+			SHINE = "SHN", BATTLE = "BTL",
+			OBSIDIAN_SKIN = "OBSS",
+			MAGIC_POWER = "MPWR", MANA_REGENERATION = "MNRG",
+			TITAN = "TITAN";
 	
 	public static int tickTimer = 0;
 	
@@ -33,8 +46,6 @@ public class ScoreboardEvents {
 		} else {
 			tickTimer = 0;
 		}
-		
-		
 	}
 	
 	public static int getMana(PlayerEntity player) {
@@ -64,6 +75,40 @@ public class ScoreboardEvents {
 		ScoreObjective DAYTIME = getObjective(ScoreboardEvents.DAYTIME, scoreboard, player, i++);
 		ScoreObjective MANA_SICKNESS = getObjective(ScoreboardEvents.MANA_SICKNESS, scoreboard, player);
 		ScoreObjective MANA_SICKNESS_EFFECT = getObjective(ScoreboardEvents.MANA_SICKNESS_EFFECT, scoreboard, player);
+		ScoreObjective[] potions = {
+		getObjective(ScoreboardEvents.BUILDER, scoreboard, player),
+		getObjective(ScoreboardEvents.CALMING, scoreboard, player),
+		getObjective(ScoreboardEvents.IRONSKIN, scoreboard, player),
+		getObjective(ScoreboardEvents.SWIFTNESS, scoreboard, player),
+		getObjective(ScoreboardEvents.NIGHT_OWL, scoreboard, player),
+		getObjective(ScoreboardEvents.GILLS, scoreboard, player),
+		getObjective(ScoreboardEvents.REGENERATION, scoreboard, player),
+		getObjective(ScoreboardEvents.MINING, scoreboard, player),
+		getObjective(ScoreboardEvents.ARCHERY, scoreboard, player),
+		getObjective(ScoreboardEvents.FEATHERFALL, scoreboard, player),
+		getObjective(ScoreboardEvents.FLIPPER, scoreboard, player),
+		getObjective(ScoreboardEvents.GRAVITATION, scoreboard, player),
+		getObjective(ScoreboardEvents.HEARTREACH, scoreboard, player),
+		getObjective(ScoreboardEvents.INVISIBILITY, scoreboard, player),
+		getObjective(ScoreboardEvents.THORNS, scoreboard, player),
+		getObjective(ScoreboardEvents.WATER_WALKING, scoreboard, player),
+		getObjective(ScoreboardEvents.SHINE, scoreboard, player),
+		getObjective(ScoreboardEvents.BATTLE, scoreboard, player),
+		getObjective(ScoreboardEvents.OBSIDIAN_SKIN, scoreboard, player),
+		getObjective(ScoreboardEvents.MAGIC_POWER, scoreboard, player),
+		getObjective(ScoreboardEvents.MANA_REGENERATION, scoreboard, player),
+		getObjective(ScoreboardEvents.TITAN, scoreboard, player),
+		getObjective(ScoreboardEvents.HUNTER, scoreboard, player)
+		};
+		String[] PTNSTR = {
+			ScoreboardEvents.BUILDER, ScoreboardEvents.CALMING,
+			ScoreboardEvents.IRONSKIN, ScoreboardEvents.SWIFTNESS, ScoreboardEvents.NIGHT_OWL, ScoreboardEvents.GILLS,
+			ScoreboardEvents.REGENERATION, ScoreboardEvents.MINING, ScoreboardEvents.ARCHERY, ScoreboardEvents.FEATHERFALL,
+			ScoreboardEvents.FLIPPER, ScoreboardEvents.GRAVITATION, ScoreboardEvents.HEARTREACH, ScoreboardEvents.INVISIBILITY,
+			ScoreboardEvents.THORNS, ScoreboardEvents.WATER_WALKING, ScoreboardEvents.SHINE, ScoreboardEvents.BATTLE, ScoreboardEvents.OBSIDIAN_SKIN,
+			ScoreboardEvents.MAGIC_POWER, ScoreboardEvents.MANA_REGENERATION, ScoreboardEvents.TITAN, ScoreboardEvents.HUNTER
+		};
+		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
 		Score manaSicknessEffect = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS_EFFECT);
 		
@@ -77,6 +122,7 @@ public class ScoreboardEvents {
 		Score potionSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), POTION_SICKNESS);
 		Score daytime = scoreboard.getOrCreateScore(player.getScoreboardName(), DAYTIME);
 
+		
 		daytime.setScorePoints((int)(world.getDayTime() % 24000));
 		
 		if (Util.projectileCooldown > 0) {
@@ -96,7 +142,17 @@ public class ScoreboardEvents {
 			manaSicknessEffect.setScorePoints(0);
 		}
 		
-		
+		for (int p = 0; p < potions.length; p++) {
+			ScoreObjective score = potions[p];
+			Score potion = scoreboard.getOrCreateScore(player.getScoreboardName(), score);
+			if (potion != null)
+			if (potion.getScorePoints() > 0) {
+				setDisplay(i++, scoreboard, PTNSTR[p]);
+				potion.setScorePoints(potion.getScorePoints() - 1);
+			} else {
+				potion.setScorePoints(0);
+			}
+		}
 		
 		if (mana.getScorePoints() < 0) mana.setScorePoints(0);
 		if (maxMana.getScorePoints() < 20) { 
@@ -159,6 +215,57 @@ public class ScoreboardEvents {
 		ScoreObjective DAYTIME = getObjectiveClient(ScoreboardEvents.DAYTIME, scoreboard, player);
 		ScoreObjective MANA_SICKNESS = getObjectiveClient(ScoreboardEvents.MANA_SICKNESS, scoreboard, player);
 		ScoreObjective MANA_SICKNESS_EFFECT = getObjectiveClient(ScoreboardEvents.MANA_SICKNESS_EFFECT, scoreboard, player);
+		
+		
+		ScoreObjective BUILDER = getObjective(ScoreboardEvents.BUILDER, scoreboard, player);
+		
+		ScoreObjective CALMING = getObjective(ScoreboardEvents.CALMING, scoreboard, player);
+		ScoreObjective IRONSKIN = getObjective(ScoreboardEvents.IRONSKIN, scoreboard, player);
+		ScoreObjective SWIFTNESS = getObjective(ScoreboardEvents.SWIFTNESS, scoreboard, player);
+		ScoreObjective NIGHT_OWL = getObjective(ScoreboardEvents.NIGHT_OWL, scoreboard, player);
+		ScoreObjective GILLS = getObjective(ScoreboardEvents.GILLS, scoreboard, player);
+		ScoreObjective REGENERATION = getObjective(ScoreboardEvents.REGENERATION, scoreboard, player);
+		ScoreObjective MINING = getObjective(ScoreboardEvents.MINING, scoreboard, player);
+		ScoreObjective ARCHERY = getObjective(ScoreboardEvents.ARCHERY, scoreboard, player);
+		ScoreObjective FEATHERFALL = getObjective(ScoreboardEvents.FEATHERFALL, scoreboard, player);
+		ScoreObjective FLIPPER = getObjective(ScoreboardEvents.FLIPPER, scoreboard, player);
+		ScoreObjective GRAVITATION = getObjective(ScoreboardEvents.GRAVITATION, scoreboard, player);
+		ScoreObjective HEARTREACH = getObjective(ScoreboardEvents.HEARTREACH, scoreboard, player);
+		ScoreObjective INVISIBILITY = getObjective(ScoreboardEvents.INVISIBILITY, scoreboard, player);
+		ScoreObjective THORNS = getObjective(ScoreboardEvents.THORNS, scoreboard, player);
+		ScoreObjective WATER_WALKING = getObjective(ScoreboardEvents.WATER_WALKING, scoreboard, player);
+		ScoreObjective SHINE = getObjective(ScoreboardEvents.SHINE, scoreboard, player);
+		ScoreObjective BATTLE = getObjective(ScoreboardEvents.BATTLE, scoreboard, player);
+		ScoreObjective OBSIDIAN_SKIN = getObjective(ScoreboardEvents.OBSIDIAN_SKIN, scoreboard, player);
+		ScoreObjective MAGIC_POWER = getObjective(ScoreboardEvents.MAGIC_POWER, scoreboard, player);
+		ScoreObjective MANA_REGENERATION = getObjective(ScoreboardEvents.MANA_REGENERATION, scoreboard, player);
+		ScoreObjective TITAN = getObjective(ScoreboardEvents.TITAN, scoreboard, player);
+		ScoreObjective HUNTER = getObjective(ScoreboardEvents.HUNTER, scoreboard, player);
+		
+		Score builder = scoreboard.getOrCreateScore(player.getScoreboardName(), BUILDER);
+		Score calming = scoreboard.getOrCreateScore(player.getScoreboardName(), CALMING);
+		Score ironskin = scoreboard.getOrCreateScore(player.getScoreboardName(), IRONSKIN);
+		Score swiftness = scoreboard.getOrCreateScore(player.getScoreboardName(), SWIFTNESS);
+		Score night_owl = scoreboard.getOrCreateScore(player.getScoreboardName(), NIGHT_OWL);
+		Score gills = scoreboard.getOrCreateScore(player.getScoreboardName(), GILLS);
+		Score regeneration = scoreboard.getOrCreateScore(player.getScoreboardName(), REGENERATION);
+		Score mining = scoreboard.getOrCreateScore(player.getScoreboardName(), MINING);
+		Score archery = scoreboard.getOrCreateScore(player.getScoreboardName(), ARCHERY);
+		Score hunter = scoreboard.getOrCreateScore(player.getScoreboardName(), HUNTER);
+		Score featherfall = scoreboard.getOrCreateScore(player.getScoreboardName(), FEATHERFALL);
+		Score flipper = scoreboard.getOrCreateScore(player.getScoreboardName(), FLIPPER);
+		Score gravitation = scoreboard.getOrCreateScore(player.getScoreboardName(), GRAVITATION);
+		Score heartreach = scoreboard.getOrCreateScore(player.getScoreboardName(), HEARTREACH);
+		Score invisibility = scoreboard.getOrCreateScore(player.getScoreboardName(), INVISIBILITY);
+		Score thorns = scoreboard.getOrCreateScore(player.getScoreboardName(), THORNS);
+		Score water_walking = scoreboard.getOrCreateScore(player.getScoreboardName(), WATER_WALKING);
+		Score shine = scoreboard.getOrCreateScore(player.getScoreboardName(), SHINE);
+		Score battle = scoreboard.getOrCreateScore(player.getScoreboardName(), BATTLE);
+		Score obsidian_skin = scoreboard.getOrCreateScore(player.getScoreboardName(), OBSIDIAN_SKIN);
+		Score magic_power = scoreboard.getOrCreateScore(player.getScoreboardName(), MAGIC_POWER);
+		Score mana_regeneration = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_REGENERATION);
+		Score titan = scoreboard.getOrCreateScore(player.getScoreboardName(), TITAN);
+		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
 		Score manaSicknessEffect = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS_EFFECT);
 		
@@ -183,8 +290,31 @@ public class ScoreboardEvents {
 					Util.renderMaxMana = maxMana.getScorePoints();
 					Util.renderPotionSickness = potionSickness.getScorePoints() / 20;
 					Util.dayTime = daytime.getScorePoints();
-					Util.renderManaSickness = manaSickness.getScorePoints();
+					Util.renderManaSickness = manaSickness.getScorePoints() / 20;
 					Util.renderManaSicknessEffect = manaSicknessEffect.getScorePoints();
+					Util.renderBuild = builder.getScorePoints() / 20;
+					Util.renderCalming = calming.getScorePoints() / 20;
+					Util.renderIronskin = ironskin.getScorePoints() / 20;
+					Util.renderSwiftness = swiftness.getScorePoints() / 20;
+					Util.renderNightOwl = night_owl.getScorePoints() / 20;
+					Util.renderGills = gills.getScorePoints() / 20;
+					Util.renderRegeneration = regeneration.getScorePoints() / 20;
+					Util.renderMining = mining.getScorePoints() / 20;
+					Util.renderArchery = archery.getScorePoints() / 20;
+					Util.renderHunter = hunter.getScorePoints() / 20;
+					Util.renderFeatherfall = featherfall.getScorePoints() / 20;
+					Util.renderFlipper = flipper.getScorePoints() / 20;
+					Util.renderGravitation = gravitation.getScorePoints() / 20;
+					Util.renderHeartreach = heartreach.getScorePoints() / 20;
+					Util.renderInvisibility = invisibility.getScorePoints() / 20;
+					Util.renderThorns = thorns.getScorePoints() / 20;
+					Util.renderWaterWalking = water_walking.getScorePoints() / 20;
+					Util.renderShine = shine.getScorePoints() / 20;
+					Util.renderBattle = battle.getScorePoints() / 20;
+					Util.renderObsidianSkin = obsidian_skin.getScorePoints() / 20;
+					Util.renderMagicPower = magic_power.getScorePoints() / 20;
+					Util.renderManaRegeneration = mana_regeneration.getScorePoints() / 20;
+					Util.renderTitan = titan.getScorePoints() / 20;
 				}
 			}
 		}

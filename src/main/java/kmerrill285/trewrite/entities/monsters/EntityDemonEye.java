@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.EntityCoin;
+import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -120,6 +122,21 @@ public class EntityDemonEye extends FlyingEntity {
 				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
 			}
 		}
+    	if (money > 0) {
+	    	EntityCoin coin = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
+			coin.amount = money;
+			
+			if (source.getImmediateSource() instanceof PlayerEntity) {
+				PlayerEntity player = (PlayerEntity)source.getImmediateSource();
+				if (player.getHealth() <= player.getMaxHealth()) {
+					if (rand.nextInt(12) == 0) {
+						EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition());
+					}
+				}
+			}
+    	} else {
+    		EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition());
+    	}
     }
     
     

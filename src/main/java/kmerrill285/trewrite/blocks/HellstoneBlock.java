@@ -81,7 +81,7 @@ public class HellstoneBlock extends BlockT {
    
    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 	   super.onReplaced(state, worldIn, pos, newState, isMoving);
-	   if (pos.getY() <= Util.caveLevel)
+	   if (worldIn.getDimension().getType().getRegistryName().toString().contains("underworld"))
 	   { 
 		   worldIn.setBlockState(pos, Blocks.LAVA.getDefaultState().with(FlowingFluidBlock.LEVEL, Integer.valueOf(0)));
 		   new Thread(){

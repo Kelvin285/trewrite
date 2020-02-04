@@ -2,19 +2,21 @@ package kmerrill285.trewrite.core.network.client;
 
 import java.util.function.Supplier;
 
-import kmerrill285.trewrite.blocks.BlockT;
+import kmerrill285.trewrite.core.network.NetworkHandler;
+import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 
 public class CPacketChangeBlock {
@@ -96,6 +98,11 @@ public class CPacketChangeBlock {
 			BlockState bstate = dim.getBlockState(new BlockPos(x, y, z));
 			//	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 			dim.setBlockState(new BlockPos(x, y, z), Block.getStateById(state), moving ? 64 : 1);
+			
+			Chunk chunk = dim.getChunk(x / 16, z / 16);
+	 		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new SPacketSendChunk(chunk, x, z, true));
+			
+			
         });
         ctx.get().setPacketHandled(true);
 	}
