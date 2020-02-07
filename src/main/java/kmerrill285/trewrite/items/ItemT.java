@@ -65,6 +65,8 @@ public class ItemT extends Item {
 	
 	public int range = 0;
 	
+	public int lightValue;
+	
 	public double saturation, nutrition;
 	
 	public UseAction useAction = UseAction.NONE;
@@ -139,6 +141,9 @@ public class ItemT extends Item {
 		
 	}
 	
+	public int getLightValue() {
+		return this.lightValue;
+	}
 	
 	public int getUseDuration(ItemStack stack) {
 		return useTime;
@@ -198,6 +203,11 @@ public class ItemT extends Item {
 	public ItemT setBuySell(int sell) {
 		this.sellPrice = sell;
 		this.buyPrice = Conversions.sellToBuy(sell);
+		return this;
+	}
+	
+	public ItemT setLightValue(int light) {
+		this.lightValue = light;
 		return this;
 	}
 	

@@ -120,7 +120,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 						    				if (i == d1 - 1) {
 						    					chunkIn.setBlockState(new BlockPos(x, y + i, z), BlocksT.HIGHLANDS_GRASS.getDefaultState(),false);
 							    				for (int j = i + 1; j < i + 10; j++) {
-							    					chunkIn.setBlockState(new BlockPos(x, y + j, z), Blocks.AIR.getDefaultState(),false);
+							    					chunkIn.setBlockState(new BlockPos(x, y + j, z), BlocksT.AIR_BLOCK.getDefaultState(),false);
 							    				}
 						    				}
 						    			}
@@ -402,8 +402,8 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 //				   BlockState block = chunkIn.getBlockState(pos);
 //				   if (block != Blocks.WATER.getDefaultState() && block != Blocks.LAVA.getDefaultState())
 //				   if (y + 1 < 255) {
-//					   if (chunkIn.getBlockState(new BlockPos(x, y + 1, z)) == Blocks.AIR.getDefaultState()) {
-//						   if (chunkIn.getBlockState(pos) != Blocks.AIR.getDefaultState()) {
+//					   if (chunkIn.getBlockState(new BlockPos(x, y + 1, z)) == BlocksT.AIR_BLOCK.getDefaultState()) {
+//						   if (chunkIn.getBlockState(pos) != BlocksT.AIR_BLOCK.getDefaultState()) {
 //							   chunkIn.setBlockState(pos, overlayTop, false);
 //						   }
 //					   } else {
@@ -443,6 +443,7 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 					   if (chunkIn.getBlockState(pos) == BlocksT.ICE.getDefaultState()) {
 						   chunkIn.setBlockState(pos, BlocksT.PURPLE_ICE.getDefaultState(), false);
 					   }
+					   
 				   }
 			   }
 			   
@@ -484,6 +485,47 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 							if (random.nextInt(15) == 0) {
 								chunkIn.setBlockState(pos.up(), BlocksT.VILE_MUSHROOM.getDefaultState(), false);
 							}
+					   }
+					   
+					   int depth = 40;
+					   int depth2 = 50;
+					   BlockPos.MutableBlockPos pos2 = new BlockPos.MutableBlockPos();
+					   
+					   for (int i = 0; i < depth2 + 10; i++) {
+						   pos2.setPos(pos.getX(), pos.getY() - i, pos.getZ());
+						   if (i >= depth - 3 && i <= depth || i >= depth2) {
+							   if (random.nextInt(100) <= 95)
+							   chunkIn.setBlockState(pos2, BlocksT.EBONSTONE.getDefaultState(), false);
+						   }
+						   if (i > depth && i < depth2) {
+							   chunkIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), false);
+						   }
+					   }
+					   if (random.nextInt(10) <= 1)
+					   if (x == 8 && z == 8) {
+						   int pitDepth = random.nextInt(40) + 40;
+						   double dirX = random.nextDouble() - 0.5 * 4.0;
+						   double dirZ = random.nextDouble() - 0.5 * 4.0;
+						   double mul = random.nextDouble() * 3;
+						   int size = random.nextInt(3) + 3;
+						   for (int xx = 0; xx < 16; xx++) {
+							   for (int zz = 0; zz < 16; zz++) {
+								   double dist = Math.sqrt(Math.pow(xx - x, 2) + Math.pow(zz - z, 2));
+								   if (dist <= size) {
+									   for (int i = 0; i < pitDepth; i++) {
+										   pos2.setPos(xx + (int)(Math.cos(xx) * dirX * mul), pos.getY() - i, zz + (int)(Math.sin(zz) * dirZ * mul));
+											   if (dist <= size - ((random.nextInt(10) <= 7) ? 1 : 0)) {
+												   chunkIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), false);
+											   } else {
+												   if (chunkIn.getBlockState(pos2).getBlock() != BlocksT.AIR_BLOCK &&
+														   chunkIn.getBlockState(pos2).getBlock() != Blocks.AIR) {
+												   chunkIn.setBlockState(pos2, BlocksT.EBONSTONE.getDefaultState(), false);
+											   }
+										   }
+									   }
+								   }
+							   }
+						   }
 					   }
 				   }
 			   }

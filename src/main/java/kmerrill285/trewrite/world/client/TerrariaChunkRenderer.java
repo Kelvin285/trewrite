@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import kmerrill285.trewrite.Trewrite;
+import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.client.CPacketChangeBlock;
 import kmerrill285.trewrite.core.network.client.CPacketRequestChunks;
@@ -16,7 +17,6 @@ import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -281,9 +281,9 @@ public class TerrariaChunkRenderer {
 		    			  OverlayEvents.blockMiningProgress = 0;
 		    			  Minecraft.getInstance().world.playSound(r.getPos().add(0, height, 0), OverlayEvents.renderWorld.getBlockState(r.getPos()).getSoundType().getBreakSound(), SoundCategory.PLAYERS, 1.0F, 1.0F, true);
 						  OverlayEvents.loadRenderers = true;
-		    			  NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(r.getPos().getX(), r.getPos().getY(), r.getPos().getZ(), dimension, Blocks.AIR.getDefaultState(), height, false));
+		    			  NetworkHandler.INSTANCE.sendToServer(new CPacketChangeBlock(r.getPos().getX(), r.getPos().getY(), r.getPos().getZ(), dimension, BlocksT.AIR_BLOCK.getDefaultState(), height, false));
 						  OverlayEvents.loadRenderers = true;
-		    			  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16,0,-16), Blocks.AIR.getDefaultState());
+		    			  OverlayEvents.renderWorld.setBlockState(r.getPos().add(-16,0,-16), BlocksT.AIR_BLOCK.getDefaultState());
 		    		  }
 		    		  
 	    		  }

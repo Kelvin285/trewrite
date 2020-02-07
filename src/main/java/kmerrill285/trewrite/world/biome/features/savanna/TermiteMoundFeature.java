@@ -6,8 +6,6 @@ import com.google.common.base.Function;
 import com.mojang.datafixers.Dynamic;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -95,7 +93,7 @@ public class TermiteMoundFeature extends Feature<NoFeatureConfig> {
 //					   if (worldIn.isAreaLoaded(pos2, 1))
 //					   {
 //						   if (dist <= R) {
-//							   worldIn.setBlockState(pos2, Blocks.AIR.getDefaultState(), 2);
+//							   worldIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), 2);
 //						   }
 //						   if (dist >= R - 2 && dist <= R) {
 //							   if (rand.nextInt(10) <= 7)
@@ -119,7 +117,7 @@ public class TermiteMoundFeature extends Feature<NoFeatureConfig> {
 					   if (dist <= r - 1) {
 						   BlockPos pos2 = pos.add(x + (int)(xd * y), -y, z + (int)(zd * y));
 						   if (worldIn.isAreaLoaded(pos2, 1))
-							   worldIn.setBlockState(pos2, Blocks.AIR.getDefaultState(), 2);
+							   worldIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), 2);
 					   }
 					   
 					   if (dist <= r && dist >= r - 1)

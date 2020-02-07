@@ -50,6 +50,9 @@ public class EntityArrowT extends ArrowEntity
 		
 		if (this.timeInGround > 0) {
 			this.remove();
+			if (arrow != null) {
+				((Arrow)arrow).onArrowHit(this, null);
+			}
 		}
 		if (arrow != null) {
 			
@@ -60,6 +63,13 @@ public class EntityArrowT extends ArrowEntity
 					this.setNoGravity(true);
 				}
 			}
+		}
+	}
+	
+	public void arrowHit(LivingEntity hit) {
+		super.arrowHit(hit);
+		if (arrow != null) {
+			((Arrow)arrow).onArrowHit(this, hit);
 		}
 	}
 	

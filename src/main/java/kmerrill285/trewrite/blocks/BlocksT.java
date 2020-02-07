@@ -7,6 +7,7 @@ import kmerrill285.trewrite.blocks.ores.GoldOre;
 import kmerrill285.trewrite.blocks.ores.IronOre;
 import kmerrill285.trewrite.blocks.ores.SilverOre;
 import kmerrill285.trewrite.blocks.pots.ObsidianPot;
+import kmerrill285.trewrite.blocks.pots.Pot;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
 import net.minecraft.block.SoundType;
@@ -197,6 +198,9 @@ public class BlocksT {
 	public static BlockT OBSIDIAN_CHAIR;
 	
 	public static BlockT OBSIDIAN_POT;
+	
+	public static BlockT AIR_BLOCK;
+	public static BlockT ROPE;
 
 	
 	public static float mul = 1.5f;
@@ -205,6 +209,7 @@ public class BlocksT {
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
 		event.getRegistry().registerAll(
+					AIR_BLOCK = new BlockAirT().setLocation("air_block"),
 					DIRT_BLOCK = new DirtBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("dirt_block"),
 					IRON_ORE = new IronOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
 					STONE_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "stone_block", "stone_block"),
@@ -274,7 +279,7 @@ public class BlocksT {
 					EBONSAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "ebonsand", "ebonsand"),
 					SUNFLOWER = (BasicPlant) new BasicPlant(Properties.create(Material.PLANTS).sound(SoundType.PLANT).doesNotBlockMovement().lightValue(4), 0, 0, true, true, true, false, "sunflower", 0, 0, "sunflower").setShape(Shape.BLOCK).setSell(40).addAllowed("grass_block"),
 					DEMON_ALTAR = (BasicBlock) new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.NETHER_WART).doesNotBlockMovement().lightValue(3), 25, 80, false, false, true, false, "altar", "no drop").setRenderLayer(BlockRenderLayer.CUTOUT),
-					POT = (BasicBlock) new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement(), 0, 0, true, true, true, false, "pot", "no drop").setRenderLayer(BlockRenderLayer.CUTOUT),
+					POT = new Pot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement(), "pot").setShape(Shape.BLOCK),
 					PIGGY_BANK = (PiggyBank) new PiggyBank(Properties.create(Material.EARTH).sound(SoundType.GLASS), "piggy_bank").setRenderLayer(BlockRenderLayer.CUTOUT),
 					HIGHLANDS_GRASS = new GrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("highlands_grass").addAllowed("flower", "mushroom", "sunflower"),
 					BOG_GRASS = new GrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("bog_grass").addAllowed("flower", "mushroom", "sunflower", "corruption_plants", "vile_mushroom"),
@@ -352,7 +357,8 @@ public class BlocksT {
 					OBSIDIAN_SOFA = new RightDouble(GROUND_HARDNESS, 15, "obsidian_sofa").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
 					OBSIDIAN_BATHTUB = new ForwardDouble(GROUND_HARDNESS, 15, "obsidian_bathtub").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
 					OBSIDIAN_DRESSER = new RightDouble(GROUND_HARDNESS, 15, "obsidian_dresser").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
-					OBSIDIAN_POT = new ObsidianPot(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement()).setShape(Shape.BLOCK)
+					OBSIDIAN_POT = new ObsidianPot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement()).setShape(Shape.BLOCK),
+					ROPE = new RopeBlock(true, "rope", "rope")
 
 
 

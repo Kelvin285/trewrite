@@ -187,7 +187,7 @@ public class TerrariaUndergroundDimension extends OverworldDimension {
 				
 				float speed = 0.25f;
 				
-				if (world.getBlockState(new BlockPos(pos2.getX(), pos2.getY() + 1, pos2.getZ())).getBlock() == Blocks.AIR) {
+				if (world.getBlockState(new BlockPos(pos2.getX(), pos2.getY() + 1, pos2.getZ())).getBlock() == BlocksT.AIR_BLOCK) {
 					if (world.getBlockState(pos2).getBlock() == BlocksT.CORRUPT_GRASS ||
 							world.getBlockState(pos2).getBlock() == BlocksT.EBONSTONE ||
 							world.getBlockState(pos2).getBlock() == BlocksT.EBONSAND) {

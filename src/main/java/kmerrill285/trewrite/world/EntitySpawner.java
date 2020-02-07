@@ -4,7 +4,7 @@ import java.util.List;
 
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.SpawnCondition;
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
@@ -27,7 +27,7 @@ public class EntitySpawner {
 	public static EntityType[] groundWaterNighttime = {EntitiesT.DROWNED};
 	public static EntityType[] skyEntities = {};
 	public static EntityType[] skyWaterEntities = {};
-	public static EntityType[] caveEntities = {};
+	public static EntityType[] caveEntities = {EntitiesT.WORM_HEAD};
 	public static EntityType[] caveWaterEntities = {EntitiesT.DROWNED};
 	public static EntityType[] underworldEntities = {};
 	
@@ -53,10 +53,10 @@ public class EntitySpawner {
 			if (world.dimension.getType() == sky) {
 				if (!spawnSkyEntity(world, x, y, z)) spawnGroundEntity(world, x, y, z);
 			}
-			if (world.dimension.getType() == DimensionType.OVERWORLD && y > Util.caveLevel) {
+			if (world.dimension.getType() == DimensionType.OVERWORLD && y > 45) {
 				spawnGroundEntity(world, x, y, z);
 			}
-			if (world.dimension.getType() == underground || world.dimension.getType() == DimensionType.OVERWORLD && y <= Util.caveLevel) {
+			if (world.dimension.getType() == underground || world.dimension.getType() == DimensionType.OVERWORLD && y <= 45) {
 				spawnCaveEntity(world, x, y, z);
 			}
 			if (world.dimension.getType() == underworld) {

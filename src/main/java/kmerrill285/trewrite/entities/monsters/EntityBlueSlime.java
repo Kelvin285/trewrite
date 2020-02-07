@@ -7,6 +7,8 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.EntityStar;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.Entity;
@@ -74,14 +76,18 @@ public class EntityBlueSlime extends SlimeEntity
 				EntityItemT.spawnItem(this.getEntityWorld(), this.getPosition(), new ItemStackT(ItemsT.PRESENT, 1, null));
 			}
 		}
-		EntityCoin coin = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
-		coin.amount = 25;
+		EntityCoin.spawnCoin(world, getPosition(), EntityCoin.COPPER, 25);
 		
 		if (source.getImmediateSource() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)source.getImmediateSource();
 			if (player.getHealth() <= player.getMaxHealth()) {
 				if (rand.nextInt(12) == 0) {
 					EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition());
+				}
+			}
+			if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA).getScorePoints() < ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MAX_MANA).getScorePoints()) {
+				if (rand.nextBoolean() ) {
+					EntityStar.spawnStar(this.getEntityWorld(), this.getPosition());
 				}
 			}
 		}

@@ -10,7 +10,6 @@ import com.mojang.datafixers.Dynamic;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.world.biome.features.LSystem.LSystemPos;
 import kmerrill285.trewrite.world.biome.features.LSystem.LSystemVec;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -60,7 +59,7 @@ public class BaobabTreeFeature extends Feature<NoFeatureConfig> {
 						   if (dist >= rad - 1) {
 							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY() + y, lpos.getZ() + z), BlocksT.LIVING_WOOD.getDefaultState(), 2);
 						   } else {
-							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY() + y, lpos.getZ() + z), Blocks.AIR.getDefaultState(), 2);
+							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY() + y, lpos.getZ() + z), BlocksT.AIR_BLOCK.getDefaultState(), 2);
 						   }
 					   }
 				   }
@@ -78,7 +77,7 @@ public class BaobabTreeFeature extends Feature<NoFeatureConfig> {
 						   if (worldIn.isAreaLoaded(new BlockPos(door.getX() + x, door.getY() + y, door.getZ() + z), 1)) {
 							   BlockPos pos2 = new BlockPos(door.getX() + x, door.getY() + y, door.getZ() + z);
 							   if (worldIn.getBlockState(pos2) == BlocksT.LIVING_WOOD.getDefaultState()) {
-								   worldIn.setBlockState(pos2, Blocks.AIR.getDefaultState(), 2);
+								   worldIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), 2);
 							   }
 						   }
 						}
@@ -96,7 +95,7 @@ public class BaobabTreeFeature extends Feature<NoFeatureConfig> {
 						   if (worldIn.isAreaLoaded(new BlockPos(door.getX() + x, door.getY() + y, door.getZ() + z), 1)) {
 							   BlockPos pos2 = new BlockPos(door.getX() + x, door.getY() + y, door.getZ() + z);
 							   if (worldIn.getBlockState(pos2) == BlocksT.LIVING_WOOD.getDefaultState()) {
-								   worldIn.setBlockState(pos2, Blocks.AIR.getDefaultState(), 2);
+								   worldIn.setBlockState(pos2, BlocksT.AIR_BLOCK.getDefaultState(), 2);
 							   }
 						   }
 						}
@@ -115,7 +114,7 @@ public class BaobabTreeFeature extends Feature<NoFeatureConfig> {
 						   if (dist >= rad - 1) {
 							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY(), lpos.getZ() + z), BlocksT.LIVING_WOOD.getDefaultState(), 2);
 						   } else {
-							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY(), lpos.getZ() + z), Blocks.AIR.getDefaultState(), 2);
+							   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY(), lpos.getZ() + z), BlocksT.AIR_BLOCK.getDefaultState(), 2);
 							   if (iterations % 6 == 0) {
 								   if (x > 0)
 								   worldIn.setBlockState(new BlockPos(lpos.getX() + x, lpos.getY(), lpos.getZ() + z), BlocksT.LIVING_WOOD_PLATFORM.getDefaultState(), 2);

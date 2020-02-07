@@ -16,6 +16,7 @@ import kmerrill285.trewrite.items.terraria.accessories.CloudInABottle;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.items.terraria.accessories.ObsidianSkull;
 import kmerrill285.trewrite.items.terraria.arrows.FlamingArrow;
+import kmerrill285.trewrite.items.terraria.arrows.HellfireArrow;
 import kmerrill285.trewrite.items.terraria.arrows.JestersArrow;
 import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
@@ -28,15 +29,22 @@ import kmerrill285.trewrite.items.terraria.bows.WoodenBow;
 import kmerrill285.trewrite.items.terraria.broadswords.CopperBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
+import kmerrill285.trewrite.items.terraria.bullet.MusketBall;
 import kmerrill285.trewrite.items.terraria.clickable.Coin;
+import kmerrill285.trewrite.items.terraria.guns.Musket;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
 import kmerrill285.trewrite.items.terraria.loot_bags.Present;
+import kmerrill285.trewrite.items.terraria.pets.ShadowOrbItem;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
+import kmerrill285.trewrite.items.terraria.potions.DefaultPotion;
 import kmerrill285.trewrite.items.terraria.potions.PotionTest;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
 import kmerrill285.trewrite.items.terraria.shortswords.IronShortsword;
+import kmerrill285.trewrite.items.terraria.throwable.Bomb;
+import kmerrill285.trewrite.items.terraria.throwable.Glowstick;
+import kmerrill285.trewrite.items.terraria.throwable.Grenade;
 import kmerrill285.trewrite.items.terraria.throwable.Shuriken;
 import kmerrill285.trewrite.items.terraria.tools.MagicMirror;
 import kmerrill285.trewrite.world.WorldStateHolder;
@@ -45,10 +53,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -251,7 +258,20 @@ public class ItemsT {
 	FEATHERFALL_POTION, FLIPPER_POTION, GRAVITATION_POTION,
 	HEARTREACH_POTION, INVISIBILITY_POTION, THORNS_POTION,
 	WATER_WALKING_POTION, SHINE_POTION, BATTLE_POTION, OBSIDIAN_SKIN_POTION,
-	MAGIC_POWER_POTION, MANA_REGENERATION_POTION, TITAN_POTION;
+	MAGIC_POWER_POTION, MANA_REGENERATION_POTION, TITAN_POTION, WORMHOLE_POTION;
+	
+	public static ItemT HELLFIRE_ARROW;
+	public static ItemT GRENADE;
+	public static ItemT GLOWSTICK;
+	public static ItemT BOMB;
+	public static ItemT ROPE;
+	public static ItemT ROPE_COIL;
+	
+	public static ItemT MUSKET_BALL;
+	public static ItemT MUSKET;
+	
+	public static ItemT SHADOW_ORB_ITEM;
+
 	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
@@ -317,22 +337,22 @@ public class ItemsT {
 				GRASS_PATH = (ItemBlockT) new ItemBlockT(BlocksT.GRASS_PATH, "grass_path"),
 				IRON_HAMMER = new IronHammer(),
 				FURNACE = (ItemBlockT) new ItemBlockT(BlocksT.FURNACE, "furnace").setMaxStack(99),
-				TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.TORCH, BlocksT.TORCH_WALL, "torch").setMaxStack(99),
-				BLUE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.BLUE_TORCH, BlocksT.BLUE_TORCH_WALL, "blue_Torch").setMaxStack(99),
-				GREEN_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.GREEN_TORCH, BlocksT.GREEN_TORCH_WALL, "green_torch").setMaxStack(99),
-				YELLOW_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.YELLOW_TORCH, BlocksT.YELLOW_TORCH_WALL, "yellow_torch").setMaxStack(99),
-				RED_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.RED_TORCH, BlocksT.RED_TORCH_WALL, "red_torch").setMaxStack(99),
-				PURPLE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.PURPLE_TORCH, BlocksT.PURPLE_TORCH_WALL, "purple_torch").setMaxStack(99),
-				PINK_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.PINK_TORCH, BlocksT.PINK_TORCH_WALL, "pink_torch").setMaxStack(99),
-				WHITE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.WHITE_TORCH, BlocksT.WHITE_TORCH_WALL, "white_torch").setMaxStack(99),
-				ORANGE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ORANGE_TORCH, BlocksT.ORANGE_TORCH_WALL, "orange_torch").setMaxStack(99),
-				CORRUPT_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.CORRUPT_TORCH, BlocksT.CORRUPT_TORCH_WALL, "corrupt_torch").setMaxStack(99),
-				CURSED_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.CURSED_TORCH, BlocksT.CURSED_TORCH_WALL, "cursed_torch").setMaxStack(99),
-				ICHOR_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ICHOR_TORCH, BlocksT.ICHOR_TORCH_WALL, "ichor_torch").setMaxStack(99),
-				RAINBOW_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.RAINBOW_TORCH, BlocksT.RAINBOW_TORCH_WALL, "rainbow_torch").setMaxStack(99),
-				BONE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.BONE_TORCH, BlocksT.BONE_TORCH_WALL, "bone_torch").setMaxStack(99),
-				ULTRABRIGHT_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ULTRABRIGHT_TORCH, BlocksT.ULTRABRIGHT_TORCH_WALL, "ultrabright_torch").setMaxStack(99),
-				ICE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ICE_TORCH, BlocksT.ICE_TORCH_WALL, "ice_torch").setMaxStack(99),
+				TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.TORCH, BlocksT.TORCH_WALL, "torch").setMaxStack(99).setLightValue(15),
+				BLUE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.BLUE_TORCH, BlocksT.BLUE_TORCH_WALL, "blue_Torch").setMaxStack(99).setLightValue(6),
+				GREEN_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.GREEN_TORCH, BlocksT.GREEN_TORCH_WALL, "green_torch").setMaxStack(99).setLightValue(7),
+				YELLOW_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.YELLOW_TORCH, BlocksT.YELLOW_TORCH_WALL, "yellow_torch").setMaxStack(99).setLightValue(8),
+				RED_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.RED_TORCH, BlocksT.RED_TORCH_WALL, "red_torch").setMaxStack(99).setLightValue(5),
+				PURPLE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.PURPLE_TORCH, BlocksT.PURPLE_TORCH_WALL, "purple_torch").setMaxStack(99).setLightValue(6),
+				PINK_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.PINK_TORCH, BlocksT.PINK_TORCH_WALL, "pink_torch").setMaxStack(99).setLightValue(7),
+				WHITE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.WHITE_TORCH, BlocksT.WHITE_TORCH_WALL, "white_torch").setMaxStack(99).setLightValue(12),
+				ORANGE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ORANGE_TORCH, BlocksT.ORANGE_TORCH_WALL, "orange_torch").setMaxStack(99).setLightValue(7),
+				CORRUPT_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.CORRUPT_TORCH, BlocksT.CORRUPT_TORCH_WALL, "corrupt_torch").setMaxStack(99).setLightValue(5),
+				CURSED_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.CURSED_TORCH, BlocksT.CURSED_TORCH_WALL, "cursed_torch").setMaxStack(99).setLightValue(5),
+				ICHOR_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ICHOR_TORCH, BlocksT.ICHOR_TORCH_WALL, "ichor_torch").setMaxStack(99).setLightValue(10),
+				RAINBOW_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.RAINBOW_TORCH, BlocksT.RAINBOW_TORCH_WALL, "rainbow_torch").setMaxStack(99).setLightValue(12),
+				BONE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.BONE_TORCH, BlocksT.BONE_TORCH_WALL, "bone_torch").setMaxStack(99).setLightValue(7),
+				ULTRABRIGHT_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ULTRABRIGHT_TORCH, BlocksT.ULTRABRIGHT_TORCH_WALL, "ultrabright_torch").setMaxStack(99).setLightValue(7),
+				ICE_TORCH = (WallOrFloorBlock) new WallOrFloorBlock(BlocksT.ICE_TORCH, BlocksT.ICE_TORCH_WALL, "ice_torch").setMaxStack(99).setLightValue(7),
 				DOOR = (ItemBlockT) new ItemBlockT(BlocksT.DOOR, "door").setMaxStack(99),
 				LESSER_MANA_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "lesser_mana_potion").setMaterial().setConsumable().setManaSickness(5).setManaHeal(50).setMaxStack(30),
 				CHAIR = (ItemBlockT) new ItemBlockT(BlocksT.CHAIR, "chair").setMaxStack(99),
@@ -424,7 +444,7 @@ public class ItemsT {
 				OBSIDIAN_CHANDELIER = new ItemBlockT(BlocksT.OBSIDIAN_CHANDELIER, "obsidian_chandelier"),
 				OBSIDIAN_LANTERN = new ItemBlockT(BlocksT.OBSIDIAN_LANTERN, "obsidian_lantern"),
 				OBSIDIAN_CANDELABRA = new ItemBlockT(BlocksT.OBSIDIAN_CANDELABRA, "obsidian_candelabra"),
-				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle"),
+				OBSIDIAN_CANDLE = new ItemBlockT(BlocksT.OBSIDIAN_CANDLE, "obsidian_candle").setLightValue(3),
 				OBSIDIAN_BED = new ItemBlockT(BlocksT.OBSIDIAN_BED, "obsidian_bed"),
 				OBSIDIAN_CLOCK = new ItemBlockT(BlocksT.OBSIDIAN_CLOCK, "obsidian_clock"),
 				OBSIDIAN_WORKBENCH = new ItemBlockT(BlocksT.OBSIDIAN_WORKBENCH, "obsidian_workbench"),
@@ -451,7 +471,7 @@ public class ItemsT {
 						
 						return true;
 					}
-				},
+				}.setTooltip("Increases placement speed and range").setBuySell(200),
 				RECALL_POTION = new PotionTest(new Properties().group(ItemGroup.BREWING), "recall_potion", true, false) {
 					@Override
 					protected boolean doPotionStuff(World worldIn, PlayerEntity playerIn) {
@@ -504,7 +524,52 @@ public class ItemsT {
 						
 						return true;
 					}
-				}
+				}.setTooltip("Teleports you home"),
+				CALMING_POTION = new PotionTest(new Properties().group(ItemGroup.BREWING), "calming_potion", true, true) {
+					@Override
+					protected boolean doPotionStuff(World world, PlayerEntity player) {
+						if (!world.isRemote()) {
+							Score score = ScoreboardEvents.getScore(world.getScoreboard(), player, ScoreboardEvents.CALMING);
+							score.setScorePoints(15*60*20);
+						} else {
+							NetworkHandler.INSTANCE.sendToServer(new CPacketChangeScore(ScoreboardEvents.CALMING, 15*60*20));
+						}
+						
+						return true;
+					}
+				}.setTooltip("Reduced enemy aggression"),
+				IRONSKIN_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "ironskin_potion", true, true, ScoreboardEvents.IRONSKIN, 5*60).setTooltip("Increase defense by 8"),
+				SWIFTNESS_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "swiftness_potion", true, true, ScoreboardEvents.SWIFTNESS, 5*60).setTooltip("25% increased movement speed"),
+				NIGHT_OWL_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "night_owl_potion", true, true, ScoreboardEvents.NIGHT_OWL, 4*60).setTooltip("Increases night vision"),
+				REGENERATION_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "regeneration_potion", true, true, ScoreboardEvents.REGENERATION, 5*60).setTooltip("Provides life regeneration"),
+				MINING_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "mining_potion", true, true, ScoreboardEvents.MINING, 8*60).setTooltip("Increases mining speed by 25%"),
+				ARCHERY_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "archery_potion", true, true, ScoreboardEvents.ARCHERY, 4*60).setTooltip("25% increased arrow speed and damage"),
+				HUNTER_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "hunter_potion", true, true, ScoreboardEvents.HUNTER, 5*60).setTooltip("Shows the location of enemies"),
+				FEATHERFALL_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "featherfall_potion", true, true, ScoreboardEvents.FEATHERFALL, 5*60).setTooltip("Press SPACE or SHIFT to control speed of descent"),
+				FLIPPER_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "flipper_potion", true, true, ScoreboardEvents.FLIPPER, 8*60).setTooltip("Lets you move swiftly in liquids"),
+				GRAVITATION_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "gravitation_potion", true, true, ScoreboardEvents.GRAVITATION, 3*60).setTooltip("Double-tap SPACE to reverse gravity"),
+				HEARTREACH_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "heartreach_potion", true, true, ScoreboardEvents.HEARTREACH, 8*60).setTooltip("Increases pickup range for life hearts"),
+				INVISIBILITY_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "invisibility_potion", true, true, ScoreboardEvents.INVISIBILITY, 2*60).setTooltip("Grants invisibilitly"),
+				THORNS_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "thorns_potion", true, true, ScoreboardEvents.THORNS, 2*60).setTooltip("Attackers also take damage"),
+				WATER_WALKING_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "water_walking_potion", true, true, ScoreboardEvents.WATER_WALKING, 5*60).setTooltip("Allows the ability to walk on water"),
+				BATTLE_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "battle_potion", true, true, ScoreboardEvents.BATTLE, 7*60).setTooltip("Increases enemy spawn rate"),
+				SHINE_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "shine_potion", true, true, ScoreboardEvents.SHINE, 5*60).setTooltip("Emits an aura of light"),
+				OBSIDIAN_SKIN_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "obsidian_skin_potion", true, true, ScoreboardEvents.OBSIDIAN_SKIN, 4*60).setTooltip("Provides immunity to lava"),
+				MAGIC_POWER_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "magic_power_potion", true, true, ScoreboardEvents.MAGIC_POWER, 2*60).setTooltip("20% increased magic damage"),
+				TITAN_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "titan_potion", true, true, ScoreboardEvents.TITAN, 2*60).setTooltip("Increases knockback"),
+				MANA_REGENERATION_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "mana_regeneration_potion", true, true, ScoreboardEvents.MANA_REGENERATION, 7*60).setTooltip("Increased mana regeneration"),
+				GILLS_POTION = new DefaultPotion(new Properties().group(ItemGroup.BREWING), "gills_potion", true, true, ScoreboardEvents.GILLS, 2*60).setTooltip("Breathe underwater"),
+
+				WORMHOLE_POTION = new ItemT(new Properties().group(ItemGroup.BREWING), "wormhole_potion").setMaterial().setMaxStack(30).setBuySell(200).setTooltip("Use /wh <player> to teleport"),
+				HELLFIRE_ARROW = new HellfireArrow(),
+				GRENADE = new Grenade().setTooltip("A small explosion that will not destroy tiles"),
+				GLOWSTICK = new Glowstick(),
+				ROPE = new ItemBlockT(BlocksT.ROPE, "rope"),
+				ROPE_COIL = new RopeCoil(),
+				BOMB = new Bomb(),
+				MUSKET_BALL = new MusketBall(),
+				MUSKET = new Musket(),
+				SHADOW_ORB_ITEM = new ShadowOrbItem()
 
 
 

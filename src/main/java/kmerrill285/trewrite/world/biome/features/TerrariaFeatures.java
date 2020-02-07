@@ -49,6 +49,7 @@ public class TerrariaFeatures {
 	public static CorruptionSpireFeature CORRUPTION_SPIRE = new CorruptionSpireFeature(NoFeatureConfig::deserialize);
 	public static LifeCrystalFeature LIFE_CRYSTAL = new LifeCrystalFeature(NoFeatureConfig::deserialize);
 	public static StalagmiteFeature STALAGMITES = new StalagmiteFeature(NoFeatureConfig::deserialize);
+	public static PotFeature POTS = new PotFeature(NoFeatureConfig::deserialize);
 
 	
 	public static final WorldCarver<ProbabilityConfig> CAVE = new TerrariaCaveCarver(ProbabilityConfig::deserialize, 256);

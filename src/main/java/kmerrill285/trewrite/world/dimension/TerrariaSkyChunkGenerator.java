@@ -6,9 +6,6 @@ import java.util.Random;
 
 import kmerrill285.trewrite.blocks.BasicPlant;
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.world.biome.BiomeT;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.Util;
@@ -115,7 +112,7 @@ public class TerrariaSkyChunkGenerator extends NoiseChunkGenerator<OverworldGenS
 				   
 				   for (int y = 0; y < 255; y++) {
 					   BlockPos pos = new BlockPos(k1, y, l1);
-					   chunkIn.setBlockState(pos, Blocks.AIR.getDefaultState(), false);
+					   chunkIn.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState(), false);
 				   }
 				   int B = 25;
 				   for (int y = 0; y < 255; y++) {
@@ -150,7 +147,7 @@ public class TerrariaSkyChunkGenerator extends NoiseChunkGenerator<OverworldGenS
 								   
 								   chunkIn.setBlockState(pos2, BlocksT.DIRT_BLOCK.getDefaultState(), false);
 								   BlockPos pos3 = new BlockPos(xx + p.x, y - i + 1, zz + p.y);
-								   if (chunkIn.getBlockState(pos3) == Blocks.AIR.getDefaultState()) {
+								   if (chunkIn.getBlockState(pos3) == BlocksT.AIR_BLOCK.getDefaultState()) {
 									   chunkIn.setBlockState(pos3, BlocksT.GRASS_BLOCK.getDefaultState(), false);
 								   }
 								}
@@ -184,7 +181,7 @@ public class TerrariaSkyChunkGenerator extends NoiseChunkGenerator<OverworldGenS
 									   
 									   chunkIn.setBlockState(pos2, BlocksT.DIRT_BLOCK.getDefaultState(), false);
 									   BlockPos pos3 = new BlockPos(xx + p.x, y + i + 1, zz + p.y);
-									   if (chunkIn.getBlockState(pos3) == Blocks.AIR.getDefaultState()) {
+									   if (chunkIn.getBlockState(pos3) == BlocksT.AIR_BLOCK.getDefaultState()) {
 										   chunkIn.setBlockState(pos3, BlocksT.GRASS_BLOCK.getDefaultState(), false);
 									   }
 									}
@@ -215,7 +212,7 @@ public class TerrariaSkyChunkGenerator extends NoiseChunkGenerator<OverworldGenS
 						   for (int i = 0; i < 50; i++) {
 							   
 							   BlockPos pos = new BlockPos(k1, y - i, l1);
-							   if (chunkIn.getBlockState(pos) == Blocks.AIR.getDefaultState())
+							   if (chunkIn.getBlockState(pos) == BlocksT.AIR_BLOCK.getDefaultState())
 								   break;
 							   if (chunkIn.getBlockState(pos) == BlocksT.DIRT_BLOCK.getDefaultState())
 								   chunkIn.setBlockState(pos, BlocksT.STONE_BLOCK.getDefaultState(), false);

@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;

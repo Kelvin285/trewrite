@@ -123,8 +123,7 @@ public class EntityDemonEye extends FlyingEntity {
 			}
 		}
     	if (money > 0) {
-	    	EntityCoin coin = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
-			coin.amount = money;
+			EntityCoin.spawnCoin(world, getPosition(), EntityCoin.COPPER, money);
 			
 			if (source.getImmediateSource() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)source.getImmediateSource();
@@ -152,6 +151,7 @@ public class EntityDemonEye extends FlyingEntity {
     }
     
     public void tick() {
+
     	super.tick();
     	this.setNoGravity(true);
     	double motionY = this.getMotion().y;

@@ -10,9 +10,9 @@ import net.minecraft.util.ResourceLocation;
 public class RenderCoin extends MobRenderer<EntityCoin, CoinModel>
 {
     private ResourceLocation copper = new ResourceLocation("trewrite:textures/item/coins/copper.png");
-    private ResourceLocation silver = new ResourceLocation("trewrite:textures/item/coins/copper.png");
-    private ResourceLocation gold = new ResourceLocation("trewrite:textures/item/coins/copper.png");
-    private ResourceLocation platinum = new ResourceLocation("trewrite:textures/item/coins/copper.png");
+    private ResourceLocation silver = new ResourceLocation("trewrite:textures/item/coins/silver.png");
+    private ResourceLocation gold = new ResourceLocation("trewrite:textures/item/coins/gold.png");
+    private ResourceLocation platinum = new ResourceLocation("trewrite:textures/item/coins/platinum.png");
 
     public RenderCoin(EntityRendererManager renderManagerIn)
     {
@@ -30,7 +30,6 @@ public class RenderCoin extends MobRenderer<EntityCoin, CoinModel>
     {
 //    	BossStatus.setBossStatus(entity, true);
         this.shadowSize = 0.25F;
-        
         super.doRender(entity, x, y + Math.abs(Math.cos(Math.toRadians(System.nanoTime() / 10000000.0))) / 2.0, z, 0, partialTicks);
     }
 

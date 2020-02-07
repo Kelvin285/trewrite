@@ -1,6 +1,6 @@
 {
     "parent": "block/cross",
     "textures": {
-        "cross": "trewrite:block/pot"
+        "cross": "trewrite:block/pots/pot"
     }
 }

@@ -58,7 +58,7 @@ public class DoubleBlock extends BlockT {
 	    */
 	   public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
 		   if (state.get(HALF) == DoubleBlockHalf.LOWER)
-	      super.harvestBlock(worldIn, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+	      super.harvestBlock(worldIn, player, pos, BlocksT.AIR_BLOCK.getDefaultState(), te, stack);
 	   }
 
 	   public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -75,7 +75,7 @@ public class DoubleBlock extends BlockT {
 	      BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
 	      BlockState blockstate = worldIn.getBlockState(blockpos);
 	      if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
-	         worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+	         worldIn.setBlockState(blockpos, BlocksT.AIR_BLOCK.getDefaultState(), 35);
 	         worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
 	         ItemStack itemstack = player.getHeldItemMainhand();
 	         if (!worldIn.isRemote && !player.isCreative()) {

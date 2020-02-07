@@ -1,4 +1,4 @@
-package kmerrill285.trewrite.entities.monsters;
+package kmerrill285.trewrite.entities.monsters.bosses;
 
 import javax.annotation.Nullable;
 
@@ -7,6 +7,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.WorldStateHolder;
@@ -68,7 +69,9 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 	
     public static final DataParameter<Integer> phase_data = EntityDataManager.createKey(EntityEyeOfCthulhu.class, DataSerializers.VARINT);
 
-	
+	public boolean ALREADY_SPAWNED = false;
+	public boolean REMOVED = false;
+    
 	 public EntityEyeOfCthulhu(EntityType<? extends EntityEyeOfCthulhu> type, World worldIn) {
 		super(type, worldIn);
 		init();
@@ -112,6 +115,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     
     
     public void dropLoot(DamageSource source, boolean b) {
+    	if (REMOVED) return;
 //		this.dropItem(Item.getItemFromBlock(Blocks.corrupt_ore), this.rand.nextInt(87 - 30) + 30);
 //		
 //		this.dropItem(Items.corrupt_arrow, this.rand.nextInt(49 - 20) + 20);
@@ -129,12 +133,8 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 			}
 		}
 		
-		EntityCoin coins = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
-		coins.amount = 7;
-		coins.coin = EntityCoin.GOLD;
-		EntityCoin coins2 = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
-		coins2.amount = 50;
-		coins2.coin = EntityCoin.SILVER;
+		EntityCoin.spawnCoin(world, getPosition(), EntityCoin.GOLD, 7);
+		EntityCoin.spawnCoin(world, getPosition(), EntityCoin.SILVER, 50);
 		
 		for (int i = 0; i < 4; i++) {
 			EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition().add(rand.nextInt(2) - 1, 0, rand.nextInt(2) - 1));
@@ -181,10 +181,23 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     public BlockPos lastTarget;
     
     public void tick() {
+    	ALREADY_SPAWNED = true;
+    	
+    	
+    	boolean despawn = true;
+    	for (int i = 0; i < world.getPlayers().size(); i++) {
+    		if (world.getPlayers().get(i).getHealth() > 0) {
+    			despawn = false;
+    			break;
+    		}
+    	}
+    	
+    	if (despawn) {REMOVED = true; remove();}
+    	
     	super.tick();
    	 	
     	
-   	 this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(9999);
+   	 	this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(9999);
 
    	 
     	this.setNoGravity(true);
@@ -506,8 +519,9 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     	super.remove();
     	
     }
-    
+
     public boolean attackEntityFrom(DamageSource source, float amount) {
+    	if (source == DamageSource.IN_WALL || source == DamageSource.FALL || source == DamageSource.CRAMMING) return false;
     	if (transformedRotation > 0 && transformedRotation < 360 * 5 - 10) {
     		return false;
     	}
@@ -553,24 +567,28 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		System.out.println("read " + compound);
 		super.read(compound);
 		this.bosshealth = compound.getFloat("bosshealth");
+		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 //		System.out.println("read additional " + compound);
 		this.bosshealth = compound.getFloat("bosshealth");
+		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 //		System.out.println("write additional " + compound);
 		compound.putFloat("bosshealth", bosshealth);
+		compound.putBoolean("spawned", ALREADY_SPAWNED);
 	}
 
 	@Override
 	public void writeSpawnData(PacketBuffer buffer) {
 //		System.out.println("writeSpawnData " + buffer);
 		buffer.writeFloat(bosshealth);
+		buffer.writeBoolean(ALREADY_SPAWNED);
 	}
 
 	@Override
@@ -578,6 +596,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		System.out.println("READ SPAWN DATA: " + additionalData);
 
 		this.bosshealth = additionalData.readFloat();
+		if (additionalData.readBoolean()) {REMOVED = true; remove();}
 	}
     
 }

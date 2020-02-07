@@ -5,7 +5,7 @@ import java.util.List;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.EntitiesT;
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemT;
 import net.minecraft.entity.Entity;

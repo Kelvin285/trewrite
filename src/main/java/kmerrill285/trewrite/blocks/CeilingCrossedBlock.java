@@ -113,7 +113,7 @@ public class CeilingCrossedBlock extends BasicBlock {
 		      BlockState BlockState = worldIn.getBlockState(blockpos);
 		      Block block = BlockState.getBlock();
 		      
-		      if (block == Blocks.AIR) return false;
+		      if (block == BlocksT.AIR_BLOCK) return false;
 		      
 		      return BlockState.isSolid();
 		   }

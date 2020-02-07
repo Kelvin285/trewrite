@@ -17,9 +17,10 @@ import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.entities.EntityCoinPortal;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Axe;
 import kmerrill285.trewrite.items.Broadsword;
@@ -38,7 +39,6 @@ import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -83,6 +83,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
@@ -132,6 +133,39 @@ public class EntityEvents {
 	}
 	
 	@SubscribeEvent
+	public static void handleEntityDeath(LivingDeathEvent event) {
+		if (event.getEntityLiving() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.ARCHERY).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.POTION_SICKNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS_EFFECT).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BUILDER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FLIPPER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GILLS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GRAVITATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.HEARTREACH).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.INVISIBILITY).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MAGIC_POWER).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_REGENERATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MINING).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.REGENERATION).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SHINE).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SWIFTNESS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.THORNS).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).setScorePoints(0);
+			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).setScorePoints(0);
+		}
+	}
+	
+	@SubscribeEvent
 	public static void handleEntitySpawns(EntityJoinWorldEvent event) {
 		
 		if (event.getEntity() instanceof ItemEntity) {
@@ -166,31 +200,7 @@ public class EntityEvents {
 				}
 				
 			}
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.ARCHERY).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.POTION_SICKNESS).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS_EFFECT).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BUILDER).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FLIPPER).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GILLS).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.GRAVITATION).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.HEARTREACH).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.INVISIBILITY).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MAGIC_POWER).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_REGENERATION).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MINING).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.REGENERATION).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SHINE).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SWIFTNESS).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.THORNS).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).setScorePoints(0);
-			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).setScorePoints(0);
+			
 		}
 	}
 	@OnlyIn(value=Dist.CLIENT)
@@ -222,22 +232,95 @@ public class EntityEvents {
 	@SubscribeEvent
 	public static void handleDamage (LivingDamageEvent event) {
 		if (event.getEntityLiving() != null) {
+			
+			if (event.getSource() == DamageSource.IN_WALL) {
+				if (event.getEntityLiving() instanceof PlayerEntity == false) {
+					event.setAmount(0);
+					event.setCanceled(true);
+					return;
+				}
+			}
+			
 			if (event.getSource() == DamageSource.DROWN || event.getSource() == DamageSource.IN_WALL) {
 				if (!(event.getEntityLiving() instanceof PlayerEntity)) {
 					event.setCanceled(true);
 					return;
 				}
 			}
+			
 			if (event.getSource() == DamageSource.LAVA) {
+				
+				
+				
+				
 				event.setAmount(event.getAmount() * 10);
+				if (event.getEntityLiving() instanceof PlayerEntity)
+				{
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					
+					
+					int waterwalk = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).getScorePoints();
+					if (waterwalk > 0) {
+						A:
+						if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y - 0.1f, player.getPositionVec().z)).getFluidState().isSource() == true) {
+							
+							if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y + 2, player.getPositionVec().z)).getFluidState().isSource() == true)
+								break A;
+							if (Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown()) {
+
+							} else {
+//								if (player.getMotion().y < 0) {
+//									player.posY -= player.getMotion().y;
+//								}
+								player.onGround = true;
+								if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y +0.2f, player.getPositionVec().z)).getFluidState().isSource() == true) {
+									event.setAmount(0);
+									event.setCanceled(true);
+									return;
+								} else {
+									event.setAmount(0);
+									event.setCanceled(true);
+									return;
+								}
+							}
+						}
+					}
+					
+					int obsidianskin = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).getScorePoints();
+					if (obsidianskin > 0) {
+						event.setAmount(0);
+						event.setCanceled(true);
+						return;
+					}
+				}
+				
 			}
 			if (event.getSource() == DamageSource.ON_FIRE) {
 				event.setAmount(event.getAmount() * 5);
+				if (event.getEntityLiving() instanceof PlayerEntity)
+				{
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					int obsidianskin = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).getScorePoints();
+					if (obsidianskin > 0) {
+						event.setAmount(0);
+						event.setCanceled(true);
+						return;
+					}
+				}
 			}
+			
 			if (event.getSource() == DamageSource.HOT_FLOOR) {
 				if (event.getEntityLiving() instanceof PlayerEntity)
 				if (!event.getEntityLiving().world.isRemote) {
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					
+					int obsidianskin = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).getScorePoints();
+					if (obsidianskin > 0) {
+						event.setAmount(0);
+						event.setCanceled(true);
+						return;
+					}
+					
 					InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
 					if (inventory != null) {
 						boolean hasSkull = false;
@@ -257,13 +340,24 @@ public class EntityEvents {
 						}
 					}
 				}
+				
+				if (event.getEntityLiving() instanceof PlayerEntity)
+				{
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+					int obsidianskin = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.OBSIDIAN_SKIN).getScorePoints();
+					if (obsidianskin > 0) {
+						event.setAmount(0);
+						event.setCanceled(true);
+						return;
+					}
+				}
 			}
 			
 			if (event.getEntityLiving() instanceof PlayerEntity)
 				if (!event.getEntityLiving().world.isRemote) {
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).getScorePoints() > 0) {
-						event.setAmount(event.getAmount() - 5);
+						event.setAmount(event.getAmount() - 8);
 						
 					}
 				}
@@ -271,6 +365,17 @@ public class EntityEvents {
 		}
 		if (event.getAmount() < 1 && event.isCanceled() == false)
 			event.setAmount(1);
+		
+		if (event.getEntityLiving() instanceof PlayerEntity) {
+			if (event.getSource().getImmediateSource() != null) {
+				Entity e = event.getSource().getImmediateSource();
+				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+				int thorns = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.THORNS).getScorePoints();
+				if (thorns > 0) {
+					e.attackEntityFrom(DamageSource.GENERIC, event.getAmount() * (1.0f/3.0f));
+				}
+			}
+		}
 	}
 	
 	@SubscribeEvent
@@ -312,7 +417,8 @@ public class EntityEvents {
 								}
 							}
 						}
-						
+						int titan = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).getScorePoints();
+						if (titan > 0) attackMul *= 2.0;
 						event.setStrength((float) (Conversions.feetToMeters * ((ItemT)player.getHeldItemMainhand().getItem()).knockback * 0.2f * attackMul));
 					}
 				}
@@ -696,7 +802,7 @@ public class EntityEvents {
 					}
 				}
 			}
-			if (itemEvent.getItemStack().getItem() instanceof ItemBlockT && itemEvent.getWorld().getBlockState(itemEvent.getPos()) == Blocks.AIR.getDefaultState()) {
+			if (itemEvent.getItemStack().getItem() instanceof ItemBlockT && itemEvent.getWorld().getBlockState(itemEvent.getPos()) == BlocksT.AIR_BLOCK.getDefaultState()) {
 				//((ItemT)itemEvent.getItemStack().getItem()).onUse(null, itemEvent.getPos(), itemEvent.getEntityPlayer(), itemEvent.getWorld(), itemEvent.getHand());
 				if (((BlockT)((ItemBlockT)itemEvent.getItemStack().getItem()).getBlock()) != null) {
 					BlockT block = ((BlockT)((ItemBlockT)itemEvent.getItemStack().getItem()).getBlock());
@@ -772,6 +878,7 @@ public class EntityEvents {
 		
 		getMiningSpeed(event);
 		
+		if (event.getEntity().world.getBlockState(event.getPos()).getBlock() instanceof Tree == false)
 		if (event.getEntity().world.getBlockState(event.getPos().up()).getBlock() instanceof Tree) {
 			if (event.getEntity().world.getBlockState(event.getPos().up()).getBlock() != BlocksT.CACTUS) {
 				event.setNewSpeed(-1);
@@ -977,27 +1084,22 @@ public class EntityEvents {
 
 	@SubscribeEvent
 	public static void handleEntityEvent(EntityEvent event) {
-//		if (event.getEntity() != null && !(event.getEntity() instanceof PlayerEntity)) {
-//			DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
-//			Entity entity = event.getEntity();
-//			if (entity.dimension.getId() == sky.getId()) {
-//				if (entity.posY < 0) {
-//					entity.changeDimension(DimensionType.OVERWORLD);
-//				}
-//			}
-//			if (entity.dimension.getId() == DimensionType.OVERWORLD.getId()) {
-//				if (entity.posY > 255) {
-//					entity.changeDimension(sky);
-//				}
-//			}
-//		}
+		
 	}
 	@SubscribeEvent
 	public static void handleLivingEvent(LivingEvent event) {
 		
 		if (event.getEntity() != null) {
+			
+			
+			
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+				
+				int shine = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SHINE).getScorePoints();
+				if (shine > 0) {
+					WorldStateHolder.get(player.world).setLight(player.getPosition(), 15);
+				}
 				
 				int nightowl = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).getScorePoints();
 				if (nightowl > 0) {
@@ -1007,6 +1109,16 @@ public class EntityEvents {
 				} else {
 					if (player.isPotionActive(Effects.NIGHT_VISION))
 						player.getActivePotionMap().remove(Effects.NIGHT_VISION);
+				}
+				
+				int invis = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.INVISIBILITY).getScorePoints();
+				if (invis > 0) {
+					if (player.isPotionActive(Effects.INVISIBILITY) == false) {
+						player.getActivePotionMap().put(Effects.INVISIBILITY, new EffectInstance(Effects.INVISIBILITY, invis, 1, false, false));
+					}
+				} else {
+					if (player.isPotionActive(Effects.INVISIBILITY))
+						player.getActivePotionMap().remove(Effects.INVISIBILITY);
 				}
 				
 				int flipper = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FLIPPER).getScorePoints();
@@ -1038,14 +1150,7 @@ public class EntityEvents {
 				
 				
 				
-				if (!player.world.isRemote) {
-					if (player.getServer() != null) {
-						World world = player.getEntityWorld();
-						Scoreboard scoreboard = player.getWorldScoreboard();
-						
-						ScoreboardEvents.handleScoreboard(player, world, scoreboard);
-					}
-				}
+				
 				
 				double reachMul = 1.0;
 				double attackMul = 1.0;
@@ -1066,6 +1171,15 @@ public class EntityEvents {
 								reachMul += modifier.size / 100.0;
 								attackMul += modifier.damage / 100.0;
 								knockbackMul += modifier.knockback / 100.0;
+							}
+							ItemStack s = player.getHeldItemMainhand();
+							if (s != null)
+							if (s.getItem() instanceof ItemT) {
+								if (shine <= 0 && s.getItem() != null) {
+									if (((ItemT)s.getItem()).getLightValue() > 0) {
+										WorldStateHolder.get(player.world).setLight(player.getPosition(), ((ItemT)s.getItem()).getLightValue());
+									}
+								}
 							}
 						}
 					}
@@ -1110,6 +1224,9 @@ public class EntityEvents {
 			if (entity.world.isRemote) {
 				if (event.getEntity() instanceof PlayerEntity) {
 					PlayerEntity player = (PlayerEntity)event.getEntity();
+					
+					
+					
 					int featherfall = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.FEATHERFALL).getScorePoints();
 					if (player.getMotion().y < 0)
 					if (featherfall > 0) {
@@ -1121,11 +1238,38 @@ public class EntityEvents {
 							G = 9.82f * 0.75f;
 						}
 					}
+					
+					int waterwalk = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).getScorePoints();
+					if (waterwalk > 0) {
+						A:
+						if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y - 0.1f, player.getPositionVec().z)).getFluidState().isSource() == true) {
+							
+							if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y + 2, player.getPositionVec().z)).getFluidState().isSource() == true)
+								break A;
+							if (Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown()) {
+								G = 9.82f * 2.0f;
+							} else {
+//								if (player.getMotion().y < 0) {
+//									player.posY -= player.getMotion().y;
+//								}
+								player.onGround = true;
+								if (player.world.getBlockState(new BlockPos(player.getPositionVec().x, player.getPositionVec().y +0.2f, player.getPositionVec().z)).getFluidState().isSource() == true) {
+									G = -9.82f * 8;
+								} else {
+									G = 0.0f;
+								}
+							}
+						}
+					}
+					
 				}
 			}
 			
+			if (event.getEntityLiving().isInWater()) {
+				G *= 0.25;
+			}
+			
 			if (falling)
-			if (!event.getEntityLiving().isInWater()) {
 //				event.getEntity().getMotion().add(0, -Conversions.convertToIngame(9.82f / 20.0f), 0);
 				if (event.getEntity() instanceof PlayerEntity) {
 					boolean nope = false;
@@ -1161,7 +1305,7 @@ public class EntityEvents {
 				} else {
 					event.getEntity().setMotion(new Vec3d(motion.getX(), motion.getY() - Conversions.convertToIngame(9.82f / 20.0f), motion.getZ()));
 				}
-			}
+			
 			event.getEntity().stepHeight = 1.0f;
 
 			if (event.getEntityLiving() != null) {
@@ -1413,7 +1557,7 @@ public class EntityEvents {
 				for (int i = 0; i < 3; i++) {
 					BlockPos pos = new BlockPos(player.getPosition().down(i));
 					if (player.world.getBlockState(pos).getBlock() == BlocksT.DIMENSION_BLOCK) {
-						player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+						player.world.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState());
 						break;
 					}
 				}
@@ -1435,9 +1579,6 @@ public class EntityEvents {
 		
 //		if (event.getEntity() instanceof EntitySlime) System.out.println("true");
 		if (event.getEntityLiving() != null) {
-			if (event.getEntityLiving().isInWater()) {
-				System.out.println("water");
-			}
 			Vec3d motion = event.getEntityLiving().getMotion();
 			
 			if (!(event.getEntityLiving() instanceof RabbitEntity))

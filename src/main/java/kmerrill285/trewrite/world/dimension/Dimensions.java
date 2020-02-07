@@ -69,7 +69,7 @@ public class Dimensions {
 		}
 		BlockPos pos2 = new BlockPos(destinationPos.getX(), 0, destinationPos.getZ());
 		if (nextWorld.getBlockState(pos2) != null) {
-			if (nextWorld.getBlockState(pos2).getBlock() == Blocks.AIR ||
+			if (nextWorld.getBlockState(pos2).getBlock() == BlocksT.AIR_BLOCK ||
 					nextWorld.getBlockState(pos2).getBlock() == Blocks.CAVE_AIR) {
 				if (!player.isSpectator())
 				nextWorld.setBlockState(pos2, BlocksT.DIMENSION_BLOCK.getDefaultState());
@@ -80,12 +80,12 @@ public class Dimensions {
 		}
 		BlockPos A = player.getPosition();
 		if (nextWorld.getBlockState(A).getMaterial().blocksMovement()) {
-			nextWorld.setBlockState(A, Blocks.AIR.getDefaultState());
+			nextWorld.setBlockState(A, BlocksT.AIR_BLOCK.getDefaultState());
 		}
 		A = A.up();
 		if (A.getY() <= 256)
 		if (nextWorld.getBlockState(A).getMaterial().blocksMovement()) {
-			nextWorld.setBlockState(A, Blocks.AIR.getDefaultState());
+			nextWorld.setBlockState(A, BlocksT.AIR_BLOCK.getDefaultState());
 		}
 		NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketRefreshDimensionRenderer());
 		player.attemptTeleport(iposX, destinationPos.getY() + destinationPos.getY() < 50 ? 1 : 0, iposZ, true);

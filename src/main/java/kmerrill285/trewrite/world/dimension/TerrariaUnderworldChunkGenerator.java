@@ -133,7 +133,7 @@ public class TerrariaUnderworldChunkGenerator extends NoiseChunkGenerator<Overwo
 					    }
 					    
 					    if (y <= top + underworldCeiling - 10) {
-					    	chunkIn.setBlockState(pos.setPos(x, y, z), Blocks.AIR.getDefaultState(), false);
+					    	chunkIn.setBlockState(pos.setPos(x, y, z), BlocksT.AIR_BLOCK.getDefaultState(), false);
 					    }
 					    
 					    if (y <= 15) {

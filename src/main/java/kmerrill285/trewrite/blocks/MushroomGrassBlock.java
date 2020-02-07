@@ -26,7 +26,7 @@ public class MushroomGrassBlock extends DirtBlock {
 					worldIn.setBlockState(pos, BlocksT.MUD.getDefaultState());
 						return;
 					}
-				if (worldIn.getBlockState(pos2).getBlock().getDefaultState() == Blocks.AIR.getDefaultState()) {
+				if (worldIn.getBlockState(pos2).getBlock().getDefaultState() == BlocksT.AIR_BLOCK.getDefaultState()) {
 					if (random.nextInt(100 * 10) <= 2) {
 						worldIn.setBlockState(pos2, BlocksT.GLOWING_MUSHROOM.getDefaultState());
 						if (random.nextInt(50) == 0) {

@@ -95,7 +95,7 @@ public class Sapling extends CrossedBlock {
 	      BlockState BlockState = worldIn.getBlockState(blockpos);
 	      Block block = BlockState.getBlock();
 	      
-	      if (block == Blocks.AIR) return false;
+	      if (block == BlocksT.AIR_BLOCK) return false;
 	      
 	      if (block instanceof BlockT) {
 	    	  return allowed.contains(((BlockT)block).name);

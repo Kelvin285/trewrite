@@ -35,7 +35,7 @@ public class DimensionBlock extends BlockT {
 	
 	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
 	       entityIn.fall(fallDistance, 0.0F);
-	       worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+	       worldIn.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState());
 	   }
 	
 	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
@@ -49,7 +49,7 @@ public class DimensionBlock extends BlockT {
 			}
 		}
 		if (close == false) {
-			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			worldIn.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState());
 		}
 	}
 	

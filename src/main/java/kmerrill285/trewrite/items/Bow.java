@@ -25,7 +25,7 @@ public class Bow extends ItemT {
 		this.damage = damage;
 		this.ranged = true;
 		MODIFIER_TYPE = EnumModifierType.RANGED;
-
+		this.setMaxStack(1);
 		
 	}
 	
@@ -146,13 +146,17 @@ public class Bow extends ItemT {
 //	 	         SnowballEntity snowballentity = new SnowballEntity(worldIn, playerIn);
 //	 	         snowballentity.func_213884_b(new ItemStack(arrow));
 //	 	         snowballentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
-	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
-	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
-	 	         
 				int archer = ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.ARCHERY).getScorePoints();
+					double vel = (velocity + arrow.velocity) * (1.0f/6.0f);
+	    		 if (archer > 0) {
+	    			 vel *= 1.25;
+	    		 }
+	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
+	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
+	 	         
 
 	 	         double damage = (arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
-	 	         if (archer > 0) damage *= 1.2;
+	 	         if (archer > 0) { damage *= 1.25; }
 	 	         arrowentity.setDamage(damage);
 	 	         if (random.nextInt(100) <= this.critChance + crit) {
 	 	        	arrowentity.setDamage(this.damage + this.damage * dmg * 2);

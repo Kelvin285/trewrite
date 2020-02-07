@@ -160,15 +160,29 @@ public class ScoreboardEvents {
 			mana.setScorePoints(20);
 		}
 		boolean playerMoving = false;
-		if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
-		if (manaTimer.getScorePoints() < (playerMoving ? 10 : 5)) {
-			manaTimer.incrementScore();
+		int mana_regen = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_REGENERATION).getScorePoints();
+		if (mana_regen <= 0) {
+			if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
+			if (manaTimer.getScorePoints() < (playerMoving ? 10 : 5)) {
+				manaTimer.incrementScore();
+			} else {
+				manaTimer.setScorePoints(0);
+				if (mana.getScorePoints() < maxMana.getScorePoints()) {
+					mana.incrementScore();
+				}
+			}
 		} else {
-			manaTimer.setScorePoints(0);
-			if (mana.getScorePoints() < maxMana.getScorePoints()) {
-				mana.incrementScore();
+			if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
+			if (manaTimer.getScorePoints() < 4.25) {
+				manaTimer.incrementScore();
+			} else {
+				manaTimer.setScorePoints(0);
+				if (mana.getScorePoints() < maxMana.getScorePoints()) {
+					mana.incrementScore();
+				}
 			}
 		}
+		
 		
 		if (mana.getScorePoints() > maxMana.getScorePoints()) mana.setScorePoints(maxMana.getScorePoints());
 		

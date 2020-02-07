@@ -91,7 +91,7 @@ public class TorchWall extends Torch {
 	    * currentPos
 	    */
 	   public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-	      return facing.getOpposite() == stateIn.get(HORIZONTAL_FACING) && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : stateIn;
+	      return facing.getOpposite() == stateIn.get(HORIZONTAL_FACING) && !stateIn.isValidPosition(worldIn, currentPos) ? BlocksT.AIR_BLOCK.getDefaultState() : stateIn;
 	   }
 
 	   /**

@@ -4,12 +4,19 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.EntityDrownedT;
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEowTail;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.worms.EntityWormBody;
+import kmerrill285.trewrite.entities.monsters.worms.EntityWormHead;
+import kmerrill285.trewrite.entities.monsters.worms.EntityWormTail;
 import kmerrill285.trewrite.entities.passive.EntityBunnyT;
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
+import kmerrill285.trewrite.entities.projectiles.EntityBullet;
 import kmerrill285.trewrite.entities.projectiles.EntityThrowingT;
-import kmerrill285.trewrite.util.Util;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -31,8 +38,19 @@ public class EntitiesT {
 	   public static EntityType<EntityBunnyT> BUNNY;
 	   public static EntityType<EntityHeart> HEART;
 	   public static EntityType<EntityCoin> COIN;
+	   public static EntityType<EntityStar> STAR;
+	   public static EntityType<EntityCoinPortal> COIN_PORTAL;
+	   public static EntityType<EntityRope> ROPE;
+	   public static EntityType<EntityWormHead> WORM_HEAD;
+	   public static EntityType<EntityWormBody> WORM_BODY;
+	   public static EntityType<EntityWormTail> WORM_TAIL;
 
-
+	   public static EntityType<EntityEowHead> EOW_HEAD;
+	   public static EntityType<EntityEowBody> EOW_BODY;
+	   public static EntityType<EntityEowTail> EOW_TAIL;
+	   
+	   public static EntityType<EntityBullet> BULLET;
+	   public static EntityType<EntityShadowOrb> SHADOW_ORB;
 	   
 	   @SubscribeEvent
 		public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
@@ -51,13 +69,28 @@ public class EntitiesT {
 		 
 		 EntitiesT.HEART = register("trewrite" + ":entityheart", EntityType.Builder.<EntityHeart>create(EntityHeart::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityHeart(world)));
 		 EntitiesT.COIN = register("trewrite" + ":entitycoin", EntityType.Builder.<EntityCoin>create(EntityCoin::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityCoin(world)));
+		 EntitiesT.STAR = register("trewrite" + ":entitystar", EntityType.Builder.<EntityStar>create(EntityStar::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityStar(world)));
+		 EntitiesT.COIN_PORTAL = register("trewrite" + ":entitycoinportal", EntityType.Builder.<EntityCoinPortal>create(EntityCoinPortal::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityCoinPortal(world)));
 
-		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
-		 SpawnCondition.spawnConditions.put(EntitiesT.DEMON_EYE, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
-		 SpawnCondition.spawnConditions.put(EntitiesT.BUNNY, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
-		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
-		 SpawnCondition.spawnConditions.put(EntitiesT.ZOMBIE, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
-		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(Util.surfaceLevel - 15, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
+		 EntitiesT.ROPE = register("trewrite" + ":entityrope", EntityType.Builder.<EntityRope>create(EntityRope::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityRope(world)));
+		 EntitiesT.WORM_HEAD = register("trewrite" + ":entitywormhead", EntityType.Builder.<EntityWormHead>create(EntityWormHead::new, EntityClassification.MISC).size(0.5f, 0.5f).setCustomClientFactory((spawnEntity, world) -> new EntityWormHead(world)));
+		 EntitiesT.WORM_BODY = register("trewrite" + ":entitywormbody", EntityType.Builder.<EntityWormBody>create(EntityWormBody::new, EntityClassification.MISC).size(0.5f, 0.5f).setCustomClientFactory((spawnEntity, world) -> new EntityWormBody(world)));
+		 EntitiesT.WORM_TAIL = register("trewrite" + ":entitywormtail", EntityType.Builder.<EntityWormTail>create(EntityWormTail::new, EntityClassification.MISC).size(0.5f, 0.5f).setCustomClientFactory((spawnEntity, world) -> new EntityWormTail(world)));
+
+		 EntitiesT.EOW_HEAD = register("trewrite" + ":entityeowhead", EntityType.Builder.<EntityEowHead>create(EntityEowHead::new, EntityClassification.MISC).size(4.0f, 4.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEowHead(world)));
+		 EntitiesT.EOW_BODY = register("trewrite" + ":entityeowbody", EntityType.Builder.<EntityEowBody>create(EntityEowBody::new, EntityClassification.MISC).size(4.0f, 4.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEowBody(world)));
+		 EntitiesT.EOW_TAIL = register("trewrite" + ":entityeowtail", EntityType.Builder.<EntityEowTail>create(EntityEowTail::new, EntityClassification.MISC).size(4.0f, 4.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEowTail(world)));
+
+		 EntitiesT.BULLET = register("trewrite" + ":entitybullet", EntityType.Builder.<EntityBullet>create(EntityBullet::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityBullet(world)));
+		 EntitiesT.SHADOW_ORB = register("trewrite" + ":entityshadoworb", EntityType.Builder.<EntityShadowOrb>create(EntityShadowOrb::new, EntityClassification.MISC).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityShadowOrb(world)));
+
+		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
+		 SpawnCondition.spawnConditions.put(EntitiesT.DEMON_EYE, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
+		 SpawnCondition.spawnConditions.put(EntitiesT.BUNNY, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
+		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
+		 SpawnCondition.spawnConditions.put(EntitiesT.ZOMBIE, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
+		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL, Blocks.WATER));
+		 SpawnCondition.spawnConditions.put(EntitiesT.WORM_HEAD, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
 
 	   
 	   }

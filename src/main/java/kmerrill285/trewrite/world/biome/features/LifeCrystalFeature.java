@@ -25,12 +25,23 @@ public class LifeCrystalFeature extends Feature<NoFeatureConfig> {
 		   for(int i = 0; i < 10; ++i) {
 	         BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
 	         if (worldIn.isAirBlock(blockpos)) {
+	        	 if (worldIn.getBlockState(new BlockPos(blockpos.getX(), blockpos.getY() - 1, blockpos.getZ())).getBlock() == BlocksT.EBONSTONE) {
+	        		 if (rand.nextInt(100) <= 25) {
+			            	worldIn.setBlockState(blockpos, BlocksT.DEMON_ALTAR.getDefaultState(), 0);
+		            	}
+	        	 }
 	            if (worldIn.getBlockState(new BlockPos(blockpos.getX(), blockpos.getY() - 1, blockpos.getZ())).getBlock() == BlocksT.STONE_BLOCK||
 	            		worldIn.getBlockState(new BlockPos(blockpos.getX(), blockpos.getY() - 1, blockpos.getZ())).getBlock() == Blocks.STONE) {
-	            	if (rand.nextInt(100) == 0) {
+	            	if (rand.nextInt(100) <= 5) {
 	            		if (worldIn.getDimension().getType().getRegistryName().toString().contains("under") ||
 	            				blockpos.getY() <= 50) {
 		            		worldIn.setBlockState(blockpos, BlocksT.LIFE_CRYSTAL.getDefaultState(), 0);
+	            		}
+	            	}else
+	            	if (rand.nextInt(100) <= 2) {
+	            		if (worldIn.getDimension().getType().getRegistryName().toString().contains("under") ||
+	            				blockpos.getY() <= 50) {
+		            		worldIn.setBlockState(blockpos, BlocksT.DEMON_ALTAR.getDefaultState(), 0);
 	            		}
 	            	}
 	            }

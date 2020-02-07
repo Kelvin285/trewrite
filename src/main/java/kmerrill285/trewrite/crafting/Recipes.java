@@ -159,6 +159,7 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_PLATFORM, 2), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(Items.BUCKET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.ANY_IRON, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.ROPE_COIL), null, new ItemStackT(ItemsT.ROPE, 10)));
 
 //		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 

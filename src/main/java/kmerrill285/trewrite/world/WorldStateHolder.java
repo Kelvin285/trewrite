@@ -2,6 +2,11 @@ package kmerrill285.trewrite.world;
 
 import java.util.HashMap;
 
+import kmerrill285.trewrite.blocks.BlockAirT;
+import kmerrill285.trewrite.blocks.BlockT;
+import kmerrill285.trewrite.blocks.BlocksT;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -18,6 +23,7 @@ public class WorldStateHolder extends WorldSavedData {
 	
 	public boolean eyeDefeated = false;
 	public int shadowOrbsMined = 0;
+	public boolean eaterOfWorldsDefeated = false;
 	public boolean hardmode = false;
 	public boolean skeletronDefeated = false;
 	public boolean twinsDefeated = false;
@@ -26,6 +32,7 @@ public class WorldStateHolder extends WorldSavedData {
 	public boolean planteraDefeated = false;
 	public boolean golemDefeated = false;
 	public boolean cultistDefeated = false;
+	public boolean dukeFishronDefeated = false;
 	public boolean solarPillarDefeated = false;
 	public boolean vortexPillarDefeated = false;
 	public boolean nebulaPillarDefeated = false;
@@ -35,8 +42,10 @@ public class WorldStateHolder extends WorldSavedData {
 	public int nebulaEnemiesDefeated = 0;
 	public int stardustEnemiesDefeated = 0;
 	public int invasionEnemiesDefeated = 0;
+	public boolean meteoriteSpawn = false;
 	
 	public HashMap<String, BlockPos> spawnPositions = new HashMap<String, BlockPos>();
+	public HashMap<BlockPos, Integer> lights = new HashMap<BlockPos, Integer>();
 	
 	public class WorldState {
 		
@@ -57,14 +66,13 @@ public class WorldStateHolder extends WorldSavedData {
 		{
 			return CLIENT_DUMMY;
 		}
-
 		
-
 		ServerWorld overworld = ((ServerWorld)world).getServer().getWorld(DimensionType.OVERWORLD);
 
 		DimensionSavedDataManager storage = overworld.getSavedData();
 		WorldStateHolder stateHolder = storage.getOrCreate(WorldStateHolder::new, "trewrite:worldstate");
 		stateHolder.world = world;
+				
 		return stateHolder;
 	}
 	
@@ -89,6 +97,8 @@ public class WorldStateHolder extends WorldSavedData {
 		nebulaEnemiesDefeated = nbt.getInt("nebulaEnemiesDefeated");
 		stardustEnemiesDefeated = nbt.getInt("stardustEnemiesDefeated");
 		invasionEnemiesDefeated = nbt.getInt("invasionEnemiesDefeated");
+		eaterOfWorldsDefeated = nbt.getBoolean("eaterOfWorldsDefeated");
+		meteoriteSpawn = nbt.getBoolean("meteoriteSpawn");
 		
 		int size = nbt.getInt("sposLength");
 		for (int i = 0; i < size; i++) {
@@ -105,7 +115,16 @@ public class WorldStateHolder extends WorldSavedData {
 			}
 			
 		}
-		
+		size = nbt.getInt("lightsLength");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("lights["+i+"]".trim());
+			String[] data = s.split(",");
+			int x = Integer.parseInt(data[0]);
+			int y = Integer.parseInt(data[1]);
+			int z = Integer.parseInt(data[2]);
+			int l = Integer.parseInt(data[3]);
+			lights.put(new BlockPos(x, y, z), l);
+		}
 	}
 
 	@Override
@@ -129,6 +148,8 @@ public class WorldStateHolder extends WorldSavedData {
 		compound.putInt("nebulaEnemiesDefeated", nebulaEnemiesDefeated);
 		compound.putInt("stardustEnemiesDefeated", stardustEnemiesDefeated);
 		compound.putInt("invasionEnemiesDefeated", invasionEnemiesDefeated);
+		compound.putBoolean("eaterOfWorldsDefeated", eaterOfWorldsDefeated);
+		compound.putBoolean("meteoriteSpawn", meteoriteSpawn);
 		compound.putInt("sposLength", spawnPositions.size());
 		int i = 0;
 		for (String p : spawnPositions.keySet()) {
@@ -140,7 +161,55 @@ public class WorldStateHolder extends WorldSavedData {
 			}
 			i++;
 		}
+		compound.putInt("lightsLength", lights.size());
+		i = 0;
+		for (BlockPos p : lights.keySet()) {
+			int l = lights.get(p);
+			compound.putString("lights["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
+			i++;
+		}
 		return compound;
+	}
+
+	public void setLight(BlockPos pos, int light) {
+		lights.put(pos, light);
+	}
+	
+	public void update() {
+		int updated = 0;
+		if (world.getWorld().getGameTime() % 5 == 0)
+		for (BlockPos p : lights.keySet()) {
+			updated++;
+			if (updated > 100) {
+				break;
+			}
+			lights.put(p, lights.get(p)-1);
+			
+			if (lights.get(p) <= 0) {
+				if (world.getBlockState(p).getBlock() instanceof BlockT) {
+					world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+				}
+				if (world.getBlockState(p).getBlock() == BlocksT.AIR_BLOCK) {
+					if (world.getBlockState(p).has(BlockAirT.WATERLOGGED)) {
+						if (world.getBlockState(p).get(BlockAirT.WATERLOGGED).booleanValue()) {
+							world.getWorld().setBlockState(p, Blocks.WATER.getDefaultState());
+						}
+					}
+				}
+				lights.remove(p);
+				break;
+			} else {
+				if (world.getBlockState(p).getBlock() == Blocks.WATER && world.getBlockState(p).getFluidState().isSource()) {
+					world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)).with(BlockAirT.WATERLOGGED, true));
+				}
+				if (world.getBlockState(p).getBlock() instanceof AirBlock) {
+					world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)));
+				} else if (world.getBlockState(p).getBlock() instanceof BlockT) {
+					world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+				}
+			}
+		}
+		this.markDirty();
 	}
 	
 //	public long lastTick;

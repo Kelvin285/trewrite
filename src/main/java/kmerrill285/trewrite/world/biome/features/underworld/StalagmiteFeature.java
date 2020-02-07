@@ -26,7 +26,7 @@ public class StalagmiteFeature extends Feature<NoFeatureConfig> {
 	         BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
 	         if (rand.nextBoolean()) {
 	        	 if (blockpos.getY() >= 180)
-	        	 if (worldIn.getBlockState(blockpos.down()) == Blocks.AIR.getDefaultState())
+	        	 if (worldIn.getBlockState(blockpos.down()) == BlocksT.AIR_BLOCK.getDefaultState())
 	    	         if (worldIn.getBlockState(blockpos) == BlocksT.ASH_BLOCK.getDefaultState()) {
 	    	        	 generate(blockpos.add(0, 8, 0), worldIn, rand, true);
 	    	        	 break;

@@ -344,8 +344,9 @@ public class OverlayEvents {
 			scaledWidth = instance.mainWindow.getScaledWidth();
 		    scaledHeight = instance.mainWindow.getScaledHeight();
 			
-		    int xx = scaledWidth / 2 - 91;
+		    int xx = scaledWidth - 20;
 		    int yy = 10;
+		    
 		    		    
 		    if (instance.getRenderViewEntity() instanceof PlayerEntity) {
 		    	GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -358,11 +359,11 @@ public class OverlayEvents {
 				
 				instance.ingameGUI.blit(Conversions.toScreenX(xx), Conversions.toScreenY(yy), 9 * 1, 9 * 2, 9, 9);
 				
-				instance.ingameGUI.blit(Conversions.toScreenX(xx + 10 * 5), Conversions.toScreenY(yy), 9 * 2, 9 * 2, 9, 9);
+				instance.ingameGUI.blit(Conversions.toScreenX(xx), Conversions.toScreenY(yy + 3 * 5), 9 * 2, 9 * 2, 9, 9);
 				
-				instance.ingameGUI.blit(Conversions.toScreenX(xx + 10 * 10), Conversions.toScreenY(yy), 9 * 3, 9 * 2, 9, 9);
+				instance.ingameGUI.blit(Conversions.toScreenX(xx), Conversions.toScreenY(yy + 3 * 10), 9 * 3, 9 * 2, 9, 9);
 
-				instance.ingameGUI.blit(Conversions.toScreenX(xx + 10 * 15), Conversions.toScreenY(yy), 9 * 4, 9 * 2, 9, 9);
+				instance.ingameGUI.blit(Conversions.toScreenX(xx), Conversions.toScreenY(yy + 3 * 15), 9 * 4, 9 * 2, 9, 9);
 
 				
 				PlayerEntity player = (PlayerEntity)instance.getRenderViewEntity();
@@ -373,10 +374,10 @@ public class OverlayEvents {
 				int gold = (coins / 10000) % 100;
 				int platinum = (coins / 1000000) % 100;
 				
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+copper, xx + 10, yy, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+silver, xx + 10 + 10 * 5, yy, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+gold, xx + 10 + 10 * 10, yy, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+platinum, xx + 10 + 10 * 15, yy, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+copper, xx - (10 + (""+copper).length()), yy, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+silver, xx - (10 + (""+silver).length()), yy + 3 * 5, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+gold, xx - (10 + (""+gold).length()), yy + 3 * 10, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+platinum, xx - (10 + (""+platinum).length()), yy + 3 * 15, 0xFFFFFF);
 				
 					
 				//RENDER BUFFS / DEBUFFS

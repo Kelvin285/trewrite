@@ -8,6 +8,7 @@ import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
@@ -134,7 +135,10 @@ public class EntityHeart extends MobEntity {
 					closest = player;
 				}
 			}
-			if (closest != null && dist < 2.0f) {
+
+			if (closest != null && dist < 8.0f) {
+				int heartreach = ScoreboardEvents.getScore(closest.getWorldScoreboard(), closest, ScoreboardEvents.HEARTREACH).getScorePoints();
+				if (heartreach > 0 && dist < 8.0f || dist <= 2.0f)
 				if (dead == false && closest.getHealth() <= closest.getMaxHealth()) {
 					
 					float newX = lerp((float)posX, (float)closest.posX, 0.35f);
@@ -146,7 +150,7 @@ public class EntityHeart extends MobEntity {
 					this.posZ = newZ;
 					moving = true;
 					
-					if (dist < 0.25f) {
+					if (dist < 1f) {
 						if (!world.isRemote) {
 							final ServerPlayerEntity player = (ServerPlayerEntity)closest;
 							

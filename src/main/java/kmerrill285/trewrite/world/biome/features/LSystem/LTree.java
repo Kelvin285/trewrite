@@ -3,10 +3,8 @@ package kmerrill285.trewrite.world.biome.features.LSystem;
 import java.awt.Color;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
+import kmerrill285.trewrite.blocks.BlocksT;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
@@ -108,7 +106,7 @@ public class LTree {
 
    public boolean placeInWorld(IWorld worldIn, Random rand, BlockPos pos) {
 	   if (growsOn == null) {
-		   if (worldIn.getBlockState(pos) != Blocks.AIR.getDefaultState()) {
+		   if (worldIn.getBlockState(pos) != BlocksT.AIR_BLOCK.getDefaultState()) {
 	        	 int rad = 2;
 	        	 tree(pos, worldIn, rand);
 	         } 

@@ -73,7 +73,7 @@ public class ForwardDouble extends BlockT {
 	      if (isValidPosition(stateIn, worldIn, currentPos)) {
 			   return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	      } else {
-	    	  return Blocks.AIR.getDefaultState();
+	    	  return BlocksT.AIR_BLOCK.getDefaultState();
 	      }
 		   
 	   }
@@ -83,7 +83,7 @@ public class ForwardDouble extends BlockT {
 	    * Block.removedByPlayer
 	    */
 	   public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-	      super.harvestBlock(worldIn, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+	      super.harvestBlock(worldIn, player, pos, BlocksT.AIR_BLOCK.getDefaultState(), te, stack);
 	   }
 
 	   public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -100,7 +100,7 @@ public class ForwardDouble extends BlockT {
 	      BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
 	      BlockState blockstate = worldIn.getBlockState(blockpos);
 	      if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
-	         worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+	         worldIn.setBlockState(blockpos, BlocksT.AIR_BLOCK.getDefaultState(), 35);
 	         worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
 	         ItemStack itemstack = player.getHeldItemMainhand();
 	         if (!worldIn.isRemote && !player.isCreative()) {

@@ -9,7 +9,6 @@ import com.mojang.datafixers.Dynamic;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.world.biome.features.LSystem.LSystem;
 import kmerrill285.trewrite.world.biome.features.LSystem.LSystemPos;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -26,7 +25,7 @@ public class SpruceTreeFeature extends Feature<NoFeatureConfig> {
 	   public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		   for(int i = 0; i < rand.nextInt(5) + 5; ++i) {
 	         BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-	         if (worldIn.getBlockState(blockpos.up()) == Blocks.AIR.getDefaultState())
+	         if (worldIn.getBlockState(blockpos.up()) == BlocksT.AIR_BLOCK.getDefaultState())
 	         if (worldIn.getBlockState(blockpos) == BlocksT.PODZOL.getDefaultState()) {
 	        	 int rad = 2;
 	        	 tree(pos, worldIn, rand);

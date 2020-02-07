@@ -1,6 +1,7 @@
 package kmerrill285.trewrite.items;
 
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
+import net.minecraft.entity.LivingEntity;
 
 public class Arrow extends ItemT {
 	
@@ -23,6 +24,10 @@ public class Arrow extends ItemT {
 	}
 	
 	public void arrowTick(EntityArrowT entityArrowT) {
+		
+	}
+	
+	public void onArrowHit(EntityArrowT arrow, LivingEntity hit) {
 		
 	}
 	

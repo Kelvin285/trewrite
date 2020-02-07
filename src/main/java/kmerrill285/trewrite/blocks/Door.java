@@ -93,9 +93,9 @@ public class Door extends BlockT {
 	   public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 	      DoubleBlockHalf doubleblockhalf = stateIn.get(HALF);
 	      if (facing.getAxis() == Direction.Axis.Y && doubleblockhalf == DoubleBlockHalf.LOWER == (facing == Direction.UP)) {
-	         return facingState.getBlock() == this && facingState.get(HALF) != doubleblockhalf ? stateIn.with(FACING, facingState.get(FACING)).with(OPEN, facingState.get(OPEN)).with(HINGE, facingState.get(HINGE)).with(POWERED, facingState.get(POWERED)) : Blocks.AIR.getDefaultState();
+	         return facingState.getBlock() == this && facingState.get(HALF) != doubleblockhalf ? stateIn.with(FACING, facingState.get(FACING)).with(OPEN, facingState.get(OPEN)).with(HINGE, facingState.get(HINGE)).with(POWERED, facingState.get(POWERED)) : BlocksT.AIR_BLOCK.getDefaultState();
 	      } else {
-	         return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+	         return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos) ? BlocksT.AIR_BLOCK.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	      }
 	   }
 
@@ -104,7 +104,7 @@ public class Door extends BlockT {
 	    * Block.removedByPlayer
 	    */
 	   public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-	      super.harvestBlock(worldIn, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+	      super.harvestBlock(worldIn, player, pos, BlocksT.AIR_BLOCK.getDefaultState(), te, stack);
 	   }
 
 	   public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -124,7 +124,7 @@ public class Door extends BlockT {
 	      BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
 	      BlockState blockstate = worldIn.getBlockState(blockpos);
 	      if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
-	         worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+	         worldIn.setBlockState(blockpos, BlocksT.AIR_BLOCK.getDefaultState(), 35);
 	         worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
 	         ItemStack itemstack = player.getHeldItemMainhand();
 	         if (!worldIn.isRemote && !player.isCreative()) {

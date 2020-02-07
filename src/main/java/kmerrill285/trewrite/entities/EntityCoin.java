@@ -3,12 +3,12 @@ package kmerrill285.trewrite.entities;
 import java.util.List;
 
 import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -87,15 +87,18 @@ public class EntityCoin extends MobEntity implements IEntityAdditionalSpawnData 
 		return false;
 	}
 	
+	
+	
 	public boolean grabbed = false;
 	@Override
-	public void tick() {
-		
+	public void tick() {		
 		super.tick();
+		
+		
+		
 		this.setNoGravity(false);
 		this.age++;
 		boolean moving = false;
-		
 		this.entityCollisionReduction = 1.0f;
 		if (age > 60 * 5 * 20 || dead == true) { this.remove(); }
 		
@@ -132,7 +135,7 @@ public class EntityCoin extends MobEntity implements IEntityAdditionalSpawnData 
 					this.posZ = newZ;
 					moving = true;
 					
-					if (dist < 0.25f) {
+					if (dist < 1f) {
 						if (!world.isRemote) {
 							final ServerPlayerEntity player = (ServerPlayerEntity)closest;
 							
@@ -217,8 +220,10 @@ public class EntityCoin extends MobEntity implements IEntityAdditionalSpawnData 
 	
 	
 
-	public static EntityCoin spawnCoin(World worldIn, BlockPos pos) {
+	public static EntityCoin spawnCoin(World worldIn, BlockPos pos, int type, int value) {
 		EntityCoin coin = EntitiesT.COIN.create(worldIn, null, null, null, pos, SpawnReason.EVENT, false, false);
+		coin.coin = type;
+		coin.amount = value;
 		worldIn.addEntity(coin);
 		return coin;
 	}

@@ -29,7 +29,7 @@ public class ThinIceBlock extends BlockT {
 	}
 
 	public BlockState breakBlock(World worldIn, BlockPos pos, BlockState state) {
-		 return Blocks.AIR.getDefaultState();
+		 return BlocksT.AIR_BLOCK.getDefaultState();
 	 }
 	
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -44,7 +44,7 @@ public class ThinIceBlock extends BlockT {
 	    	   System.out.println(entityIn.getMotion().y);
 			   if (entityIn.getMotion().y < 0.08f) {
 				   	  worldIn.playSound(player, pos, this.soundType.getBreakSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
-			    	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			    	  worldIn.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState());
 			      }
 		   }
 	   }

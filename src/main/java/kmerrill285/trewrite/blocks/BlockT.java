@@ -11,18 +11,17 @@ import kmerrill285.trewrite.util.Conversions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 public class BlockT extends Block {
@@ -63,15 +62,31 @@ public class BlockT extends Block {
 //		b.onBlockHarvested(worldIn, pos, state, player);
 	}
 	
-//	public static final BooleanProperty field_220119_b = BlockStateProperties.WATERLOGGED;
+	public static final IntegerProperty light = IntegerProperty.create("lightlevel", 0, 15);
+	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-//        builder.add(field_220119_b);
-     }
+		super.fillStateContainer(builder);
+        builder.add(light);
+    }
 	
+	public int getLightValue(BlockState state) {
+		if (state.getBlock() instanceof BlockT && state != null && state.getBlock() != null)
+			if (state.has(light))
+		return Math.max(state.get(BlockT.light).intValue(), super.getLightValue(state));
+		return super.getLightValue(state);
+	}
+	
+	public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+		if (state.getBlock() instanceof BlockT && state != null && state.getBlock() != null)
+			if (state.has(light))
+		return Math.max(state.get(BlockT.light).intValue(), super.getLightValue(state, world, pos));
+		return super.getLightValue(state, world, pos);
+	}
 	
 	
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (newState.getBlock() != Blocks.AIR) return;
+		if (newState.getBlock() != BlocksT.AIR_BLOCK &&
+				newState.getBlock() != Blocks.AIR) return;
 		if (!isMoving)
 		if (!worldIn.isRemote)
 			
@@ -135,7 +150,7 @@ public class BlockT extends Block {
 						EntityItemT.spawnItem(worldIn, pos, new ItemStackT(drop, 1));
 					}
 				}
-		 return Blocks.AIR.getDefaultState();
+		 return BlocksT.AIR_BLOCK.getDefaultState();
 	 }
 	
 	public BlockT setConsumable() {

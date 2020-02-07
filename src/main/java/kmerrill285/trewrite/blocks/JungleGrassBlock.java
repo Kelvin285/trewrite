@@ -21,11 +21,11 @@ public class JungleGrassBlock extends DirtBlock {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
 			BlockPos pos2 = pos.add(0, 1, 0);
 			if (worldIn.isBlockPresent(pos2)) {
-				if (worldIn.getBlockState(pos2).isSolid()) {
+				if (worldIn.getBlockState(pos2).isSolid() && worldIn.getBlockState(pos2).getBlock() instanceof BlockAirT == false) {
 					worldIn.setBlockState(pos, BlocksT.MUD.getDefaultState());
 						return;
 					}
-				if (worldIn.getBlockState(pos2).getBlock().getDefaultState() == Blocks.AIR.getDefaultState()) {
+				if (worldIn.getBlockState(pos2).getBlock().getDefaultState() == BlocksT.AIR_BLOCK.getDefaultState()) {
 					if (random.nextInt(100 * 10) <= 2) {
 						worldIn.setBlockState(pos2, BlocksT.FLOWER.getDefaultState().with(BasicPlant.TYPE, random.nextInt(21)));
 						if (random.nextInt(15) == 0) {

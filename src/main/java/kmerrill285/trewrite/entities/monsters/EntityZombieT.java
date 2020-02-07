@@ -44,9 +44,7 @@ public class EntityZombieT extends ZombieEntity {
 			}
 		}
 		
-		EntityCoin coin = EntityCoin.spawnCoin(this.getEntityWorld(), this.getPosition());
-		coin.amount = money;
-		coin.coin = EntityCoin.COPPER;
+		EntityCoin.spawnCoin(world, getPosition(), EntityCoin.COPPER, money);
     }
 	
 	protected void registerAttributes() {

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.core.commands.CommandsT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.items.ItemStackT;
@@ -13,7 +14,7 @@ import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.entities.monsters.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
@@ -30,9 +31,11 @@ import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Blocks;
+import net.minecraft.command.impl.TeleportCommand;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -46,6 +49,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -146,18 +150,29 @@ public class Trewrite
 //		if (DimensionManager.getWorld(event.world.getServer(), t, true, true) == null) {
 //			DimensionManager.initWorld(event.world.getServer(), t);
 //		}
-
 		
 		World world = event.world;
+		
+		WorldStateHolder holder = WorldStateHolder.get(world);
+		holder.update();
 		
 		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
 		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
 
-		
 		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
 
 		for (PlayerEntity player : world.getPlayers()) {
+			if (event.phase == TickEvent.Phase.END)
+			if (event.type == TickEvent.Type.WORLD)
+			if (!player.world.isRemote) {
+				if (player.getServer() != null) {
+					Scoreboard scoreboard = player.getWorldScoreboard();
+					
+					ScoreboardEvents.handleScoreboard(player, world, scoreboard);
+				}
+			}
+			
 			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, world);
 			if (player.getPosition().getY() < 0) {
 				if (player.dimension == sky) {
@@ -262,6 +277,7 @@ public class Trewrite
 			
 			Trewrite.ticks++;
 			if (Trewrite.ticks % 20 == 0) {
+				
 				new Thread() {
 					public void run() {
 						try {
@@ -280,7 +296,7 @@ public class Trewrite
 				
 			}
 			
-			WorldStateHolder holder = WorldStateHolder.get(world);
+			
 			Util.minSpawnDistance = 15.0;
 			Util.entitySpawnRate = 1.0/25.0;
 			
@@ -303,17 +319,16 @@ public class Trewrite
 			
 				
 			
-			
-			if (world.rand.nextDouble() <= Util.entitySpawnRate * 2) {
+				
 				for (PlayerEntity player : world.getPlayers()) {
-					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints() == 0)
-					if (world.rand.nextBoolean()) continue;
-					
+					int battle = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints();
+					if (world.rand.nextDouble() <= Util.entitySpawnRate * (battle > 0 ? 2 : 1)) {
 					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).getScorePoints() > 0)
 						if (world.rand.nextBoolean()) continue;
 					double x = player.posX + world.rand.nextInt(180) - 90, y = player.posY + world.rand.nextInt(180) - 90, z = player.posZ + world.rand.nextInt(180) - 90;
 					
 					for (PlayerEntity p2 : world.getPlayers()) {
+						
 						if (p2.getPositionVec().distanceTo(new Vec3d(x, y, z)) >= Util.minSpawnDistance) {
 							new Thread () {
 								public void run() {
@@ -362,7 +377,7 @@ public class Trewrite
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        // do something when the server starts
+        CommandsT.register(event.getCommandDispatcher());
     }
     
     

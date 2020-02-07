@@ -107,6 +107,7 @@ public class CrossedBlock extends BasicBlock {
 		   }
 	   
 	   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		   super.fillStateContainer(builder);
 		      builder.add(WATERLOGGED);
 		   }
 	   
@@ -115,7 +116,7 @@ public class CrossedBlock extends BasicBlock {
 		      BlockState BlockState = worldIn.getBlockState(blockpos);
 		      Block block = BlockState.getBlock();
 		      
-		      if (block == Blocks.AIR) return false;
+		      if (block == BlocksT.AIR_BLOCK) return false;
 		      
 		      return BlockState.isSolid();
 		   }

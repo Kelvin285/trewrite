@@ -55,7 +55,7 @@ public class FallingBlock extends BasicBlock {
 //						EntityItemT.spawnItem(worldIn, pos, new ItemStackT(drop, 1));
 //					}
 //				}
-		 return Blocks.AIR.getDefaultState();
+		 return BlocksT.AIR_BLOCK.getDefaultState();
 	 }
 	
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
