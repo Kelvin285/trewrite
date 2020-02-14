@@ -52,12 +52,12 @@ public class EntityBlueSlime extends SlimeEntity
     	 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25);
          this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue((double)(0.2F + 0.1F * (float)1));
          this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(0);
-
          return spawnDataIn;
 
     }
     
     protected void setSlimeSize(int size, boolean resetHealth) {
+    	super.setSlimeSize(size, resetHealth);
         this.setPosition(this.posX, this.posY, this.posZ);
         this.recalculateSize();
        
@@ -66,7 +66,8 @@ public class EntityBlueSlime extends SlimeEntity
         }
 
         this.experienceValue = 0;
-        
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25);
+    	this.setHealth(25);
      }
     
     public void dropLoot(DamageSource source, boolean b) {
@@ -103,7 +104,7 @@ public class EntityBlueSlime extends SlimeEntity
     }
     
 	public void remove() {		
-    	super.remove();
+    	
     }
     
 	/**
@@ -111,7 +112,7 @@ public class EntityBlueSlime extends SlimeEntity
      */
     public int getSlimeSize()
     {
-        return 1;
+        return getHealth() > 0 ? 2 : 1;
     }
 
     protected void alterSquishAmount()

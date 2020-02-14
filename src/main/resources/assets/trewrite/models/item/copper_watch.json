@@ -2,6 +2,6 @@
 	"parent": "item/generated",
 	"textures":
 	{
-		"layer0": "trewrite:item/copper_watch"
+		"layer0": "trewrite:item/copper_pocketwatch"
 	}
 }

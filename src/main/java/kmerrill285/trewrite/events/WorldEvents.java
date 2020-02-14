@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,18 +32,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class WorldEvents {
-	public static HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
+	private static HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
 	public static HashMap<String, InventoryChestTerraria> chests = new HashMap<String, InventoryChestTerraria>();
 
-	public static InventoryTerraria getOrLoadInventory(PlayerEntity player, World w) {
+	public static InventoryTerraria getOrLoadInventory(PlayerEntity player) {
+		if (player.world.isRemote) return null;
+		World w = player.world.getServer().getWorld(DimensionType.OVERWORLD);
 		if (!(w instanceof ServerWorld)) {
 			return null;
 		}
-		InventoryTerraria a = inventories.get(player.getScoreboardName());
+		InventoryTerraria a = WorldEvents.inventories.get(player.getScoreboardName());
 		if (a != null) return a;
 		World world = (ServerWorld)w;
 		InventoryTerraria inventory = new InventoryTerraria();
 		inventory.load(player.getScoreboardName(), world.getServer().getFolderName());
+		WorldEvents.inventories.put(player.getScoreboardName(), inventory);
 		return inventory;
 	}
 	
@@ -86,16 +90,16 @@ public class WorldEvents {
 		
 		
 		System.out.println("Saving inventories");
-		Set<String> keys = inventories.keySet();
+		Set<String> keys = getInventories().keySet();
 		for (String player : keys) {
-			if (inventories.get(player).canSave == false) {
+			if (getInventories().get(player).canSave == false) {
 				System.out.println("INVENTORY LOCKED FOR " + player);
 				continue;
 			}
 			
 			if (event.getWorld() instanceof ServerWorld) {
 				ServerWorld s = (ServerWorld)event.getWorld();
-				inventories.get(player).save(player, s.getServer().getFolderName());
+				getInventories().get(player).save(player, s.getServer().getFolderName());
 			}
 //			inventories.get(player).save(player, Minecraft.getInstance().getIntegratedServer().getFolderName());
 
@@ -134,9 +138,9 @@ public class WorldEvents {
 		}
 		if (!event.getWorld().isRemote()) {
 			System.out.println("WORLD UNLOADED");
-			for (String player : inventories.keySet()) {
-				if (inventories.get(player).open) {
-					InventoryTerraria inventory = inventories.get(player);
+			for (String player : getInventories().keySet()) {
+				if (getInventories().get(player).open) {
+					InventoryTerraria inventory = getInventories().get(player);
 					for (int i = 0; i < 9; i++) {
 						if (inventory.savedHotbar[i] != null) {
 							inventory.player.inventory.setInventorySlotContents(i, inventory.savedHotbar[i]);
@@ -146,13 +150,17 @@ public class WorldEvents {
 					inventory.player.inventory.offHandInventory.set(0, inventory.savedOffhand);
 				}
 			}
-			inventories.clear();
+			getInventories().clear();
 		}
 	}
 	
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void worldLoadEvent(Load event) {
+	}
+
+	public static HashMap<String, InventoryTerraria> getInventories() {
+		return WorldEvents.inventories;
 	}
 
 }

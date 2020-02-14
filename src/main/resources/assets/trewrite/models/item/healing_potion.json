@@ -2,6 +2,6 @@
 	"parent": "item/generated",
 	"textures":
 	{
-		"layer0": "trewrite:item/healing_potion"
+		"layer0": "trewrite:item/lesser_healing_potion"
 	}
 }

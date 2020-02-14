@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.google.common.collect.Multimap;
 
-import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
 import kmerrill285.trewrite.util.Conversions;
 import net.minecraft.client.util.ITooltipFlag;
@@ -159,12 +158,23 @@ public class ItemT extends Item {
 		
 	}
 	
+	
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
 		
 	}
 	
+	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
+		
+	}
+	
+	public void setCraftingRecipes() {
+		
+	}
+	
 	public boolean onAttack(Entity target, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn, double attackMod) {
-
+		
+			
+		
 		if (target != null) {
 			if (new Random().nextInt(100) <= critChance) {
 				target.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) (damage * 2 * attackMod));
@@ -186,10 +196,14 @@ public class ItemT extends Item {
 	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
 	      Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
 	      if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-	    	  AttributeModifier modifier = new AttributeModifier(itemName, axe, null);
-	         multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.damage - 1, Operation.ADDITION));
-	         multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", (double)(56 - this.useTime) / (56.0 / 2.0), Operation.ADDITION));
-	      }
+	    	  
+	    	  if (this.melee) {
+	    		  multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.damage - 1, Operation.ADDITION));
+	 	          multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", this.useTime - (this.useTime * 1.1) + 1, Operation.ADDITION));
+	    	  } else {
+	 	          multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", this.useTime - (this.useTime * 1.1) + 1, Operation.ADDITION));
+	    	  }
+	        }
 
 	      return multimap;
 	 }

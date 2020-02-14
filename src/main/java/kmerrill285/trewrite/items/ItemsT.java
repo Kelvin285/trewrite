@@ -12,6 +12,7 @@ import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.accessories.Accessory.WearSlot;
 import kmerrill285.trewrite.items.basic.BasicBroadsword;
 import kmerrill285.trewrite.items.basic.BasicItem;
+import kmerrill285.trewrite.items.terraria.accessories.BandOfStarpower;
 import kmerrill285.trewrite.items.terraria.accessories.CloudInABottle;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
 import kmerrill285.trewrite.items.terraria.accessories.ObsidianSkull;
@@ -22,22 +23,32 @@ import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import kmerrill285.trewrite.items.terraria.axes.CopperAxe;
 import kmerrill285.trewrite.items.terraria.axes.IronAxe;
+import kmerrill285.trewrite.items.terraria.axes.MoltenHamaxe;
 import kmerrill285.trewrite.items.terraria.axes.WarAxeOfTheNight;
+import kmerrill285.trewrite.items.terraria.boomerangs.EnchantedBoomerang;
 import kmerrill285.trewrite.items.terraria.boss_summon.SuspiciousLookingEye;
 import kmerrill285.trewrite.items.terraria.bows.DemonBow;
+import kmerrill285.trewrite.items.terraria.bows.MoltenFury;
 import kmerrill285.trewrite.items.terraria.bows.WoodenBow;
 import kmerrill285.trewrite.items.terraria.broadswords.CopperBroadsword;
+import kmerrill285.trewrite.items.terraria.broadswords.FieryGreatsword;
 import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
+import kmerrill285.trewrite.items.terraria.broadswords.Tekhaira;
 import kmerrill285.trewrite.items.terraria.bullet.MusketBall;
 import kmerrill285.trewrite.items.terraria.clickable.Coin;
+import kmerrill285.trewrite.items.terraria.flails.BallOHurt;
+import kmerrill285.trewrite.items.terraria.guns.Handgun;
 import kmerrill285.trewrite.items.terraria.guns.Musket;
+import kmerrill285.trewrite.items.terraria.guns.PhoenixBlaster;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
 import kmerrill285.trewrite.items.terraria.loot_bags.Present;
+import kmerrill285.trewrite.items.terraria.magic_weapons.Vilethorn;
 import kmerrill285.trewrite.items.terraria.pets.ShadowOrbItem;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
+import kmerrill285.trewrite.items.terraria.picks.MoltenPickaxe;
 import kmerrill285.trewrite.items.terraria.potions.DefaultPotion;
 import kmerrill285.trewrite.items.terraria.potions.PotionTest;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
@@ -271,6 +282,27 @@ public class ItemsT {
 	public static ItemT MUSKET;
 	
 	public static ItemT SHADOW_ORB_ITEM;
+	
+	public static ItemT OBSIDIAN_BOOKCASE;
+	
+	public static ItemT MANA_CRYSTAL;
+	public static ItemT VILETHORN;
+	
+	public static ItemT BALL_O_HURT;
+	public static ItemT BAND_OF_STARPOWER;
+	
+	public static ItemT TEKHAIRA;
+	
+	public static ItemT FIERY_GREATSWORD;
+	public static ItemT HELLSTONE_BAR;
+	
+	public static ItemT MOLTEN_FURY;
+	public static ItemT PHOENIX_BLASTER;
+	public static ItemT HANDGUN;
+	public static ItemT MOLTEN_HAMAXE;
+	public static ItemT MOLTEN_PICKAXE;
+	
+	public static ItemT ENCHANTED_BOOMERANG;
 
 	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
@@ -569,8 +601,38 @@ public class ItemsT {
 				BOMB = new Bomb(),
 				MUSKET_BALL = new MusketBall(),
 				MUSKET = new Musket(),
-				SHADOW_ORB_ITEM = new ShadowOrbItem()
-
+				SHADOW_ORB_ITEM = new ShadowOrbItem(),
+				OBSIDIAN_BOOKCASE = new ItemBlockT(BlocksT.OBSIDIAN_BOOKCASE, "obsidian_bookcase"),
+				MANA_CRYSTAL = new PotionTest(new Properties().group(ItemGroup.MISC), "mana_crystal", true, false) {
+					@Override
+					protected boolean doPotionStuff(World world, PlayerEntity player) {
+						if (!world.isRemote()) {
+							Score score = ScoreboardEvents.getScore(world.getScoreboard(), player, ScoreboardEvents.MAX_MANA);
+							if (score.getScorePoints() < 200) {
+								score.increaseScore(20);
+								return true;
+							} else return false;
+						} else {
+							Score score = ScoreboardEvents.getScore(world.getScoreboard(), player, ScoreboardEvents.MAX_MANA);
+							if (score.getScorePoints() < 200) {
+								NetworkHandler.INSTANCE.sendToServer(new CPacketChangeScore(ScoreboardEvents.MAX_MANA, score.getScorePoints() + 20));
+								return true;
+							} else return false;
+						}
+					}
+				}.setTooltip("Increases maximum mana by 20").setMaxStack(99),
+				VILETHORN = new Vilethorn().setBuySell(2000).setTooltip("Summons a vile thorn"),
+				BALL_O_HURT = new BallOHurt(),
+				BAND_OF_STARPOWER = new BandOfStarpower(),
+				TEKHAIRA = new Tekhaira(),
+				FIERY_GREATSWORD = new FieryGreatsword(),
+				HELLSTONE_BAR = new MetalBar(4000, "hellstone_bar"),
+				MOLTEN_FURY = new MoltenFury(),
+				PHOENIX_BLASTER = new PhoenixBlaster(),
+				HANDGUN = new Handgun(),
+				MOLTEN_HAMAXE = new MoltenHamaxe(),
+				MOLTEN_PICKAXE = new MoltenPickaxe(),
+				ENCHANTED_BOOMERANG = new EnchantedBoomerang()
 
 
 				);

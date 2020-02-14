@@ -24,7 +24,7 @@ public class SPacketSendAccessories {
 	
 	public void encode(PacketBuffer buf) {
 		buf.writeString(player);
-        InventoryTerraria inventory = WorldEvents.getOrLoadInventory(p, p.world);
+        InventoryTerraria inventory = WorldEvents.getOrLoadInventory(p);
         if (inventory != null) {
         	for (int i = 0; i < inventory.accessory.length; i++) {
         		if (inventory.accessoryVanity[i].stack != null) 

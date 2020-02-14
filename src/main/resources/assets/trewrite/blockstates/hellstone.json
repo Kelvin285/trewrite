@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/hellstone" }
+        "": { "model": "trewrite:block/ores/hellstone" }
     }
 }

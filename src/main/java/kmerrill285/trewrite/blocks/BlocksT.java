@@ -1,6 +1,7 @@
 package kmerrill285.trewrite.blocks;
 
 import kmerrill285.trewrite.blocks.CrossedBlock.Shape;
+import kmerrill285.trewrite.blocks.corruption_orbs.ShadowOrb;
 import kmerrill285.trewrite.blocks.ores.CopperOre;
 import kmerrill285.trewrite.blocks.ores.DemoniteOre;
 import kmerrill285.trewrite.blocks.ores.GoldOre;
@@ -196,11 +197,14 @@ public class BlocksT {
 	public static BlockT OBSIDIAN_BATHTUB;
 	public static BlockT OBSIDIAN_SINK;
 	public static BlockT OBSIDIAN_CHAIR;
+	public static BlockT OBSIDIAN_BOOKCASE;
 	
 	public static BlockT OBSIDIAN_POT;
 	
 	public static BlockT AIR_BLOCK;
 	public static BlockT ROPE;
+	
+	public static BlockT SHADOW_ORB;
 
 	
 	public static float mul = 1.5f;
@@ -277,7 +281,7 @@ public class BlocksT {
 					EBONSTONE = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 65, true, false, false, true, "ebonstone", "ebonstone"),
 					SAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "sand", "sand"),
 					EBONSAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "ebonsand", "ebonsand"),
-					SUNFLOWER = (BasicPlant) new BasicPlant(Properties.create(Material.PLANTS).sound(SoundType.PLANT).doesNotBlockMovement().lightValue(4), 0, 0, true, true, true, false, "sunflower", 0, 0, "sunflower").setShape(Shape.BLOCK).setSell(40).addAllowed("grass_block"),
+					SUNFLOWER = (BasicPlant) new BasicPlant(Properties.create(Material.PLANTS).sound(SoundType.PLANT).doesNotBlockMovement().lightValue(4), 0, 0, true, true, true, false, "sunflower", 0, 0, "sunflower").setShape(Shape.BLOCK).setSell(40).addAllowed("grass_block", "highlands_grass"),
 					DEMON_ALTAR = (BasicBlock) new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.NETHER_WART).doesNotBlockMovement().lightValue(3), 25, 80, false, false, true, false, "altar", "no drop").setRenderLayer(BlockRenderLayer.CUTOUT),
 					POT = new Pot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement(), "pot").setShape(Shape.BLOCK),
 					PIGGY_BANK = (PiggyBank) new PiggyBank(Properties.create(Material.EARTH).sound(SoundType.GLASS), "piggy_bank").setRenderLayer(BlockRenderLayer.CUTOUT),
@@ -303,7 +307,7 @@ public class BlocksT {
 					THIN_ICE = new ThinIceBlock(Properties.create(Material.PACKED_ICE).sound(SoundType.GLASS).slipperiness(0.989F)).setLocation("thin_ice").setRenderLayer(BlockRenderLayer.TRANSLUCENT),
 					SNOW = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.SNOW), GROUND_HARDNESS, 15, true, false, false, true, "snow", "snow"),
 					SAVANNA_GRASS = new GrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("savannah_grass").addAllowed("tall_savannah_grass"),
-					TALL_SAVANNA_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_savannah_grass", "none").setShape(Shape.SMALL_GRASS),
+					TALL_SAVANNA_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_savannah_grass", "none").setShape(Shape.SMALL_GRASS),
 					LIVING_WOOD = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, true, false, false, false, "living_wood", "wood"),
 					LEAVES = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.PLANT), GROUND_HARDNESS, 15, true, false, false, false, "leaves", "leaves"),
 					LIVING_WOOD_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.WOOD), true, "living_wood_platform"),
@@ -313,7 +317,7 @@ public class BlocksT {
 					CACTUS_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.CLOTH), GROUND_HARDNESS, 15, true, false, false, false, "cactus_block", "cactus_block"),
 					CACTUS = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "cactus", "cactus_block").addAllowed("cactus", "sand"),
 					CORRUPT_CACTUS = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "corrupt_cactus", "cactus_block").addAllowed("corrupt_cactus", "sand"),
-					TALL_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_grass", "none").setShape(Shape.SMALL_GRASS),
+					TALL_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_grass", "none").setShape(Shape.SMALL_GRASS),
 					LARGE_MUSHROOM = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "large_mushroom", "glowing_mushroom").addAllowed("large_mushroom", "mushroom_grass"),
 					GLOWING_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "glowing_mushroom", 0, 0, "glowing_mushroom").setShape(Shape.MUSHROOM).setSell(250).setMaterial(),
 					MUSHROOM_GRASS = new MushroomGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("mushroom_grass"),
@@ -358,7 +362,10 @@ public class BlocksT {
 					OBSIDIAN_BATHTUB = new ForwardDouble(GROUND_HARDNESS, 15, "obsidian_bathtub").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
 					OBSIDIAN_DRESSER = new RightDouble(GROUND_HARDNESS, 15, "obsidian_dresser").setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),
 					OBSIDIAN_POT = new ObsidianPot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement()).setShape(Shape.BLOCK),
-					ROPE = new RopeBlock(true, "rope", "rope")
+					ROPE = new RopeBlock(true, "rope", "rope"),
+					OBSIDIAN_BOOKCASE = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, true, "obsidian_bookcase", "obsidian_bookcase"),
+					SHADOW_ORB = new ShadowOrb()
+
 
 
 

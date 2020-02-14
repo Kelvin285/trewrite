@@ -42,13 +42,13 @@ public class Dimensions {
 
 	public static void teleportPlayer(ServerPlayerEntity player, DimensionType destinationType, BlockPos destinationPos)
 	{
-		if (WorldEvents.inventories.get(player.getScoreboardName()) != null)
-		if (WorldEvents.inventories.get(player.getScoreboardName()).canSave == false) {
+		if (WorldEvents.getOrLoadInventory(player) != null)
+		if (WorldEvents.getOrLoadInventory(player).canSave == false) {
 			System.out.println("INVENTORY LOCKED FOR " + player);
 		} else {
 			if (player.getEntityWorld() instanceof ServerWorld) {
 				ServerWorld s = (ServerWorld)player.getEntityWorld();
-				WorldEvents.inventories.get(player.getScoreboardName()).save(player.getScoreboardName(), s.getServer().getFolderName());
+				WorldEvents.getOrLoadInventory(player).save(player.getScoreboardName(), s.getServer().getFolderName());
 			}
 		}
 		

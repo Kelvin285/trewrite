@@ -1,6 +1,7 @@
 package kmerrill285.trewrite.entities.monsters.worms;
 
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -9,7 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -59,31 +59,29 @@ public class EntityWormBody extends MobEntity {
 	int dirZ = 0;
 	
 	public void tick() {
+		
+		
 		super.tick();
-		
-		
-		
-		
-		if (!world.isRemote)
 		if (this.owner == null) {
-//			this.remove();
-			if (!world.isRemote)
-			if (this.ticksExisted > 20) {
-				this.remove();
-			}
+
+			
 		} else {
 			
-			if (this.owner.getHealth() <= 0) {
-				this.remove();
+			if (!world.isRemote) {
+				if (this.owner.getHealth() <= 0) {
+					this.remove();
+				}
+				
+				if (owner.getHealth() < getHealth()) {
+					setHealth(owner.getHealth());
+				}
+				
+				if (getHealth() < owner.getHealth()) {
+					owner.setHealth(getHealth());
+				}
 			}
 			
-			if (owner.getHealth() < getHealth()) {
-				setHealth(owner.getHealth());
-			}
 			
-			if (getHealth() < owner.getHealth()) {
-				owner.setHealth(getHealth());
-			}
 			
 			float dirX = (float)(owner.posX + 0.5f - (posX + 0.5f));
 			float dirY = (float)(owner.posY + 0.5f - (posY + 0.5f));
@@ -104,11 +102,13 @@ public class EntityWormBody extends MobEntity {
 			velY = 0;
 			velZ = 0;
 			
-			this.posX = this.posX + posX;
-			this.posY = this.posY + posY;
-			this.posZ = this.posZ + posZ;
+//			this.posX = this.posX + posX;
+//			this.posY = this.posY + posY;
+//			this.posZ = this.posZ + posZ;
+//			
+			this.setMotion(posX, posY, posZ);
+			
 		}
-		
 		
 		this.oldVelX = velX + 0;
 		this.oldVelY = velY + 0;
@@ -117,11 +117,6 @@ public class EntityWormBody extends MobEntity {
 		this.motionX = velX * 0.01f;
 		this.motionY = velY * 0.01f;
 		this.motionZ = velZ * 0.01f;
-		
-//			
-////		this.posX += motionX;
-////		this.posY += motionY;
-////		this.posZ += motionZ;
 		
 	}
 	public boolean attackEntityFrom(DamageSource source, float amount) {

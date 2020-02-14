@@ -50,7 +50,7 @@ public class CPacketSyncInventoryTerraria {
 				if (stack.size < 0) {
 					stack = null;
 				}
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender);
 				if (inventory != null) {
 //					System.out.println("INVENTORY EXISTS.  SYNCING FROM CLIENT TO SERVER: " + i);
 				} else return;

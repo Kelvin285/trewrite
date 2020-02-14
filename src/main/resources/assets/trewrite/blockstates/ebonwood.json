@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/ebonwood" }
+        "": { "model": "trewrite:block/wooden_planks/ebonwood" }
     }
 }

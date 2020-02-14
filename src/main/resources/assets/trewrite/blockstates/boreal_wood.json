@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/boreal_wood" }
+        "": { "model": "trewrite:block/wooden_planks/boreal_wood" }
     }
 }

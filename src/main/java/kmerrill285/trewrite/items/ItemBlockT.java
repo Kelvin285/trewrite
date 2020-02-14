@@ -130,7 +130,7 @@ public class ItemBlockT extends ItemT {
 			            }
 		            }
 		            if (!world.isRemote) {
-		            	InventoryTerraria inventory = WorldEvents.getOrLoadInventory(playerentity, playerentity.world);
+		            	InventoryTerraria inventory = WorldEvents.getOrLoadInventory(playerentity);
 		            	
 		            	if (inventory.open == false) {
 		            		itemstack.shrink(1);

@@ -1,8 +1,0 @@
-{
-    "parent": "block/slab",
-    "textures": {
-        "bottom": "trewrite:block/ebonwood",
-        "top": "trewrite:block/ebonwood",
-        "side": "trewrite:block/ebonwood"
-    }
-}

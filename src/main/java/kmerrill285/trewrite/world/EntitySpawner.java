@@ -4,6 +4,7 @@ import java.util.List;
 
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.SpawnCondition;
+import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
@@ -41,10 +42,16 @@ public class EntitySpawner {
 		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
 		
 		
-		List<EntityEyeOfCthulhu> eocs = player.world.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 150, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 150, player.posZ + 150)));
+		List<EntityEyeOfCthulhu> eocs = player.world.getEntitiesWithinAABB(EntityEyeOfCthulhu.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 25, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 25, player.posZ + 150)));
 		if (eocs.size() > 0) {
 			return;
 		}
+		
+		List<EntityEowHead> eows = player.world.getEntitiesWithinAABB(EntityEowHead.class, new AxisAlignedBB(new BlockPos(player.posX - 150, player.posY - 25, player.posZ - 150), new BlockPos(player.posX + 150, player.posY + 25, player.posZ + 150)));
+		if (eows.size() > 0) {
+			return;
+		}
+		
 		
 		
 		if (world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().expand(50, 50, 50)).size() <= 30) {
@@ -56,7 +63,7 @@ public class EntitySpawner {
 			if (world.dimension.getType() == DimensionType.OVERWORLD && y > 45) {
 				spawnGroundEntity(world, x, y, z);
 			}
-			if (world.dimension.getType() == underground || world.dimension.getType() == DimensionType.OVERWORLD && y <= 45) {
+			if (world.dimension.getType() == underground || world.dimension.getType() == DimensionType.OVERWORLD && y <= 15) {
 				spawnCaveEntity(world, x, y, z);
 			}
 			if (world.dimension.getType() == underworld) {
@@ -144,7 +151,7 @@ public class EntitySpawner {
 		if (SpawnCondition.canSpawn(type, pos, world, world.rand)) {
 			Entity e = type.create(world, null, null, null, pos, SpawnReason.EVENT, false, false);
 			e.setPosition(pos.getX(), pos.getY(), pos.getZ());
-			if (world.getEntitiesWithinAABB(e.getClass(), e.getBoundingBox().expand(20,20,20)).size() <= 8)
+			if (world.getEntitiesWithinAABB(e.getClass(), e.getBoundingBox().expand(150,20,150)).size() <= 8)
 			world.addEntity(e);
 		}
 	}

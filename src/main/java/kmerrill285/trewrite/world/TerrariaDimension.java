@@ -37,12 +37,8 @@ public class TerrariaDimension extends OverworldDimension {
 			}
 		}
 		
-		if (this.world.getDayTime() % 24000 > 15000 && this.world.getDayTime() < 22000) {
-			return new Vec3d(0, 0, 0);
-		}
-		
-		Vec3d mix = currentColor.add(super.getFogColor(celestialAngle, partialTicks)).mul(1.5f, 1.5f, 1.5f);
-		return new Vec3d(mix.x / 2.0, mix.y / 2.0, mix.z / 2.0);
+		Vec3d mix = currentColor.mul(super.getFogColor(celestialAngle, partialTicks));
+		return new Vec3d(mix.x * 0.5f, mix.y * 0.5f, mix.z * 0.5f);
 	}
 	
 	public boolean isNether() {
@@ -152,9 +148,6 @@ public class TerrariaDimension extends OverworldDimension {
 			newColor = new Vec3d(0.25, 0, 0.25);
 		}
 		
-		if (this.world.getDayTime() % 24000 > 15000 && this.world.getDayTime() < 22000) {
-			newColor = new Vec3d(0, 0, 0);
-		}
 		
 		
 		
@@ -194,7 +187,7 @@ public class TerrariaDimension extends OverworldDimension {
 		
 		double mul = 0.02f;
 		
-		
+		newColor = newColor.mul(super.getSkyColor(cameraPos, partialTicks));
 		
 		currentColor = new Vec3d(currentColor.x + (newColor.x - currentColor.x) * mul,
 				currentColor.y + (newColor.y - currentColor.y) * mul,

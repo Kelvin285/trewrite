@@ -39,7 +39,7 @@ public abstract class Potion extends ItemT {
 		  doPotionStuff(worldIn, player);
 		  InventoryTerraria inv = null;
 		    if (!worldIn.isRemote()) {
-				inv = WorldEvents.getOrLoadInventory(player, player.world);
+				inv = WorldEvents.getOrLoadInventory(player);
 			} else {
 				inv = ContainerTerrariaInventory.inventory;
 			}
@@ -58,7 +58,7 @@ public abstract class Potion extends ItemT {
 		if (autoBuff || !needsAutoBuff) {
 			InventoryTerraria inv = null;
 		    if (!worldIn.isRemote()) {
-				inv = WorldEvents.getOrLoadInventory(player, player.world);
+				inv = WorldEvents.getOrLoadInventory(player);
 			} else {
 				inv = ContainerTerrariaInventory.inventory;
 			}

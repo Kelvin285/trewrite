@@ -21,7 +21,7 @@ public class Bullet extends ItemT {
 	}
 	
 	public void onBulletShoot(EntityBullet bullet) {
-		WorldStateHolder.get(bullet.world).setLight(bullet.getPosition(), 10);
+		WorldStateHolder.get(bullet.world).setLight(bullet.getPosition(), 10, bullet.world.getDimension().getType());
 	}
 	
 	public void bulletTick(EntityBullet bullet) {

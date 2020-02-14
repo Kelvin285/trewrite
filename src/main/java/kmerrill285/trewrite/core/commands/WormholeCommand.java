@@ -19,6 +19,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -33,8 +34,8 @@ public class WormholeCommand implements Command<CommandSource>{
 
 	private static int teleportToEntity(CommandSource source, Collection<? extends Entity> entities, Entity entity) {
 		//	public SPacketSyncInventoryTerraria(int entityId, int inventoryArea, int slotId, ItemStackT stack) {
-
-		InventoryTerraria inventory = WorldEvents.inventories.get(entity.getScoreboardName());
+		if (entity instanceof PlayerEntity == false) return 1;
+		InventoryTerraria inventory = WorldEvents.getOrLoadInventory((PlayerEntity) entity);
 		if (inventory != null) {
 			InventorySlot slot = null;
 			for (int i = 0; i < inventory.main.length; i++) {

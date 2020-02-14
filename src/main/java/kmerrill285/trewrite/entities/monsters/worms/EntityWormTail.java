@@ -63,24 +63,23 @@ public class EntityWormTail extends MobEntity {
 	public void tick() {
 		super.tick();
 		
-		if (!world.isRemote)
+		
 		if (this.owner == null) {
-//			this.remove();
-			if (!world.isRemote)
-			if (this.ticksExisted > 20) {
-				this.remove();
-			}
+			
+			
 		} else {
-			if (this.owner.getHealth() <= 0) {
-				this.remove();
-			}
-			
-			if (owner.getHealth() < getHealth()) {
-				setHealth(owner.getHealth());
-			}
-			
-			if (getHealth() < owner.getHealth()) {
-				owner.setHealth(getHealth());
+			if (!world.isRemote) {
+				if (this.owner.getHealth() <= 0) {
+					this.remove();
+				}
+				
+				if (owner.getHealth() < getHealth()) {
+					setHealth(owner.getHealth());
+				}
+				
+				if (getHealth() < owner.getHealth()) {
+					owner.setHealth(getHealth());
+				}
 			}
 			
 			float dirX = (float)(owner.posX + 0.5f - (posX + 0.5f));
@@ -102,9 +101,7 @@ public class EntityWormTail extends MobEntity {
 			velY = 0;
 			velZ = 0;
 			
-			this.posX = this.posX + posX;
-			this.posY = this.posY + posY;
-			this.posZ = this.posZ + posZ;
+			this.setMotion(posX, posY, posZ);
 
 			//this.setPosition(this.posX, this.posY, this.posZ);
 		}

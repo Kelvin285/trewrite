@@ -7,6 +7,8 @@ import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.EntityRope;
 import kmerrill285.trewrite.entities.EntityShadowOrb;
 import kmerrill285.trewrite.entities.EntityStar;
+import kmerrill285.trewrite.entities.models.boomerangs.RenderBoomerang;
+import kmerrill285.trewrite.entities.models.flails.RenderBallOHurt;
 import kmerrill285.trewrite.entities.models.worms.RenderEowBody;
 import kmerrill285.trewrite.entities.models.worms.RenderEowHead;
 import kmerrill285.trewrite.entities.models.worms.RenderEowTail;
@@ -22,9 +24,14 @@ import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormBody;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormHead;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormTail;
+import kmerrill285.trewrite.entities.npc.EntityGuide;
 import kmerrill285.trewrite.entities.passive.EntityBunnyT;
-import kmerrill285.trewrite.entities.projectiles.EntityBullet;
+import kmerrill285.trewrite.entities.projectiles.EntityTekhairaProjectile;
+import kmerrill285.trewrite.entities.projectiles.boomerangs.EntityEnchantedBoomerang;
+import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
+import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +43,8 @@ public class ModelRegistry
 
 {
 
+	public static RenderPlayer renderPlayer;
+	
     @SubscribeEvent
     public static void registerAllModels(ModelRegistryEvent event)
     {
@@ -56,8 +65,15 @@ public class ModelRegistry
     	RenderingRegistry.registerEntityRenderingHandler(EntityEowHead.class, manager -> new RenderEowHead(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityEowBody.class, manager -> new RenderEowBody(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityEowTail.class, manager -> new RenderEowTail(manager));
-    	RenderingRegistry.registerEntityRenderingHandler(EntityBullet.class, manager -> new RenderBullet(manager, "trewrite:textures/item/musket_ball.png"));
     	RenderingRegistry.registerEntityRenderingHandler(EntityShadowOrb.class, manager -> new RenderShadowOrb(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityGuide.class, manager -> new RenderGuide(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(VilethornProjectile.class, manager -> new RenderVilethorn(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityBallOHurt.class, manager -> new RenderBallOHurt(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityTekhairaProjectile.class, manager -> new RenderTekhaira(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityEnchantedBoomerang.class, manager -> new RenderBoomerang(manager, "enchanted_boomerang"));
+
+
+    	RenderingRegistry.registerEntityRenderingHandler(PlayerEntity.class, manager -> renderPlayer = new RenderPlayer(manager));
 
     }
 

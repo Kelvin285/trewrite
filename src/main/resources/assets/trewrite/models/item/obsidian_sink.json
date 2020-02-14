@@ -1,3 +1,3 @@
 {
-    "parent": "trewrite:block/sinks/obsidian"
+    "parent": "trewrite:block/sinks/obsidian_sink"
 }

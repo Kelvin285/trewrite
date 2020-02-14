@@ -7,6 +7,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;
@@ -20,6 +21,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -98,7 +100,7 @@ public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnDa
      */
     @OnlyIn(Dist.CLIENT)
     public boolean isInRangeToRenderDist(double distance) {
-       double d0 = 64.0D * getRenderDistanceWeight();
+       double d0 = 128.0D * getRenderDistanceWeight();
        return distance < d0 * d0;
     }
 	
@@ -106,16 +108,22 @@ public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnDa
 		player.attackEntityFrom(DamageSource.causeMobDamage(this), 4);
 	}
 	
+	public boolean canDespawn(double dist) {
+		return ALREADY_SPAWNED && REMOVED;
+	}
+	
 	int dirX = 0;
 	int dirY = 0;
 	int dirZ = 0;
 	
 	public void tick() {
-		
 		super.tick();
 		ALREADY_SPAWNED = true;
 		
-		
+		if (this.getHealth() <= 0) {
+			return;
+		}
+		this.preventDespawn();
     	if (!world.isRemote) {
 			boolean despawn = true;
 	    	for (int i = 0; i < world.getPlayers().size(); i++) {
@@ -130,9 +138,39 @@ public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnDa
 			return;
 		}
 
+
+		
+    	
 		if (this.owner == null) {
 			
 		} else {
+			
+			double distance = 1000;
+			
+			for (int i = 0; i < world.getPlayers().size(); i++) {
+				double dist = world.getPlayers().get(i).getPositionVector().distanceTo(this.getPositionVector());
+				if (dist < distance) {
+					distance = dist;
+					target = world.getPlayers().get(i);
+				}
+			}
+			
+			if (this.target != null) {
+				if (rand.nextInt(1000) <= 5) {
+					EntityVileSpit spit = EntitiesT.VILE_SPIT.create(world);
+					spit.setPosition(posX, posY, posZ);
+					
+					Vec3d point = new Vec3d(posX - target.posX, (posY + 1) - target.posY, posZ - target.posZ).normalize();
+					point = point.mul(2, 2, 2);
+					
+					spit.setMotion(-point.x, -point.y, -point.z);
+					
+					world.addEntity(spit);
+				}
+					
+			}
+			
+			
 			if (this.owner.getHealth() <= 0 && getHealth() > 0) {
 				if (!world.isRemote) {
 					

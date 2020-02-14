@@ -1,3 +1,7 @@
 {
-    "parent": "trewrite:block/chairs/chair"
+	"parent": "item/generated",
+	"textures":
+	{
+		"layer0": "trewrite:item/wooden_chair"
+	}
 }

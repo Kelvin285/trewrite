@@ -47,7 +47,7 @@ public class CPacketRequestInventoryTerraria {
     	 			public void run() {
     	 				ServerPlayerEntity sender = ctx.get().getSender();
     	 				System.out.println("sender: " + sender);
-    	 				Set<String> players = WorldEvents.inventories.keySet();
+    	 				Set<String> players = WorldEvents.getInventories().keySet();
     	    	 		boolean hasPlayer = false;
     	    	 		for (String player : players) {
     	    	 			if (player.equals(msg.playername)) {
@@ -65,11 +65,11 @@ public class CPacketRequestInventoryTerraria {
 	    	 			
 	    	 			System.out.println("UNLOCKING INVENTORIES");
 	    	 			
-	    	 			System.out.println(WorldEvents.inventories);
+	    	 			System.out.println(WorldEvents.getInventories());
 
 	    	 			System.out.println("PUT PLAYER INTO INVENTORY LIST");
 
-	    	 			WorldEvents.inventories.put(msg.playername, inventory);
+	    	 			WorldEvents.getInventories().put(msg.playername, inventory);
 
     	            	
     	 			}

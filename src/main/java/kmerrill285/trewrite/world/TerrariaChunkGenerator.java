@@ -476,6 +476,9 @@ public class TerrariaChunkGenerator extends NoiseChunkGenerator<OverworldGenSett
 							if (random.nextInt(15) == 0) {
 								chunkIn.setBlockState(pos.up(), BlocksT.MUSHROOM.getDefaultState(), false);
 							}
+							if (random.nextInt(15) == 0) {
+								chunkIn.setBlockState(pos.up(), BlocksT.SUNFLOWER.getDefaultState(), false);
+							}
 					   }
 				   }
 				   

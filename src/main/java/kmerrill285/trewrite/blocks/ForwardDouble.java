@@ -130,6 +130,7 @@ public class ForwardDouble extends BlockT {
 	         World world = context.getWorld();
 	         BlockState state = this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing()).with(HALF, DoubleBlockHalf.LOWER);
 	         BlockPos pos2 = blockpos.add(context.getPlacementHorizontalFacing().getXOffset(), 0, context.getPlacementHorizontalFacing().getZOffset());
+	         
 	         if (world.getBlockState(pos2).getMaterial().isReplaceable())
 	        	 world.setBlockState(pos2, state.with(HALF, DoubleBlockHalf.UPPER), 3);
 	         else return null;

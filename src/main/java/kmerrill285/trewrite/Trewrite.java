@@ -5,6 +5,11 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.cout970.modelloader.api.ItemTransforms;
+import com.cout970.modelloader.api.ModelConfig;
+import com.cout970.modelloader.api.ModelRegisterEvent;
+import com.cout970.modelloader.api.ModelRetrieveEvent;
+
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.commands.CommandsT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
@@ -14,6 +19,7 @@ import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.models.RenderPlayer;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.ScoreboardEvents;
@@ -22,6 +28,7 @@ import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.util.Models;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.DimensionTypeT;
 import kmerrill285.trewrite.world.EntitySpawner;
@@ -31,11 +38,13 @@ import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Blocks;
-import net.minecraft.command.impl.TeleportCommand;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -53,6 +62,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -90,6 +100,13 @@ public class Trewrite
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         
+        
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerModels);
+        
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::retrieveModels);
+        
+        
+        
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(OverlayEvents::handleOverlayEvent);
 
         // Register ourselves for server and other game events we are interested in
@@ -124,6 +141,20 @@ public class Trewrite
         WorldType.WORLD_TYPES = types2;
     }
     
+    private void retrieveModels(final ModelRetrieveEvent event) {
+
+        // For each TileEntityRenderer we add the models to be rendered
+        Models.loadModels(event);
+
+    }
+
+
+
+    private void registerModels(final ModelRegisterEvent event) {
+
+        Models.registerModels(event);
+    }
+    
     @SubscribeEvent
 	public static void onBlockUpdate(NeighborNotifyEvent e) {
     	
@@ -154,7 +185,7 @@ public class Trewrite
 		World world = event.world;
 		
 		WorldStateHolder holder = WorldStateHolder.get(world);
-		holder.update();
+		holder.update(world, world.getDimension().getType());
 		
 		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
@@ -173,7 +204,7 @@ public class Trewrite
 				}
 			}
 			
-			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, world);
+			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 			if (player.getPosition().getY() < 0) {
 				if (player.dimension == sky) {
 					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
@@ -300,10 +331,11 @@ public class Trewrite
 			Util.minSpawnDistance = 15.0;
 			Util.entitySpawnRate = 1.0/25.0;
 			
+			if (world.rand.nextInt(100) <= 10)
 			if (world.rand.nextDouble() <= Util.starChance / 3.0) {
 				if (world.getPlayers().size() > 0) {
 					PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
-					double x = player.posX + world.rand.nextInt(180) - 90, y = 255, z = player.posZ + world.rand.nextInt(180) - 90;
+					double x = player.posX + world.rand.nextInt(80) - 40, y = 255, z = player.posZ + world.rand.nextInt(80) - 40;
 					
 					EntityItemT item = EntitiesT.ITEM.create(world, null, null, null, new BlockPos(x, y, z), SpawnReason.EVENT, false, false);
 					item.setItem(new ItemStackT(ItemsT.FALLEN_STAR, 1, null));
@@ -319,13 +351,13 @@ public class Trewrite
 			
 				
 			
-				
+				if (world.rand.nextInt(100) <= 10)
 				for (PlayerEntity player : world.getPlayers()) {
 					int battle = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints();
 					if (world.rand.nextDouble() <= Util.entitySpawnRate * (battle > 0 ? 2 : 1)) {
 					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).getScorePoints() > 0)
 						if (world.rand.nextBoolean()) continue;
-					double x = player.posX + world.rand.nextInt(180) - 90, y = player.posY + world.rand.nextInt(180) - 90, z = player.posZ + world.rand.nextInt(180) - 90;
+					double x = player.posX + world.rand.nextInt(80) - 40, y = player.posY + world.rand.nextInt(80) - 40, z = player.posZ + world.rand.nextInt(80) - 40;
 					
 					for (PlayerEntity p2 : world.getPlayers()) {
 						
@@ -356,7 +388,6 @@ public class Trewrite
 //    	MinecraftForge.EVENT_BUS.register(new ScoreboardEvents());
 //    	MinecraftForge.EVENT_BUS.register(new WorldEvents());
         // some preinit code
-    	
     	
     }
 

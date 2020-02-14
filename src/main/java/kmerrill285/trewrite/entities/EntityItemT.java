@@ -13,6 +13,7 @@ import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -25,9 +26,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
@@ -147,8 +145,26 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 	public boolean grabbed = false;
 	@Override
 	public void tick() {
+		
+		
+		
 		if (this.onGround) hitGround = true;
 		super.tick();
+		
+		
+		if (!world.isRemote()) {
+			if (this.getItem() != null) {
+				if (this.getItem().item instanceof ItemT) {
+					ItemT item = (ItemT)this.getItem().item;
+					if (item.lightValue > 0)
+					WorldStateHolder.get(world).setLight(getPosition(), item.lightValue, world.getDimension().getType());
+				}
+				if (this.getItem().item == ItemsT.FALLEN_STAR) {
+					WorldStateHolder.get(world).setLight(getPosition(), 15, world.getDimension().getType());
+				}
+			}
+		}
+		
 		this.setNoGravity(false);
 		this.age++;
 		boolean moving = false;
@@ -202,7 +218,7 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 				}
 			}
 			if (closest != null && dist < 2.0f) {
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(closest, closest.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(closest);
 				if (world.isRemote) inventory = ContainerTerrariaInventory.inventory;
 				if (inventory != null && ItemsT.getItemFromString(item) != null && dead == false) {
 					

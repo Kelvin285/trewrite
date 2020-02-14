@@ -68,7 +68,7 @@ public class CPacketThrowItemTerraria {
 				if (stack.size < 0) {
 					stack = null;
 				}
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender);
 				if (inventory == null) return;
 				System.out.println("Inventory is not null");
 				if (this.inventoryArea == 8) {

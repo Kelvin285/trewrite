@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/rich_mahogany" }
+        "": { "model": "trewrite:block/wooden_planks/rich_mahogany" }
     }
 }

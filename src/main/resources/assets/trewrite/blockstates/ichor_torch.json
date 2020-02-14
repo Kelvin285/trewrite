@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/ichor_torch" }
+        "": { "model": "trewrite:block/torches/ichor_torch" }
     }
 }

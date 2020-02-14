@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/workbenches/obsidian" }
+        "": { "model": "trewrite:block/workbenches/obsidian_workbench" }
     }
 }

@@ -63,6 +63,10 @@ public class EntityEowTail extends MobEntity implements IEntityAdditionalSpawnDa
  		 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(life);
          return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
+	public boolean canDespawn(double dist) {
+		return ALREADY_SPAWNED && REMOVED;
+	}
+	
 	
 	@Override
 	public void dropLoot(DamageSource source, boolean b) {
@@ -96,7 +100,7 @@ public class EntityEowTail extends MobEntity implements IEntityAdditionalSpawnDa
      */
     @OnlyIn(Dist.CLIENT)
     public boolean isInRangeToRenderDist(double distance) {
-       double d0 = 64.0D * getRenderDistanceWeight();
+       double d0 = 128.0D * getRenderDistanceWeight();
        return distance < d0 * d0;
     }
 	

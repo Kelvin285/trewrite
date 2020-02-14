@@ -54,7 +54,7 @@ public class CPacketSyncInventoryChest {
 				}
 				String pos = this.pos;
 				InventoryChestTerraria inventory = WorldEvents.chests.get(pos);
-				InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender, sender.world);
+				InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender);
 				if (inventory != null && inventoryPlayer != null) {
 					System.out.println("INVENTORY CHEST EXISTS.  SYNCING FROM CLIENT TO SERVER");
 				} else return;

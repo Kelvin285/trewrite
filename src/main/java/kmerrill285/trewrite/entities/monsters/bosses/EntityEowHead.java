@@ -7,6 +7,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;
@@ -22,8 +23,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -105,7 +106,7 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
      */
     @OnlyIn(Dist.CLIENT)
     public boolean isInRangeToRenderDist(double distance) {
-       double d0 = 64.0D * getRenderDistanceWeight();
+       double d0 = 128.0D * getRenderDistanceWeight();
        return distance < d0 * d0;
     }
 	
@@ -117,8 +118,8 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
 	int dirY = 0;
 	int dirZ = 0;
 	
-	public boolean canDespawn() {
-		return this.ALREADY_SPAWNED && this.REMOVED;
+	public boolean canDespawn(double dist) {
+		return ALREADY_SPAWNED && REMOVED;
 	}
 	
 	
@@ -143,8 +144,11 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
     		}
     	}
     	
-    	if (despawn) {REMOVED = true; remove();}
-		
+    	if (despawn) {
+    		REMOVED = true; remove();
+    		return;
+    	}
+    	this.preventDespawn();
 		
 		
 		if (segments == 0) {
@@ -206,9 +210,13 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
 			}
 			
 			if (target != null) {
-				float speed = 5f;
 				
-				float acceleration = 0.25f;
+				
+				
+				
+				float speed = 10f;
+				
+				float acceleration = 0.4f;
 				
 				float absVelX = (float)Math.abs(velX);
 				float absVelY = (float)Math.abs(velY);
@@ -216,15 +224,55 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
 				
 				if (collision == false) {
 
+					if (velY > speed * 2) velY = speed * 2;
+					velY -= 0.25;
+					if (velY < 0) {
+						velY -= 1;
+					}
+					if (velY < -speed * 2) velY = -speed * 2;
 					
-					velY -= acceleration * 2;
 					
+					if (absVelZ > 0 || dirZ == 0) {
+						if (posZ < target.posZ) { 
+							dirZ = 1;
+						} else {
+							dirZ = -1;
+						}
+					}
+					
+					if (absVelX > 0 || dirX == 0) {
+						if (posX < target.posX) { 
+							dirX = 1;
+						} else {
+							dirX = -1;
+						}
+					}
+					
+					
+					if (dirZ == 1) { 
+						if (velZ < speed) {
+							velZ += acceleration * 0.5f;
+						}
+					} else {
+						if (velZ > -speed) {
+							velZ -= acceleration * 0.5f;
+						}
+					}
+					
+					if (dirX == 1) { 
+						if (velX < speed) {
+							velX += acceleration * 0.5f;
+						}
+					} else {
+						if (velX > -speed) {
+							velX -= acceleration * 0.5f;
+						}
+					}
 				}
 				else {
 					if (System.currentTimeMillis() % 250 <= 25) {
 						world.playSound(posX, posY, posZ, SoundEvents.BLOCK_WOOL_STEP, SoundCategory.HOSTILE, 1.0f, 1.0f, false);
 					}
-				}
 					
 					if (absVelZ > 0 || dirZ == 0) {
 						if (posZ < target.posZ) { 
@@ -284,37 +332,38 @@ public class EntityEowHead extends MobEntity implements IEntityAdditionalSpawnDa
 					if (absVelZ > speed * 0.5f) {
 						if (Math.abs(posZ - target.posZ) < Math.abs(posY - target.posY)) {
 							if (Math.abs(posZ + velZ) > Math.abs(posZ - velZ)) {
-								velZ -= acceleration;
-								velY += acceleration;
+								velZ -= acceleration * dirZ;
+								velY += acceleration * dirY;
 							}
 						}
 					}
 					
-					if (absVelX > speed * 0.15f) {
+					if (absVelX > speed * 0.5f) {
 						if (Math.abs(posX - target.posX) < Math.abs(posY - target.posY)) {
 							if (Math.abs(posX + velX) > Math.abs(posX - velX)) {
-								velX -= acceleration;
-								velY += acceleration;
+								velX -= acceleration * dirX;
+								velY += acceleration * dirY;
 							}
 						}
 					}
-					if (absVelY > speed * 0.15f) {
+					if (absVelY > speed * 0.5f) {
 						if (Math.abs(posX - target.posX) > Math.abs(posY - target.posY)) {
 							if (Math.abs(posY + velY) > Math.abs(posY - velY)) {
-								if (collision)
-								velY -= acceleration;
-								velX += acceleration;
+								velY -= acceleration * dirY;
+								velX += acceleration * dirX;
 							}
 						}
 						
 						if (Math.abs(posZ - target.posZ) > Math.abs(posY - target.posY)) {
 							if (Math.abs(posY + velY) > Math.abs(posY - velY)) {
-								if (collision)
-								velY -= acceleration;
-								velZ += acceleration;
+								velY -= acceleration * dirY;
+								velZ += acceleration * dirZ;
 							}
 						}
 					}
+					
+					
+				}
 					
 					
 					

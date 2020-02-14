@@ -27,7 +27,7 @@ public class CPacketCloseInventoryTerraria {
 		ctx.get().enqueueWork(() -> {
 			ServerPlayerEntity sender = ctx.get().getSender();
 			if (sender != null) {
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender, sender.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender);
 				if (inventory != null) {
 					
 					for (int i = 0; i < 9; i++) {

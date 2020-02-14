@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.entities.projectiles;
 
+import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
@@ -38,7 +40,9 @@ public class EntityArrowT extends ArrowEntity
 	
 	public void tick() {
 		super.tick();
-		
+		if (world.getBlockState(getPosition()).getBlock() instanceof Pot) {
+			world.setBlockState(getPosition(), BlocksT.AIR_BLOCK.getDefaultState());
+		}
 		if (this.hasNoGravity()) {
 			if (this.ticksExisted > 20 * 5) {
 				for (int i = 0; i < 10; i++)

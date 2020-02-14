@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/mushroom" }
+        "": { "model": "trewrite:block/plants/mushroom" }
     }
 }

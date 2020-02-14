@@ -106,6 +106,7 @@ public class DoubleBlock extends BlockT {
 	         boolean flag = world.isBlockPowered(blockpos) || world.isBlockPowered(blockpos.up());
 	         BlockState state = this.getDefaultState().with(HALF, DoubleBlockHalf.LOWER);
 		      world.setBlockState(blockpos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+		      world.setBlockState(blockpos, state.with(HALF, DoubleBlockHalf.LOWER), 3);
 	         return state;
 	      } else {
 	         return null;
@@ -117,6 +118,7 @@ public class DoubleBlock extends BlockT {
 	    */
 	   public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 	      worldIn.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+	      worldIn.setBlockState(pos, state.with(HALF, DoubleBlockHalf.LOWER), 3);
 	   }
 
 	   /**

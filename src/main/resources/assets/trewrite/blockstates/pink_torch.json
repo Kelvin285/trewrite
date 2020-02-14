@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/pink_torch" }
+        "": { "model": "trewrite:block/torches/pink_torch" }
     }
 }

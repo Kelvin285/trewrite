@@ -160,8 +160,14 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(Items.BUCKET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.ANY_IRON, 3)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.ROPE_COIL), null, new ItemStackT(ItemsT.ROPE, 10)));
-
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.MANA_CRYSTAL), null, new ItemStackT(ItemsT.FALLEN_STAR, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.FIERY_GREATSWORD), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 30)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BAR), BlocksT.HELLFORGE, new ItemStackT(ItemsT.HELLSTONE, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLFIRE_ARROW, 100), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 1), new ItemStackT(ItemsT.WOODEN_ARROW, 100)));
 //		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 
+		for (String str : ItemsT.items.keySet()) {
+			ItemsT.items.get(str).setCraftingRecipes();
+		}
 	}
 }

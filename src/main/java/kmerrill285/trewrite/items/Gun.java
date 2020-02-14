@@ -37,7 +37,7 @@ public class Gun extends ItemT {
 	      
 	      InventoryTerraria inventory = null;
 	      if (!worldIn.isRemote) {
-	    	  inventory = WorldEvents.getOrLoadInventory(playerIn, playerIn.world);
+	    	  inventory = WorldEvents.getOrLoadInventory(playerIn);
 	      } else 
 	      {
 	    	  inventory = ContainerTerrariaInventory.inventory;
@@ -80,16 +80,16 @@ public class Gun extends ItemT {
 		  playerIn.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
 		  
 	      
-	      Bullet arrow = (Bullet) ItemsT.MUSKET_BALL;
+	      Bullet bullet = (Bullet) ItemsT.MUSKET_BALL;
 	      
 	      if (!playerIn.abilities.isCreativeMode) {
 		      for (int i = 0; i < inventory.main.length; i++) {
 		    	  if (inventory.main[i].stack != null) {
 		    		  if (inventory.main[i].stack.item instanceof Bullet) {
-		    		      arrow = (Bullet) inventory.main[i].stack.item;
+		    		      bullet = (Bullet) inventory.main[i].stack.item;
 		    			  inventory.main[i].decrementStack(1);
 		    			  
-//		    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+//		    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_bullet_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 		    		      shoot = true;
 		    		      ii = i;
 		    		      break;
@@ -101,9 +101,9 @@ public class Gun extends ItemT {
 		    	  for (int i = 0; i < inventory.hotbar.length; i++) {
 			    	  if (inventory.hotbar[i].stack != null) {
 			    		  if (inventory.hotbar[i].stack.item instanceof Bullet) {
-			    		      arrow = (Bullet) inventory.hotbar[i].stack.item;
+			    		      bullet = (Bullet) inventory.hotbar[i].stack.item;
 			    			  inventory.hotbar[i].decrementStack(1);
-//			    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+//			    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_bullet_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 			    		      shoot = true;
 			    		      ii = i;
 			    		      break;
@@ -118,7 +118,7 @@ public class Gun extends ItemT {
 		      for (int i = 0; i < inventory.main.length; i++) {
 		    	  if (inventory.main[i].stack != null) {
 		    		  if (inventory.main[i].stack.item instanceof Bullet) {
-		    			  arrow = (Bullet) inventory.main[i].stack.item;
+		    			  bullet = (Bullet) inventory.main[i].stack.item;
 		    			  shoot = true;
 		    			  break;
 		    		  }
@@ -129,7 +129,7 @@ public class Gun extends ItemT {
 		    	  for (int i = 0; i < inventory.hotbar.length; i++) {
 			    	  if (inventory.hotbar[i].stack != null) {
 			    		  if (inventory.hotbar[i].stack.item instanceof Bullet) {
-			    		      arrow = (Bullet) inventory.hotbar[i].stack.item;
+			    		      bullet = (Bullet) inventory.hotbar[i].stack.item;
 			    		      break;
 			    		  }
 			    	  }
@@ -142,30 +142,32 @@ public class Gun extends ItemT {
 	      if (shoot) {
 	    	  if (!worldIn.isRemote) {
 //	 	         SnowballEntity snowballentity = new SnowballEntity(worldIn, playerIn);
-//	 	         snowballentity.func_213884_b(new ItemStack(arrow));
-//	 	         snowballentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + arrow.velocity) * (1.0f/6.0f), 0.0F);
+//	 	         snowballentity.func_213884_b(new ItemStack(bullet));
+//	 	         snowballentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (velocity + bullet.velocity) * (1.0f/6.0f), 0.0F);
 				int archer = 0;
-					double vel = (velocity + arrow.velocity) * (1.0f/6.0f);
+					double vel = (velocity + bullet.velocity) * (1.0f/6.0f);
 	    		 if (archer > 0) {
 	    			 vel *= 1.25;
 	    		 }
-	 	         EntityBullet arrowentity = new EntityBullet(worldIn, playerIn);
-	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
+	 	         EntityBullet bulletentity = new EntityBullet(worldIn, playerIn);
+	 	         bulletentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
 	 	         
 
-	 	         double damage = (arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
+	 	         double damage = (bullet.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
 	 	         if (archer > 0) { damage *= 1.25; }
-	 	         arrowentity.setDamage(damage);
+	 	         bulletentity.setDamage(damage);
 	 	         if (random.nextInt(100) <= this.critChance + crit) {
-	 	        	arrowentity.setDamage(this.damage + this.damage * dmg * 2);
+	 	        	bulletentity.setDamage(this.damage + this.damage * dmg * 2);
 	 	         }
-	 	         arrowentity.setKnockbackStrength((int) (this.knockback + arrow.knockback) + (int) ((this.knockback + arrow.knockback) * kb));
-	 	         arrowentity.bullet = arrow;
-	 	         if (arrow.piercing > 0) {
-	 	        	arrowentity.func_213872_b((byte)arrow.piercing);
+	 	         bulletentity.setKnockback((int) (this.knockback + bullet.knockback) + (int) ((this.knockback + bullet.knockback) * kb));
+	 	         bulletentity.bullet = bullet;
+	 	         if (bullet.piercing > 0) {
+	 	        	bulletentity.piercing = bullet.piercing;
 	 	         }
-	 	         arrow.onBulletShoot(arrowentity);
-	 	         worldIn.addEntity(arrowentity);
+	 	         bulletentity.func_213884_b(new ItemStack(bullet));
+
+	 	         bullet.onBulletShoot(bulletentity);
+	 	         worldIn.addEntity(bulletentity);
 	 	         
 	 	         //worldIn.addEntity(snowballentity);
 	 	      }

@@ -8,6 +8,7 @@ import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -96,6 +97,8 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 	public void tick() {
 		super.tick();
 		
+		
+		
 		this.noClip = true;
 		this.setNoGravity(true);
 		if (world.getBlockState(getPosition()).getMaterial().blocksMovement() == false) {
@@ -114,7 +117,7 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 			ai[0] = 0;
 		}
 		
-		if (!world.isRemote) { 
+		 
 			if (ai[0] == 0) {
 				EntityWormBody lastWormBody = null;
 				for (int i = 0; i < segments; i++) {
@@ -124,8 +127,7 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 				EntityWormTail wormBody = EntityWormTail.spawnWormBody(world, getPosition(), getMaxHealth(), lastWormBody == null ? this : lastWormBody);
 				ai[0] = 1;
 			}
-			
-			
+		if (!world.isRemote) {
 			boolean collision = false;
 			
 			if (world.getBlockState(getPosition()).getMaterial().blocksMovement() == true) {
@@ -146,7 +148,7 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 			if (target != null) {
 				float speed = 3f;
 				
-				float acceleration = 0.08f;
+				float acceleration = 0.2f;
 				
 				float absVelX = (float)Math.abs(velX);
 				float absVelY = (float)Math.abs(velY);
@@ -159,10 +161,46 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 					}
 					
 					if (velY > -speed) {
-						velY -= acceleration;
+						velY -= 0.05f;
 					}
 					
 
+					if (absVelZ > 0 || dirZ == 0) {
+						if (posZ < target.posZ) { 
+							dirZ = 1;
+						} else {
+							dirZ = -1;
+						}
+					}
+					
+					if (absVelX > 0 || dirX == 0) {
+						if (posX < target.posX) { 
+							dirX = 1;
+						} else {
+							dirX = -1;
+						}
+					}
+					
+					
+					if (dirZ == 1) { 
+						if (velZ < speed) {
+							velZ += acceleration * 0.1f;
+						}
+					} else {
+						if (velZ > -speed) {
+							velZ -= acceleration * 0.1f;
+						}
+					}
+					
+					if (dirX == 1) { 
+						if (velX < speed) {
+							velX += acceleration * 0.1f;
+						}
+					} else {
+						if (velX > -speed) {
+							velX -= acceleration * 0.1f;
+						}
+					}
 					
 					
 					
@@ -229,8 +267,8 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 					if (absVelZ > speed * 0.5f) {
 						if (Math.abs(posZ - target.posZ) < Math.abs(posY - target.posY)) {
 							if (Math.abs(posZ + velZ) > Math.abs(posZ - velZ)) {
-								velZ -= acceleration;
-								velY += acceleration;
+								velZ -= acceleration * dirZ;
+								velY += acceleration * dirY;
 							}
 						}
 					}
@@ -238,23 +276,23 @@ public class EntityWormHead extends MobEntity implements IEntityAdditionalSpawnD
 					if (absVelX > speed * 0.5f) {
 						if (Math.abs(posX - target.posX) < Math.abs(posY - target.posY)) {
 							if (Math.abs(posX + velX) > Math.abs(posX - velX)) {
-								velX -= acceleration;
-								velY += acceleration;
+								velX -= acceleration * dirX;
+								velY += acceleration * dirY;
 							}
 						}
 					}
 					if (absVelY > speed * 0.5f) {
 						if (Math.abs(posX - target.posX) > Math.abs(posY - target.posY)) {
 							if (Math.abs(posY + velY) > Math.abs(posY - velY)) {
-								velY -= acceleration;
-								velX += acceleration;
+								velY -= acceleration * dirY;
+								velX += acceleration * dirX;
 							}
 						}
 						
 						if (Math.abs(posZ - target.posZ) > Math.abs(posY - target.posY)) {
 							if (Math.abs(posY + velY) > Math.abs(posY - velY)) {
-								velY -= acceleration;
-								velZ += acceleration;
+								velY -= acceleration * dirY;
+								velZ += acceleration * dirZ;
 							}
 						}
 					}

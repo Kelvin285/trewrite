@@ -8,11 +8,15 @@ import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
+import kmerrill285.trewrite.entities.models.ModelRegistry;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
+import kmerrill285.trewrite.items.accessories.Accessory;
+import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
@@ -34,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -159,11 +164,19 @@ public class OverlayEvents {
 	}
 	
 	@SubscribeEvent
+	public static void handleLivingRender(RenderLivingEvent<?, ?> event) {
+		
+	}
+	
+	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePlayerRenderEvent(RenderPlayerEvent event) {
-		
-		
-		
+//		System.out.println(Models.GUIDE);
+		if (event.getEntityLiving() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+			ModelRegistry.renderPlayer.doRender(player, event.getX(), event.getY(), event.getZ(), player.getYaw(event.getPartialRenderTick()), event.getPartialRenderTick());
+			event.setCanceled(true);
+		}
 	}
 	
 	
@@ -182,13 +195,15 @@ public class OverlayEvents {
 			addedLayer = true;
 		}
 		
-		
 	}
 	
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePostPlayerRenderEvent(RenderPlayerEvent.Post event) {
-			
+//		AnimatedModel model = Models.GUIDE.get("Idle");
+//		if (model != null) {
+//			model.render(System.nanoTime() / 1000000000.0);
+//		}
 		}
 	
 	@SubscribeEvent
@@ -395,6 +410,14 @@ public class OverlayEvents {
 					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
 					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 1, 27 + 12 * 1, 12, 12); //debuff image
 					instance.ingameGUI.drawString(instance.fontRenderer, "x"+Util.renderManaSicknessEffect+" ["+Util.getTimerString(Util.renderManaSickness)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderWeakDebuff > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 2, 27 + 12 * 3, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderWeakDebuff)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
 					effectCounter++;
 				}
 				
@@ -615,7 +638,28 @@ public class OverlayEvents {
 				//healthbar
 				
 				int mana = ScoreboardEvents.getMana(player);
-				int max_mana = ScoreboardEvents.getMaxMana(player);
+				int extraMana = 0;
+				InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+				if (inventory != null)
+				for (int a = 0; a < inventory.accessory.length; a++) {
+					if (inventory.accessory[a] != null) {
+						InventorySlot slot = inventory.accessory[a];
+						if (slot.stack != null) {
+							if (slot.stack.item instanceof ItemT) {
+								ItemT item = (ItemT)slot.stack.item;
+								ItemModifier modifier = ItemModifier.getModifier(slot.stack.modifier);
+								if (item instanceof Accessory) {
+									Accessory acc = (Accessory)item;
+									extraMana += acc.extraMana;
+								}
+								if (modifier != null)
+								extraMana += modifier.mana;
+							}
+						}
+					}
+				}
+				
+				int max_mana = ScoreboardEvents.getMaxMana(player) + extraMana;
 				
 				int len = (int)(mana / 20);
 				
@@ -698,6 +742,16 @@ public class OverlayEvents {
 							}
 						}
 					}
+				}
+				
+				int ironskin = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.IRONSKIN).getScorePoints();
+				if (ironskin > 0) {
+					armor += 8;
+				}
+				
+				int weak = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WEAK).getScorePoints();
+				if (weak > 0) {
+					armor -= 8;
 				}
 				
 				

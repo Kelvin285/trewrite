@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.entities.projectiles;
 
+import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
@@ -74,9 +76,11 @@ public class EntityThrowingT extends SnowballEntity
 				((ThrowableItem)arrow).throwingTick(this);
 			}
 		}
-		
+		if (world.getBlockState(getPosition()).getBlock() instanceof Pot) {
+			world.setBlockState(getPosition(), BlocksT.AIR_BLOCK.getDefaultState());
+		}
 		if (lightValue > 0) {
-			WorldStateHolder.get(world).setLight(getPosition(), lightValue);
+			WorldStateHolder.get(world).setLight(getPosition(), lightValue, world.getDimension().getType());
 		}
 		
 		if (this.bouncingAI) {
@@ -188,7 +192,7 @@ public class EntityThrowingT extends SnowballEntity
 			for (LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(this.getPosition().add(-1, -1, -1), this.getPosition().add(1, 1, 1)))) {
 				if (entity.getPositionVec().distanceTo(getPositionVec()) <= 1)
 				{
-					if (lifetime < 70) {
+					if (lifetime < 70 && entity.isInvulnerable() == false) {
 						explode();
 					}
 				}
@@ -219,7 +223,7 @@ public class EntityThrowingT extends SnowballEntity
 				entity.attackEntityFrom(DamageSource.causeExplosionDamage(this.getThrower()), this.damage);
 			}
 		}
-		WorldStateHolder.get(world).setLight(getPosition(), 15);
+		WorldStateHolder.get(world).setLight(getPosition(), 15, world.getDimension().getType());
         this.remove();
 	}
 	
@@ -261,20 +265,13 @@ public class EntityThrowingT extends SnowballEntity
 	    * Called when this EntityThrowable hits a block or entity.
 	    */
 	   protected void onImpact(RayTraceResult result) {
-		   
-//	     if (arrow != null) {
-//	    	 
-//	    	 ThrowableItem a = (ThrowableItem)arrow;
-//	    	 if (isExplosive == false)
-//	    	 a.onImpact(result, this);
-//	    	 else {
-//	    		 if (result.getType() == RayTraceResult.Type.ENTITY) {
-//	    			this.explode();
-//    				this.remove();
-//	    		 }
-//	    	 }
-//	     }
-//	     
+		 if (this.isExplosive == false)
+	     if (arrow != null) {
+	    	 
+	    	 ThrowableItem a = (ThrowableItem)arrow;
+	    	 if (isExplosive == false)
+	    	 a.onImpact(result, this);
+	     }
 	     
 
 	   }

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/palm_wood" }
+        "": { "model": "trewrite:block/wooden_planks/palm_wood" }
     }
 }

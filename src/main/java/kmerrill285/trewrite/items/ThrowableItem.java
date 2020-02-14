@@ -43,7 +43,7 @@ public class ThrowableItem extends ItemT {
 	      
 	      InventoryTerraria inventory = null;
 	      if (!worldIn.isRemote) {
-	    	  inventory = WorldEvents.getOrLoadInventory(playerIn, playerIn.world);
+	    	  inventory = WorldEvents.getOrLoadInventory(playerIn);
 	      } else 
 	      {
 	    	  inventory = ContainerTerrariaInventory.inventory;

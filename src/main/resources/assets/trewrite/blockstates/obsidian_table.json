@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/tables/obsidian" }
+        "": { "model": "trewrite:block/tables/obsidian_table" }
     }
 }

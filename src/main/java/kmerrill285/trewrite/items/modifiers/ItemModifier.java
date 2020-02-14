@@ -190,7 +190,7 @@ public class ItemModifier {
 		addLine(damage, "damage", true, tooltips);
 		addLine(speed, "use speed", true, tooltips);
 		addLine(crit, "critical strike chance", true, tooltips);
-		addLine(manaCost, "mana cost", false, tooltips);
+		addLine(manaCost, "mana cost", true, tooltips);
 		addLine(velocity, "velocity", true, tooltips);
 		addLine(knockback, "knockback", true, tooltips);
 		addLine(defense, "defense", false, tooltips);

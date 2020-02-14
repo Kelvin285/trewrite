@@ -3,8 +3,7 @@ package kmerrill285.trewrite.blocks;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -40,6 +39,7 @@ public class CorruptGrassBlock extends DirtBlock {
 					return;
 				}
 				if (!worldIn.isBlockPresent(blockpos)) return;
+				if (worldIn.getBlockState(blockpos.up()).getMaterial() == Material.AIR)
 				if (worldIn.getBlockState(blockpos).getBlock() == BlocksT.DIRT_BLOCK) {
 					if (worldIn.isBlockPresent(blockpos.up())) {
 						if (!(worldIn.getBlockState(blockpos).getBlock() == BlocksT.SUNFLOWER)) {

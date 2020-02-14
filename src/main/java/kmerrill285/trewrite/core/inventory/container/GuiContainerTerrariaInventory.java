@@ -312,7 +312,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		selectedSlot = inventory.main[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.main[m].x + i, inventory.main[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.main[m].x + i, inventory.main[m].y + j, 23, 191, 16, 16);
         	}
         }
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -324,7 +324,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		selectedSlot = inventory.hotbar[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.hotbar[m].x + i, inventory.hotbar[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.hotbar[m].x + i, inventory.hotbar[m].y + j, 23, 191, 16, 16);
         	}
         }
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -342,19 +342,19 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		selectedSlot = inventory.armor[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.armor[m].x + i, inventory.armor[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.armor[m].x + i, inventory.armor[m].y + j, 23, 191, 16, 16);
         	}
         	if (mouseInRect(inventory.armorVanity[m].x + i, inventory.armorVanity[m].y + j, 16, 16, mouseX, mouseY)) {
         		selectedSlot = inventory.armorVanity[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.armorVanity[m].x + i, inventory.armorVanity[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.armorVanity[m].x + i, inventory.armorVanity[m].y + j, 23, 191, 16, 16);
         	}
         	if (mouseInRect(inventory.armorDyes[m].x + i, inventory.armorDyes[m].y + j, 16, 16, mouseX, mouseY)) {
         		selectedSlot = inventory.armorDyes[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.armorDyes[m].x + i, inventory.armorDyes[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.armorDyes[m].x + i, inventory.armorDyes[m].y + j, 23, 191, 16, 16);
         	}
         }
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -372,19 +372,19 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		selectedSlot = inventory.accessory[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.accessory[m].x + i, inventory.accessory[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.accessory[m].x + i, inventory.accessory[m].y + j, 23, 191, 16, 16);
         	}
         	if (mouseInRect(inventory.accessoryVanity[m].x + i, inventory.accessoryVanity[m].y + j, 16, 16, mouseX, mouseY)) {
         		selectedSlot = inventory.accessoryVanity[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.accessoryVanity[m].x + i, inventory.accessoryVanity[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.accessoryVanity[m].x + i, inventory.accessoryVanity[m].y + j, 23, 191, 16, 16);
         	}
         	if (mouseInRect(inventory.accessoryDyes[m].x + i, inventory.accessoryDyes[m].y + j, 16, 16, mouseX, mouseY)) {
         		selectedSlot = inventory.accessoryDyes[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-        		this.drawTexturedRectangle(inventory.accessoryDyes[m].x + i, inventory.accessoryDyes[m].y + j, 23, 191, 16, 16);
+        		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.accessoryDyes[m].x + i, inventory.accessoryDyes[m].y + j, 23, 191, 16, 16);
         	}
         }
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -395,7 +395,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         	selectedSlot = inventory.trash;
         	this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-    		this.drawTexturedRectangle(inventory.trash.x + i, inventory.trash.y + j, 23, 191, 16, 16);
+    		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.trash.x + i, inventory.trash.y + j, 23, 191, 16, 16);
     	}
         //inventory start: 7, 83.  Slot size: 18 x 18, Recipe start: 128, 15.  Gap: 1px, Max rows: 2
         //up arrow: 40, 191
@@ -422,19 +422,19 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
 
             if (this.availableRecipes.size() > r + 12) {
             	//more pages available
-            	this.drawTexturedRectangle(347, 97, 40, 196, 7, 4);
-            	if (mouseInRect(347, 97, 7, 4, mouseX, mouseY)) {
+            	GuiContainerTerrariaInventory.drawTexturedRectangle(i + 241, j+54, 40, 196, 7, 4);
+            	if (mouseInRect(i + 241, j+54, 7, 4, mouseX, mouseY)) {
             		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-    	    		this.drawTexturedRectangle(347, 97, 23, 191, 7, 4);
+            		GuiContainerTerrariaInventory.drawTexturedRectangle(i + 241, j+54, 23, 191, 7, 4);
     	    		downSelected = true;
             	}
             }
             
             if (page > 0) {
-            	this.drawTexturedRectangle(347, 51, 40, 191, 7, 4);
-            	if (mouseInRect(347, 51, 7, 4, mouseX, mouseY)) {
+            	GuiContainerTerrariaInventory.drawTexturedRectangle(i + 241, j+8, 40, 191, 7, 4);
+            	if (mouseInRect(i + 241, j+8, 7, 4, mouseX, mouseY)) {
             		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-    	    		this.drawTexturedRectangle(347, 51, 23, 191, 7, 4);
+            		GuiContainerTerrariaInventory.drawTexturedRectangle(i + 241, j+8, 23, 191, 7, 4);
     	    		upSelected = true;
             	}
             }
@@ -444,13 +444,13 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
             		if (r < this.availableRecipes.size()) {
             			int X = x * 18 + rx + x;
             			int Y = y * 18 + ry + y;
-            			this.drawTexturedRectangle(X, Y, 7, 83, 18, 18);
+            			GuiContainerTerrariaInventory.drawTexturedRectangle(X, Y, 7, 83, 18, 18);
             			GuiContainerTerrariaInventory.renderItemIntoGUI(this.availableRecipes.get(r).output, X, Y);
             			
             			if (mouseInRect(X, Y, 18, 18, mouseX, mouseY)) {
             	        	this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
             	            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
-            	    		this.drawTexturedRectangle(X + 1, Y + 1, 23, 191, 16, 16);
+            	    		GuiContainerTerrariaInventory.drawTexturedRectangle(X + 1, Y + 1, 23, 191, 16, 16);
             	    		
             	    		selectedRecipe = this.availableRecipes.get(r);
             	    	}

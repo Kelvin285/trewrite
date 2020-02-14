@@ -17,7 +17,6 @@ import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
-import kmerrill285.trewrite.entities.EntityCoinPortal;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
@@ -70,6 +69,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -87,6 +87,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -116,13 +117,13 @@ public class EntityEvents {
 			PlayerEntity player = event.getPlayer();
 			
 			if (player.world.isRemote) { 
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 				
 				if (Util.terrariaInventory) {
 					event.setCanceled(true);
 				}
 			} else {
-				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 				if (inventory != null) {
 					if (inventory.open) {
 						event.setCanceled(true);
@@ -162,6 +163,11 @@ public class EntityEvents {
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.THORNS).setScorePoints(0);
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).setScorePoints(0);
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).setScorePoints(0);
+			
+			
+			if (WorldEvents.getOrLoadInventory(player) != null) {
+				WorldEvents.getOrLoadInventory(player).save(player.getScoreboardName(), player.world.getServer().getFolderName());
+			}
 		}
 	}
 	
@@ -189,17 +195,50 @@ public class EntityEvents {
 			}
 			
 			if (!event.getWorld().isRemote) {
-				BlockPos pos = WorldStateHolder.get(event.getWorld().getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
-				if (pos != null) {
-					if ((player.world.getBlockState(pos).getBlock() instanceof Bed)) {
-						player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
-					} else {
-						Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, player.getPosition());
-						player.setSpawnDimenion(DimensionType.OVERWORLD);
+				if (event.getWorld().getServer() != null)
+				if (event.getWorld().getServer().getWorld(DimensionType.OVERWORLD) != null) {
+					BlockPos pos = WorldStateHolder.get(event.getWorld().getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
+					if (pos != null) {
+						if ((player.world.getBlockState(pos).getBlock() instanceof Bed)) {
+							player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+						} else {
+							Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, player.getPosition());
+							player.setSpawnDimenion(DimensionType.OVERWORLD);
+						}
 					}
 				}
 				
 			}
+			
+			if (!event.getWorld().isRemote)
+				if (WorldStateHolder.get(player.world.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName()) == null) {
+					if (player instanceof ServerPlayerEntity) {
+						BlockPos a = player.world.getServer().getWorld(DimensionType.OVERWORLD).getSpawnPoint();
+						BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos(a.getX(), 255, a.getZ());
+						World world = player.world.getServer().getWorld(DimensionType.OVERWORLD);
+						for (int y = 254; y > 0; y--) {
+							spawnPos.setPos(a.getX(), y, a.getZ());
+							if (world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
+								spawnPos.setPos(a.getX(), y+1, a.getZ());
+								if (!world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
+									new Thread() {
+										public void run() {
+											try {
+												Thread.sleep(100);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+											
+											Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, spawnPos);
+										}
+									}.start();
+									break;
+								}
+							}
+						}
+
+					}
+				}
 			
 		}
 	}
@@ -227,6 +266,27 @@ public class EntityEvents {
 			}
 			
 		}
+	}
+	
+	@SubscribeEvent
+	public static void handlePlayerAttack(AttackEntityEvent event) {
+//		if (event.getPlayer() instanceof PlayerEntity) {
+//			PlayerEntity player = (PlayerEntity)event.getPlayer();
+//			if (player != null) {
+//				if (player.getHeldItemMainhand() != null) {
+//					if (player.getHeldItemMainhand().getItem() != null) {
+//						if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
+//							if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
+//								ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
+//								item.onLeftClick(event.getTarget(), event.getTarget().getPosition(), player, player.world, Hand.MAIN_HAND);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+				
+			
 	}
 	
 	@SubscribeEvent
@@ -258,6 +318,9 @@ public class EntityEvents {
 				{
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 					
+					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WEAK).getScorePoints() > 0) {
+						event.setAmount(event.getAmount() + 4);
+					}
 					
 					int waterwalk = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).getScorePoints();
 					if (waterwalk > 0) {
@@ -321,7 +384,7 @@ public class EntityEvents {
 						return;
 					}
 					
-					InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+					InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 					if (inventory != null) {
 						boolean hasSkull = false;
 						for (int i = 0; i < inventory.accessory.length; i++) {
@@ -401,7 +464,7 @@ public class EntityEvents {
 						double attackMul = 1.0;
 						InventoryTerraria inventory = null;
 						if (!player.world.isRemote) {
-							inventory = WorldEvents.getOrLoadInventory(player, player.world);
+							inventory = WorldEvents.getOrLoadInventory(player);
 						}
 						else {
 							inventory = ContainerTerrariaInventory.inventory;
@@ -434,7 +497,7 @@ public class EntityEvents {
 			
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				inventory = WorldEvents.getOrLoadInventory(player);
 			}
 			else {
 				inventory = ContainerTerrariaInventory.inventory;
@@ -459,9 +522,12 @@ public class EntityEvents {
 			PlayerEntity player = (PlayerEntity)event.getSource().getImmediateSource();
 			double cooldownMul = 1.0;
 			double attackMul = 1.0;
+			
+			
+			
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				inventory = WorldEvents.getOrLoadInventory(player);
 			}
 			else {
 				inventory = ContainerTerrariaInventory.inventory;
@@ -489,7 +555,6 @@ public class EntityEvents {
 				}
 			}
 			
-			
 			if (player.getHeldItemMainhand() != null) {
 				if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
 					
@@ -497,7 +562,7 @@ public class EntityEvents {
 					if (item.melee == true) {
 						event.setAmount(event.getAmount() * (float)attackMul);
 					}
-					player.getCooldownTracker().setCooldown(item, (int)(player.getCooldownTracker().getCooldown(item, 0.0f) * cooldownMul));
+//					player.getCooldownTracker().setCooldown(item, (int)(player.getCooldownTracker().getCooldown(item, 0.0f) * cooldownMul));
 				}
 			}
 		}
@@ -506,6 +571,7 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handleLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		
 		if (event.getPlayer() != null)
 		if (event.getItemStack() != null) {
 			if (event.getItemStack().getItem() instanceof Hammer) {
@@ -514,11 +580,31 @@ public class EntityEvents {
 			}
 		}
 	}
-	
+	@SubscribeEvent
+	public static void handleInteract(PlayerInteractEvent event) {	
+//		if (event instanceof PlayerInteractEvent.LeftClickEmpty ||
+//				event instanceof PlayerInteractEvent.LeftClickBlock) {
+//			if (event.getEntity() instanceof PlayerEntity) {
+//				PlayerEntity player = (PlayerEntity)event.getEntity();
+//				if (player != null) {
+//					if (player.getHeldItemMainhand() != null) {
+//						if (player.getHeldItemMainhand().getItem() != null) {
+//							if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
+//								if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
+//									ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
+//									item.onLeftClick(null, event.getPos(), player, player.world, Hand.MAIN_HAND);
+//								}
+//							}
+//						}
+//					}
+//					
+//				}
+//			}
+//		}
+	}
 	//public ItemUseContext(PlayerEntity player, Hand handIn, BlockRayTraceResult rayTraceResultIn) {
 	@SubscribeEvent
 	public static void handleInteract(PlayerInteractEvent.RightClickBlock event) {		
-		
 		
 		if (event.getItemStack() != null) {
 			
@@ -551,7 +637,7 @@ public class EntityEvents {
 							}
 						} 
 						else {
-							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 							
 							
 							
@@ -611,7 +697,7 @@ public class EntityEvents {
 								event.getItemStack().shrink(1);
 							}
 						} else {
-							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+							InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 							if (inventory != null && inventory.open == true) {
 								if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 									inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -711,7 +797,7 @@ public class EntityEvents {
 									event.getItemStack().shrink(1);
 								}
 							} else {
-								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 								if (inventory != null && inventory.open == true) {
 									if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 										inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -735,10 +821,13 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handleInteract(PlayerInteractEvent.RightClickItem itemEvent) {
+		
 		if (itemEvent.getItemStack() != null) {
 			if (itemEvent.getItemStack().getItem() instanceof ItemT) {
+				
 				((ItemT)itemEvent.getItemStack().getItem()).onUse(null, itemEvent.getPos(), itemEvent.getEntityPlayer(), itemEvent.getWorld(), itemEvent.getHand());
 				if (((ItemT)itemEvent.getItemStack().getItem()).consumable) {
+					
 					boolean shrink = false;
 					if (itemEvent.getEntityPlayer().getHealth() < itemEvent.getEntityPlayer().getMaxHealth()) {
 						boolean heal = true;
@@ -787,7 +876,7 @@ public class EntityEvents {
 									itemEvent.getItemStack().shrink(1);
 								}
 							} else {
-								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+								InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 								if (inventory != null && inventory.open == true) {
 									if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 										inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -802,8 +891,8 @@ public class EntityEvents {
 					}
 				}
 			}
-			if (itemEvent.getItemStack().getItem() instanceof ItemBlockT && itemEvent.getWorld().getBlockState(itemEvent.getPos()) == BlocksT.AIR_BLOCK.getDefaultState()) {
-				//((ItemT)itemEvent.getItemStack().getItem()).onUse(null, itemEvent.getPos(), itemEvent.getEntityPlayer(), itemEvent.getWorld(), itemEvent.getHand());
+			if (itemEvent.getItemStack().getItem() instanceof ItemBlockT) {
+				((ItemT)itemEvent.getItemStack().getItem()).onUse(null, itemEvent.getPos(), itemEvent.getEntityPlayer(), itemEvent.getWorld(), itemEvent.getHand());
 				if (((BlockT)((ItemBlockT)itemEvent.getItemStack().getItem()).getBlock()) != null) {
 					BlockT block = ((BlockT)((ItemBlockT)itemEvent.getItemStack().getItem()).getBlock());
 					if (block.consumable == true) {
@@ -821,7 +910,7 @@ public class EntityEvents {
 							}
 						}
 						
-						if (block.getDefaultState() == BlocksT.LIFE_CRYSTAL.getDefaultState()) { 
+						if (block == BlocksT.LIFE_CRYSTAL) { 
 							Score lifeCrystals = ScoreboardEvents.getScore(itemEvent.getEntityPlayer().getWorldScoreboard(), itemEvent.getEntityPlayer(), ScoreboardEvents.LIFE_CRYSTALS);
 							if (lifeCrystals.getScorePoints() < 15) {
 								lifeCrystals.setScorePoints(lifeCrystals.getScorePoints() + 1);
@@ -847,7 +936,7 @@ public class EntityEvents {
 										itemEvent.getItemStack().shrink(1);
 									}
 								} else {
-									InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player, player.world);
+									InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
 									if (inventory != null && inventory.open == true) {
 										if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
 											inventory.hotbar[inventory.hotbarSelected].stack.size --;
@@ -906,7 +995,7 @@ public class EntityEvents {
 				double speedMul = 1.0;
 				InventoryTerraria inventory = null;
 				if (!player.world.isRemote) {
-					inventory = WorldEvents.getOrLoadInventory(player, player.world);
+					inventory = WorldEvents.getOrLoadInventory(player);
 				}
 				else {
 					inventory = ContainerTerrariaInventory.inventory;
@@ -1059,7 +1148,9 @@ public class EntityEvents {
 						speed = HERMES_BOOTS.baseSpeed;
 					}
 				}
+				
 				if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SWIFTNESS).getScorePoints() > 0) speed += 0.25;
+				if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WEAK).getScorePoints() > 0) speed -= 0.051;
 				player.setAIMoveSpeed((float) speed);
 				
 				World world = player.getEntityWorld();
@@ -1094,11 +1185,43 @@ public class EntityEvents {
 			
 			
 			if (event.getEntityLiving() instanceof PlayerEntity) {
+				
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+				
+				if (player.isSwingInProgress) {
+					if (player != null) {
+						if (player.getHeldItemMainhand() != null) {
+							if (player.getHeldItemMainhand().getItem() != null) {
+								if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
+									RayTraceResult result;
+									
+									double rd = (double)Minecraft.getInstance().playerController.getBlockReachDistance();
+
+								    Vec3d vec3d = player.getEyePosition(0).subtract(0,player.getEyeHeight(),0);
+								    Vec3d vec3d1 = player.getLook(0);
+								    Vec3d vec3d2 = vec3d.add(vec3d1.x * rd, vec3d1.y * rd, vec3d1.z * rd);
+									
+								    result = player.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, false ? RayTraceContext.FluidMode.ANY : RayTraceContext.FluidMode.NONE, player));
+
+									if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
+										ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
+										
+										BlockPos pos = player.getPosition();
+										if (result != null) {
+											pos = new BlockPos(result.getHitVec());
+										}
+										
+										item.onLeftClick(null, pos, player, player.world, Hand.MAIN_HAND);
+									}
+								}
+							}
+						}
+					}
+				}
 				
 				int shine = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.SHINE).getScorePoints();
 				if (shine > 0) {
-					WorldStateHolder.get(player.world).setLight(player.getPosition(), 15);
+					WorldStateHolder.get(player.world).setLight(player.getPosition(), 15, player.world.getDimension().getType());
 				}
 				
 				int nightowl = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.NIGHT_OWL).getScorePoints();
@@ -1157,7 +1280,7 @@ public class EntityEvents {
 				double knockbackMul = 1.0;
 				InventoryTerraria inventory = null;
 				if (!player.world.isRemote) {
-					inventory = WorldEvents.getOrLoadInventory(player, player.world);
+					inventory = WorldEvents.getOrLoadInventory(player);
 				}
 				else {
 					inventory = ContainerTerrariaInventory.inventory;
@@ -1170,6 +1293,7 @@ public class EntityEvents {
 							if (modifier != null) {
 								reachMul += modifier.size / 100.0;
 								attackMul += modifier.damage / 100.0;
+								if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WEAK).getScorePoints() > 0) attackMul *= 0.949;
 								knockbackMul += modifier.knockback / 100.0;
 							}
 							ItemStack s = player.getHeldItemMainhand();
@@ -1177,7 +1301,7 @@ public class EntityEvents {
 							if (s.getItem() instanceof ItemT) {
 								if (shine <= 0 && s.getItem() != null) {
 									if (((ItemT)s.getItem()).getLightValue() > 0) {
-										WorldStateHolder.get(player.world).setLight(player.getPosition(), ((ItemT)s.getItem()).getLightValue());
+										WorldStateHolder.get(player.world).setLight(player.getPosition(), ((ItemT)s.getItem()).getLightValue(), player.world.getDimension().getType());
 									}
 								}
 							}
@@ -1197,7 +1321,6 @@ public class EntityEvents {
 				
         		player.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(attackMul);
         		
-				
         		if (player.getHeldItemMainhand() != null) {
         			Item item = player.getHeldItemMainhand().getItem();
         			if (item instanceof ItemBlockT || item instanceof Axe || item instanceof Pickaxe || item instanceof Hammer) {
@@ -1214,8 +1337,6 @@ public class EntityEvents {
 			}
 			event.getEntity().setNoGravity(true);
 			
-			if (!(event.getEntity() instanceof FlyingEntity))
-				if (event.getEntity().getMotion().getY() > -Conversions.convertToIngame(Util.terminalVelocity));
 			Vec3d motion = event.getEntity().getMotion();
 			Entity entity = event.getEntity();
 			boolean falling = true;
@@ -1286,7 +1407,7 @@ public class EntityEvents {
 							Util.INVERSE_GRAVITY = false;
 						}
 						if (Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson()) {
-							float gravity = G / 50.0f;
+							float gravity = G / 20.0f;
 							if (event.getEntityLiving().isInLava()) {
 								gravity *= 0.25f;
 							}
@@ -1553,7 +1674,7 @@ public class EntityEvents {
 			PlayerEntity player = (PlayerEntity) event.getEntity();
 			InventoryTerraria inventory = null;
 			if (!player.world.isRemote) {
-				inventory = WorldEvents.getOrLoadInventory(player, player.world);
+				inventory = WorldEvents.getOrLoadInventory(player);
 				for (int i = 0; i < 3; i++) {
 					BlockPos pos = new BlockPos(player.getPosition().down(i));
 					if (player.world.getBlockState(pos).getBlock() == BlocksT.DIMENSION_BLOCK) {

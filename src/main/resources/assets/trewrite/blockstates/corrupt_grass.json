@@ -1,9 +1,10 @@
 {
     "variants": {
         "": [ 
-            { "model": "trewrite:block/corrupt_grass" },
-            { "model": "trewrite:block/corrupt_grass2" },
-            { "model": "trewrite:block/corrupt_grass3" }
+            { "model": "trewrite:block/grasses/corrupt_grass" },
+            { "model": "trewrite:block/grasses/corrupt_grass", "y": 90 },
+            { "model": "trewrite:block/grasses/corrupt_grass", "y": 180 },
+            { "model": "trewrite:block/grasses/corrupt_grass", "y": 270 }
         ]
     }
 }

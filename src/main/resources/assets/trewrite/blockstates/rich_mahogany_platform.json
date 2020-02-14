@@ -1,7 +1,7 @@
 {
     "variants": {
-        "type=bottom": { "model": "trewrite:block/rich_mahogany_platform" },
-        "type=top": { "model": "trewrite:block/rich_mahogany_platform_top" },
-        "type=double": { "model": "trewrite:block/rich_mahogany" }
+        "type=bottom": { "model": "trewrite:block/platforms/rich_mahogany_platform/bottom" },
+        "type=top": { "model": "trewrite:block/platforms/rich_mahogany_platform/top" },
+        "type=double": { "model": "trewrite:block/wooden_planks/rich_mahogany" }
     }
 }

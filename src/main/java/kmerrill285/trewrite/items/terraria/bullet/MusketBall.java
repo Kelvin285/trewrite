@@ -11,6 +11,7 @@ public class MusketBall extends Bullet {
 		this.velocity = 4;
 		this.knockback = 2;
 		this.setBuySell(1);
+		this.setMaterial();
 	}
 
 }

@@ -1,7 +1,10 @@
 package kmerrill285.trewrite.events;
 
-import java.lang.reflect.Field;
-
+import kmerrill285.trewrite.core.inventory.InventorySlot;
+import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.items.ItemT;
+import kmerrill285.trewrite.items.accessories.Accessory;
+import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +38,7 @@ public class ScoreboardEvents {
 			SHINE = "SHN", BATTLE = "BTL",
 			OBSIDIAN_SKIN = "OBSS",
 			MAGIC_POWER = "MPWR", MANA_REGENERATION = "MNRG",
-			TITAN = "TITAN";
+			TITAN = "TITAN", WEAK = "WEAK";
 	
 	public static int tickTimer = 0;
 	
@@ -98,7 +101,8 @@ public class ScoreboardEvents {
 		getObjective(ScoreboardEvents.MAGIC_POWER, scoreboard, player),
 		getObjective(ScoreboardEvents.MANA_REGENERATION, scoreboard, player),
 		getObjective(ScoreboardEvents.TITAN, scoreboard, player),
-		getObjective(ScoreboardEvents.HUNTER, scoreboard, player)
+		getObjective(ScoreboardEvents.HUNTER, scoreboard, player),
+		getObjective(ScoreboardEvents.WEAK, scoreboard, player)
 		};
 		String[] PTNSTR = {
 			ScoreboardEvents.BUILDER, ScoreboardEvents.CALMING,
@@ -106,7 +110,7 @@ public class ScoreboardEvents {
 			ScoreboardEvents.REGENERATION, ScoreboardEvents.MINING, ScoreboardEvents.ARCHERY, ScoreboardEvents.FEATHERFALL,
 			ScoreboardEvents.FLIPPER, ScoreboardEvents.GRAVITATION, ScoreboardEvents.HEARTREACH, ScoreboardEvents.INVISIBILITY,
 			ScoreboardEvents.THORNS, ScoreboardEvents.WATER_WALKING, ScoreboardEvents.SHINE, ScoreboardEvents.BATTLE, ScoreboardEvents.OBSIDIAN_SKIN,
-			ScoreboardEvents.MAGIC_POWER, ScoreboardEvents.MANA_REGENERATION, ScoreboardEvents.TITAN, ScoreboardEvents.HUNTER
+			ScoreboardEvents.MAGIC_POWER, ScoreboardEvents.MANA_REGENERATION, ScoreboardEvents.TITAN, ScoreboardEvents.HUNTER, ScoreboardEvents.WEAK
 		};
 		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
@@ -161,30 +165,43 @@ public class ScoreboardEvents {
 		}
 		boolean playerMoving = false;
 		int mana_regen = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_REGENERATION).getScorePoints();
-		if (mana_regen <= 0) {
-			if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
-			if (manaTimer.getScorePoints() < (playerMoving ? 10 : 5)) {
-				manaTimer.incrementScore();
-			} else {
-				manaTimer.setScorePoints(0);
-				if (mana.getScorePoints() < maxMana.getScorePoints()) {
-					mana.incrementScore();
-				}
-			}
-		} else {
-			if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
-			if (manaTimer.getScorePoints() < 4.25) {
-				manaTimer.incrementScore();
-			} else {
-				manaTimer.setScorePoints(0);
-				if (mana.getScorePoints() < maxMana.getScorePoints()) {
-					mana.incrementScore();
+		
+		if (Math.abs(player.getMotion().x + player.getMotion().y + player.getMotion().z) > 0.1f) playerMoving = true;
+		if (playerMoving == true && mana_regen <= 0) {
+			manaTimer.setScorePoints(0);
+		}
+		
+		if (manaTimer.getScorePoints() < maxMana.getScorePoints()) {
+			manaTimer.incrementScore();
+		}
+		
+		int extraMana = 0;
+		
+		InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
+		if (inventory != null)
+		for (int a = 0; a < inventory.accessory.length; a++) {
+			if (inventory.accessory[a] != null) {
+				InventorySlot slot = inventory.accessory[a];
+				if (slot.stack != null) {
+					if (slot.stack.item instanceof ItemT) {
+						ItemT item = (ItemT)slot.stack.item;
+						ItemModifier modifier = ItemModifier.getModifier(slot.stack.modifier);
+						if (item instanceof Accessory) {
+							Accessory accessory = (Accessory)item;
+							extraMana += accessory.extraMana;
+						}
+						if (modifier != null)
+						extraMana += modifier.mana;
+					}
 				}
 			}
 		}
 		
+		if (mana.getScorePoints() < maxMana.getScorePoints() + extraMana) {
+			mana.setScorePoints((int)(mana.getScorePoints() + (manaTimer.getScorePoints()) * 0.05));
+		}
 		
-		if (mana.getScorePoints() > maxMana.getScorePoints()) mana.setScorePoints(maxMana.getScorePoints());
+		if (mana.getScorePoints() > maxMana.getScorePoints() + extraMana) mana.setScorePoints(maxMana.getScorePoints() + extraMana);
 		
 		
 	}
@@ -255,6 +272,7 @@ public class ScoreboardEvents {
 		ScoreObjective MANA_REGENERATION = getObjective(ScoreboardEvents.MANA_REGENERATION, scoreboard, player);
 		ScoreObjective TITAN = getObjective(ScoreboardEvents.TITAN, scoreboard, player);
 		ScoreObjective HUNTER = getObjective(ScoreboardEvents.HUNTER, scoreboard, player);
+		ScoreObjective WEAK = getObjective(ScoreboardEvents.WEAK, scoreboard, player);
 		
 		Score builder = scoreboard.getOrCreateScore(player.getScoreboardName(), BUILDER);
 		Score calming = scoreboard.getOrCreateScore(player.getScoreboardName(), CALMING);
@@ -279,6 +297,7 @@ public class ScoreboardEvents {
 		Score magic_power = scoreboard.getOrCreateScore(player.getScoreboardName(), MAGIC_POWER);
 		Score mana_regeneration = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_REGENERATION);
 		Score titan = scoreboard.getOrCreateScore(player.getScoreboardName(), TITAN);
+		Score weak = scoreboard.getOrCreateScore(player.getScoreboardName(), WEAK);
 		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
 		Score manaSicknessEffect = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS_EFFECT);
@@ -329,6 +348,7 @@ public class ScoreboardEvents {
 					Util.renderMagicPower = magic_power.getScorePoints() / 20;
 					Util.renderManaRegeneration = mana_regeneration.getScorePoints() / 20;
 					Util.renderTitan = titan.getScorePoints() / 20;
+					Util.renderWeakDebuff = weak.getScorePoints() / 20;
 				}
 			}
 		}

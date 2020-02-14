@@ -132,7 +132,7 @@ public class EntityShadowOrb extends MobEntity {
 //		setPosition(posX, posY, posZ);
 //		setMotion(0, 0, 0);
 		
-		WorldStateHolder.get(world).setLight(getPosition(), 15);
+		WorldStateHolder.get(world).setLight(getPosition(), 15, world.getDimension().getType());
 	}
 
 	public double lerp(double a, double b, double f) 

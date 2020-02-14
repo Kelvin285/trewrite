@@ -51,7 +51,7 @@ public class CPacketRequestInventoryChest {
 	 				System.out.println("sender: " + sender);
 	 				
             		System.out.println("Loading and sending over an inventory.");
-    	 			InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender, sender.world);
+    	 			InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender);
     	 			
     	 			InventoryChestTerraria inventory = new InventoryChestTerraria(false);
     	 			inventory.player = sender;
@@ -59,12 +59,6 @@ public class CPacketRequestInventoryChest {
 //	    	    	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSendInventoryTerraria(this.playername, inv));
     	 			sendInventoryData(this, ctx, sender, inventory, inventoryPlayer);
     	 			inventory.canSave = true;
-    	 			
-    	 			System.out.println("UNLOCKING INVENTORIES");
-    	 			
-    	 			System.out.println(WorldEvents.inventories);
-
-    	 			System.out.println("PUT PLAYER INTO INVENTORY LIST");
 
     	 			WorldEvents.chests.put(this.position, inventory);
 

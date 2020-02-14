@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/gold_ore" }
+        "": { "model": "trewrite:block/ores/gold_ore" }
     }
 }

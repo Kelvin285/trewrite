@@ -6,6 +6,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class Accessory extends ItemT {
+	
+	public int extraMana = 0;
+	
     public enum AccessoryType {
     	WATCH, DEPTH_METER, BAND_OF_REGENERATION
     }

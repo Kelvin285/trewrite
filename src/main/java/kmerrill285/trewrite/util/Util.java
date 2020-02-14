@@ -46,6 +46,8 @@ public class Util {
 	renderFeatherfall, renderFlipper, renderGravitation, renderHeartreach, renderInvisibility,
 	renderThorns, renderWaterWalking, renderShine, renderBattle, renderObsidianSkin, renderMagicPower,
 	renderManaRegeneration, renderTitan;
+
+	public static int renderWeakDebuff;
 	
 	public static boolean isChristmas() {
 		return LocalDateTime.now().getMonth() == Month.DECEMBER && LocalDateTime.now().getDayOfMonth() >= 15 && LocalDateTime.now().getDayOfMonth() <= 31;

@@ -33,13 +33,17 @@ public class Bow extends ItemT {
 		return 4;
 	}
 	
+	public void onShoot(EntityArrowT arrow) {
+		
+	}
+	
 	 public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		
 	      ItemStack itemstack = playerIn.getHeldItem(handIn);
 	      
 	      InventoryTerraria inventory = null;
 	      if (!worldIn.isRemote) {
-	    	  inventory = WorldEvents.getOrLoadInventory(playerIn, playerIn.world);
+	    	  inventory = WorldEvents.getOrLoadInventory(playerIn);
 	      } else 
 	      {
 	    	  inventory = ContainerTerrariaInventory.inventory;
@@ -153,7 +157,7 @@ public class Bow extends ItemT {
 	    		 }
 	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
 	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
-	 	         
+	 	         this.onShoot(arrowentity);
 
 	 	         double damage = (arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
 	 	         if (archer > 0) { damage *= 1.25; }

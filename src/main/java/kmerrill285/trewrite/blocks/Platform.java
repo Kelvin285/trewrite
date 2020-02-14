@@ -37,6 +37,7 @@ public class Platform extends BasicBlock {
 	   }
 
 	   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		   super.fillStateContainer(builder);
 	      builder.add(TYPE, WATERLOGGED);
 	   }
 	

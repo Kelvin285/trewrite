@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/bone_torch" }
+        "": { "model": "trewrite:block/torches/bone_torch" }
     }
 }

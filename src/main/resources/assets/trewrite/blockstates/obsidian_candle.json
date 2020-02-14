@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "trewrite:block/obsidian_candle" }
+        "": { "model": "trewrite:block/candles/obsidian_candle" }
     }
 }

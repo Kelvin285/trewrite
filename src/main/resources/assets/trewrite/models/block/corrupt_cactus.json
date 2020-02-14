@@ -3,8 +3,8 @@
 	"parent": "minecraft:block/block",
 	"ambientocclusion": false,
 	"textures": {
-		"0": "trewrite:block/corrupt_cactus",
-		"particle": "trewrite:block/corrupt_cactus" 
+		"0": "trewrite:block/plants/corrupt_cactus",
+		"particle": "trewrite:block/plants/corrupt_cactus" 
 	},
 	"elements": [
 		{

@@ -2,10 +2,16 @@ package kmerrill285.trewrite.core.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -43,12 +49,25 @@ public class ItemStackT {
 		this.item = item;
 		this.size = size;
 		this.itemForRender = new ItemStack(item);
+		if (modifier != null)
+		{
+			double speed = modifier.speed;
+			if(ItemModifier.getModifier(this.modifier) != null)
+				this.itemForRender.addAttributeModifier(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", (((ItemT)item).useTime * (speed / 100.0f) - (((ItemT)item).useTime * (speed / 100.0f) * 1.1) + 1) * (speed / 100.0f), Operation.ADDITION), EquipmentSlotType.MAINHAND);
+		}
 		this.modifier = ItemModifier.getIdForModifier(modifier);
 	}
 	
 	public void reforge(Item item) {
 		
 		this.modifier = ItemModifier.getIdForModifier(ItemModifier.getRandomModifier(item));
+		
+		
+		if(ItemModifier.getModifier(this.modifier) != null)
+		{
+			double speed = ItemModifier.getModifier(this.modifier).speed;
+			this.itemForRender.addAttributeModifier(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", (((ItemT)item).useTime * (speed / 100.0f) - (((ItemT)item).useTime * (speed / 100.0f) * 1.1) + 1), Operation.ADDITION), EquipmentSlotType.MAINHAND);
+		}
 	}
 
 	public List<ITextComponent> getTooltip(PlayerEntity player, ITooltipFlag advanced) {

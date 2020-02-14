@@ -5,15 +5,19 @@ import java.util.HashMap;
 import kmerrill285.trewrite.blocks.BlockAirT;
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.world.dimension.DimensionRegistry;
+import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.DimensionManager;
 
 public class WorldStateHolder extends WorldSavedData {
 
@@ -46,7 +50,10 @@ public class WorldStateHolder extends WorldSavedData {
 	
 	public HashMap<String, BlockPos> spawnPositions = new HashMap<String, BlockPos>();
 	public HashMap<BlockPos, Integer> lights = new HashMap<BlockPos, Integer>();
-	
+	public HashMap<BlockPos, Integer> lights_sky = new HashMap<BlockPos, Integer>();
+	public HashMap<BlockPos, Integer> lights_underground = new HashMap<BlockPos, Integer>();
+	public HashMap<BlockPos, Integer> lights_underworld = new HashMap<BlockPos, Integer>();
+
 	public class WorldState {
 		
 	}
@@ -125,6 +132,36 @@ public class WorldStateHolder extends WorldSavedData {
 			int l = Integer.parseInt(data[3]);
 			lights.put(new BlockPos(x, y, z), l);
 		}
+		size = nbt.getInt("lightsLength2");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("lights2["+i+"]".trim());
+			String[] data = s.split(",");
+			int x = Integer.parseInt(data[0]);
+			int y = Integer.parseInt(data[1]);
+			int z = Integer.parseInt(data[2]);
+			int l = Integer.parseInt(data[3]);
+			lights_sky.put(new BlockPos(x, y, z), l);
+		}
+		size = nbt.getInt("lightsLength3");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("lights3["+i+"]".trim());
+			String[] data = s.split(",");
+			int x = Integer.parseInt(data[0]);
+			int y = Integer.parseInt(data[1]);
+			int z = Integer.parseInt(data[2]);
+			int l = Integer.parseInt(data[3]);
+			lights_underground.put(new BlockPos(x, y, z), l);
+		}
+		size = nbt.getInt("lightsLength4");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("lights4["+i+"]".trim());
+			String[] data = s.split(",");
+			int x = Integer.parseInt(data[0]);
+			int y = Integer.parseInt(data[1]);
+			int z = Integer.parseInt(data[2]);
+			int l = Integer.parseInt(data[3]);
+			lights_underworld.put(new BlockPos(x, y, z), l);
+		}
 	}
 
 	@Override
@@ -168,15 +205,66 @@ public class WorldStateHolder extends WorldSavedData {
 			compound.putString("lights["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
 			i++;
 		}
+		compound.putInt("lightsLength2", lights_sky.size());
+		i = 0;
+		for (BlockPos p : lights_sky.keySet()) {
+			int l = lights_sky.get(p);
+			compound.putString("lights2["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
+			i++;
+		}
+		compound.putInt("lightsLength3", lights_underground.size());
+		i = 0;
+		for (BlockPos p : lights_underground.keySet()) {
+			int l = lights_underground.get(p);
+			compound.putString("lights3["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
+			i++;
+		}
+		compound.putInt("lightsLength4", lights_underworld.size());
+		i = 0;
+		for (BlockPos p : lights_underworld.keySet()) {
+			int l = lights_underworld.get(p);
+			compound.putString("lights4["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
+			i++;
+		}
 		return compound;
 	}
 
-	public void setLight(BlockPos pos, int light) {
-		lights.put(pos, light);
+	public void setLight(BlockPos pos, int light, DimensionType type) {
+		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+		
+		if (type == sky) {
+			lights_sky.put(pos, light);
+		}
+		else if (type == underground) {
+			lights_underground.put(pos, light);
+		}
+		else if (type == underworld) {
+			lights_underworld.put(pos, light);
+		} else {
+			lights.put(pos, light);
+		}
 	}
 	
-	public void update() {
+	public void update(World world, DimensionType type) {
 		int updated = 0;
+		HashMap<BlockPos, Integer> lights = null;
+		
+		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
+		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
+		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
+		
+		if (type == sky) {
+			lights = this.lights_sky;
+		} else if (type == underground) {
+			lights = this.lights_underground;
+		} else if (type == underworld) {
+			lights = this.lights_underworld;
+		} else {
+			lights = this.lights;
+		}
+		
 		if (world.getWorld().getGameTime() % 5 == 0)
 		for (BlockPos p : lights.keySet()) {
 			updated++;
