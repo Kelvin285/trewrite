@@ -71,6 +71,10 @@ public class EntityArrowT extends ArrowEntity
 	}
 	
 	public void arrowHit(LivingEntity hit) {
+		if (hit.isInvulnerable()) {
+			this.remove();
+			return;
+		}
 		super.arrowHit(hit);
 		if (arrow != null) {
 			((Arrow)arrow).onArrowHit(this, hit);

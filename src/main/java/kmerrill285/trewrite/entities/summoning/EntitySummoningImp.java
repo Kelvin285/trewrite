@@ -1,7 +1,9 @@
-package kmerrill285.trewrite.entities;
+package kmerrill285.trewrite.entities.summoning;
 
 import java.util.List;
 
+import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.EntityShadowOrb;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -19,21 +21,21 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityShadowOrb extends MobEntity {
+public class EntitySummoningImp extends MobEntity {
 
 	public Entity owner;
 	public long created;
 	
-	public EntityShadowOrb(EntityType<EntityShadowOrb> type, World worldIn) {
+	public EntitySummoningImp(EntityType<EntitySummoningImp> type, World worldIn) {
 		super(type, worldIn);
 	}
 	
-	public EntityShadowOrb(World worldIn) {
-		super(EntitiesT.SHADOW_ORB, worldIn);
+	public EntitySummoningImp(World worldIn) {
+		super(EntitiesT.SUMMONING_IMP, worldIn);
 	}
 		
-	public EntityShadowOrb(World worldIn, double x, double y, double z) {
-		super(EntitiesT.SHADOW_ORB, worldIn);
+	public EntitySummoningImp(World worldIn, double x, double y, double z) {
+		super(EntitiesT.SUMMONING_IMP, worldIn);
 	}
 
 	/**
@@ -152,16 +154,19 @@ public class EntityShadowOrb extends MobEntity {
 	    return (a * (1.0 - f)) + (b * f);
 	}
 	
-	public static EntityShadowOrb spawnOrb(World worldIn, BlockPos pos, Entity owner) {
-		EntityShadowOrb orb = EntitiesT.SHADOW_ORB.create(worldIn, null, null, null, pos, SpawnReason.EVENT, false, false);
+	public static EntitySummoningImp spawnOrb(World worldIn, BlockPos pos, Entity owner) {
+		EntitySummoningImp orb = EntitiesT.SUMMONING_IMP.create(worldIn, null, null, null, pos, SpawnReason.EVENT, false, false);
 		orb.owner = owner;
 		orb.created = System.currentTimeMillis();
+		
+		int summons = 0;
+		
 		List<Entity> entities = worldIn.getEntitiesWithinAABBExcludingEntity(orb, new AxisAlignedBB(orb.posX - 5, orb.posY - 5, orb.posZ - 5, orb.posX + 5, orb.posY + 5, orb.posZ + 5));
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
-			if (e instanceof EntityShadowOrb) {
-				if (((EntityShadowOrb)e).created < orb.created && ((EntityShadowOrb)e).owner == owner) {
-					((EntityShadowOrb)e).setHealth(0);
+			if (e instanceof EntitySummoningImp) {
+				if (((EntitySummoningImp)e).created < orb.created && ((EntityShadowOrb)e).owner == owner) {
+					((EntitySummoningImp)e).setHealth(0);
 					entities.remove(i);
 					continue;
 				}

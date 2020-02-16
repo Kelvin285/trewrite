@@ -5,8 +5,11 @@ import java.util.Random;
 
 import com.google.common.collect.Multimap;
 
+import kmerrill285.trewrite.entities.projectiles.Projectile;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
+import kmerrill285.trewrite.items.terraria.potions.Potion;
 import kmerrill285.trewrite.util.Conversions;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -21,6 +24,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -160,11 +165,65 @@ public class ItemT extends Item {
 	
 	
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
+		if (this instanceof MagicWeapon) {
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EVOKER_CAST_SPELL, SoundCategory.PLAYERS, 1F, 0.75F);
+			}
+		}
+
+		if (this instanceof Potion) {
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 1F, 1F);
+			}
+		}
 		
+		if (this instanceof Boomerang) {
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.75F);
+			}
+		}
+		
+		if (this instanceof ThrowableItem) {
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 2F);
+			}
+		}
 	}
+	
 	
 	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
 		
+		
+		if (this instanceof Broadsword) {
+			if (this instanceof Shortsword) {
+				if (worldIn.isRemote()) {
+					worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.75F);
+				}
+			} else {
+				if (worldIn.isRemote()) {
+					worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.5F);
+				}
+			}
+		}
+		
+		if (this instanceof MagicWeapon) {
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EVOKER_CAST_SPELL, SoundCategory.PLAYERS, 1F, 0.75F);
+			}
+		}
+		
+		if (this instanceof Boomerang) {
+			this.onItemRightClick(worldIn, player, handIn);
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.75F);
+			}
+		}
+		if (this instanceof ThrowableItem) {
+			this.onItemRightClick(worldIn, player, handIn);
+			if (worldIn.isRemote()) {
+				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 2F);
+			}
+		}
 	}
 	
 	public void setCraftingRecipes() {

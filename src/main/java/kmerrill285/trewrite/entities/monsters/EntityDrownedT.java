@@ -4,6 +4,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.IHostile;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;
@@ -15,7 +16,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class EntityDrownedT extends DrownedEntity {
+public class EntityDrownedT extends DrownedEntity implements IHostile {
 
 	public int money;
 	

@@ -3,16 +3,18 @@ package kmerrill285.trewrite.entities.projectiles;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.entities.EntitiesT;
-import kmerrill285.trewrite.items.terraria.broadswords.Tekhaira;
-import kmerrill285.trewrite.world.WorldStateHolder;
+import kmerrill285.trewrite.items.ItemT;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -21,37 +23,42 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityTekhairaProjectile extends MobEntity
+public abstract class Projectile extends MobEntity
 {
 
-	public Tekhaira weapon;
+	public ItemT weapon;
 	public int piercing;
 
 	public double damage, knockback;
-	
-	public LivingEntity shooter;
+		
+	public boolean hostile;
+	public boolean breakOnGround;
+	public boolean breakOnImpact;
+	public boolean despawnDueToAge;
+	public boolean dead;
+	public Entity owner;
 	
 	public int maxAge = 20 * 5;
 	
-	public Vec3d VELOCITY = new Vec3d(0, 0, 0);
-	
-	public EntityTekhairaProjectile(World worldIn, LivingEntity shooter, EntityType<? extends EntityTekhairaProjectile> type) {
+	public Projectile(World worldIn, EntityType<? extends Projectile> type) {
 		super(type, worldIn);
-		this.shooter = shooter;
 	}
 
-	public EntityTekhairaProjectile(World worldIn, double x, double y, double z) {
-		super(EntitiesT.TEKHAIRA_PROJECTILE, worldIn);
+	public Projectile(World worldIn, double x, double y, double z) {
+		super(EntitiesT.MAGIC_PROJECTILE, worldIn);
 		this.setPosition(x, y, z);
 	}
 
-	public EntityTekhairaProjectile(EntityType<? extends EntityTekhairaProjectile> p_i50172_1_, World p_i50172_2_) {
+	public Projectile(EntityType<? extends Projectile> p_i50172_1_, World p_i50172_2_) {
 		super(p_i50172_1_, p_i50172_2_);
 	}
 	
-	public EntityTekhairaProjectile(World world) {
-    	super(EntitiesT.TEKHAIRA_PROJECTILE, world);
+	public Projectile(World world) {
+    	super(EntitiesT.MAGIC_PROJECTILE, world);
     }
+	
+	public abstract void init();
+	public abstract void doAIStuff();
 	
 	public boolean hitGround = false;
 	
@@ -77,28 +84,43 @@ public class EntityTekhairaProjectile extends MobEntity
 	public AxisAlignedBB getCollisionBoundingBox() {
 	      return null;
 	   }
+	
+	public boolean hasNoGravity() {
+		return true;
+	}
+	
 	public void tick() {
 		super.tick();
+		this.doAIStuff();
+		
+		if (owner == null) {
+			remove();
+			return;
+		}
+		if (owner instanceof LivingEntity) {
+			if (((LivingEntity)owner).getHealth() <= 0) {
+				remove();
+				return;
+			}
+		}
+		if (dead) {
+			remove();
+			return;
+		}
+		
 		if (world.getBlockState(getPosition()).getBlock() instanceof Pot) {
 			world.setBlockState(getPosition(), BlocksT.AIR_BLOCK.getDefaultState());
 		}
-		
 		
 		float f = MathHelper.sqrt(func_213296_b(getMotion()));
 		this.rotationYaw = (float)(MathHelper.atan2(getMotion().x, getMotion().z) * (double)(180F / (float)Math.PI));
 	    this.rotationPitch = (float)(MathHelper.atan2(getMotion().y, (double)f) * (double)(180F / (float)Math.PI));
 	    this.prevRotationYaw = this.rotationYaw;
 	    this.prevRotationPitch = this.rotationPitch;
+	    if (despawnDueToAge)
 		if (this.ticksExisted > maxAge) {
 			this.remove();
 			return;
-		}
-		
-		
-		
-		if (weapon != null) {
-			
-			weapon.tick(this);
 		}
 		
 	    AxisAlignedBB axisalignedbb = this.getBoundingBox().expand(this.getMotion()).grow(1.0D);
@@ -114,16 +136,12 @@ public class EntityTekhairaProjectile extends MobEntity
 	            this.onImpact(raytraceresult);
 	         }
 	      }
-	      this.setMotion(VELOCITY);
 	}
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		return false;
 	}
-	public boolean hasNoGravity() {
-		return true;
-	}
-	
 	protected void onImpact(RayTraceResult result) {
+		
 		if (result.getType() == RayTraceResult.Type.ENTITY)
 		if (weapon != null) {
 			
@@ -131,22 +149,32 @@ public class EntityTekhairaProjectile extends MobEntity
 			
 			
 			
-			if (entity instanceof LivingEntity && entity != shooter && !(entity instanceof EntityTekhairaProjectile)) {
-				
-				weapon.hit(this, (LivingEntity)entity);
+			if (entity instanceof LivingEntity && !(entity instanceof Projectile)) {
+				if (!hostile && entity instanceof PlayerEntity) return;
+				if (hostile && !(entity instanceof PlayerEntity)) return;
 				entity.attackEntityFrom(DamageSource.GENERIC, (float)damage);
 				((LivingEntity)entity).knockBack(entity, (float)knockback, (float)getMotion().x % 2, (float)getMotion().z % 2);
 				
 				piercing--;
 				if (piercing < 0) {
+					if (!breakOnImpact) return;
 					remove();
 				}
-			} else {
-				remove();
 			}
 		}
+		if (breakOnGround) {
+			if (result.getType() == RayTraceResult.Type.BLOCK)
+				remove();
+		}
 	}
-
+	
+	public void createProjectile(EntityType<? extends Projectile> projectile, BlockPos pos, World world, Entity shooter) {
+		Projectile p = projectile.create(world, null, null, null, pos, SpawnReason.EVENT, false, false);
+		p.init();
+		p.owner = shooter;
+		world.addEntity(p);
+	}
+	
 	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
 	      Vec3d vec3d = (new Vec3d(x, y, z)).normalize().add(this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
 	      this.setMotion(vec3d);
@@ -164,7 +192,6 @@ public class EntityTekhairaProjectile extends MobEntity
 	      this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
 	      Vec3d vec3d = entityThrower.getMotion();
 	      this.setMotion(this.getMotion().add(vec3d.x, entityThrower.onGround ? 0.0D : vec3d.y, vec3d.z));
-	      VELOCITY = new Vec3d(this.getMotion().x + 0, this.getMotion().y + 0, this.getMotion().z + 0);
 	   }
 	
    

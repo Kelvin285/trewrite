@@ -8,6 +8,7 @@ import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.Flail;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.MagicWeapon;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
@@ -19,10 +20,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 
-public class BallOHurt extends ItemT {
+public class BallOHurt extends ItemT implements Flail {
 
 	private static HashMap<String, EntityBallOHurt> shotEntity = new HashMap<String, EntityBallOHurt>();
 
@@ -96,7 +99,10 @@ public class BallOHurt extends ItemT {
 	    	  velocity *= (1.0 + speed);
 	      }
 	      
-	     
+	      if (worldIn.isRemote()) {
+	    	  if (shotEntity.get(playerIn.getScoreboardName()) == null)
+				worldIn.playSound(playerIn, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1F, 0.75F);
+			}
   	  if (!worldIn.isRemote) {
 			double vel = (velocity) * (1.0f/6.0f);
 			

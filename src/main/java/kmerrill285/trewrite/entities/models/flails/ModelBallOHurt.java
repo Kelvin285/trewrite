@@ -1,10 +1,12 @@
 package kmerrill285.trewrite.entities.models.flails;
 
-import kmerrill285.trewrite.entities.EntityFlail;
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.util.math.Vec3d;
 
 public class ModelBallOHurt extends EntityModel<EntityBallOHurt> {
 	private final RendererModel Spike;
@@ -38,6 +40,8 @@ public class ModelBallOHurt extends EntityModel<EntityBallOHurt> {
 	private final RendererModel Spike16;
 	private final RendererModel Spike17;
 	private final RendererModel Spike18;
+	
+    private ModelBallOHurtChain chain;
 
 	public ModelBallOHurt() {
 		textureWidth = 64;
@@ -216,6 +220,8 @@ public class ModelBallOHurt extends EntityModel<EntityBallOHurt> {
 		setRotationAngle(Spike18, -2.3562F, 3.1416F, -1.5708F);
 		Spike18.cubeList.add(new ModelBox(Spike18, 1, 26, -2.0F, 6.0F, 0.0F, 3, 7, 0, 0.0F, false));
 		Spike18.cubeList.add(new ModelBox(Spike18, 1, 23, -0.4F, 6.0F, -1.5F, 0, 7, 3, 0.0F, false));
+		
+        chain = new ModelBallOHurtChain();
 	}
 
 	@Override
@@ -239,6 +245,39 @@ public class ModelBallOHurt extends EntityModel<EntityBallOHurt> {
 		Spike16.render(f5);
 		Spike17.render(f5);
 		Spike18.render(f5);
+		
+		float x = f;
+		float y = f1;
+		float z = f2;
+		
+//		GlStateManager.pushMatrix();
+		
+		Vec3d pos1 = entity.getPositionVec();
+		if (entity.owner != null) {
+			Vec3d pos2 = entity.owner.getPositionVec();
+			double dist = pos1.distanceTo(pos2);
+			
+			
+//			GlStateManager.scaled(4, 4, 4);
+			double xx = pos2.x - pos1.x;
+			double zz = pos1.z - pos2.z;
+			double yy = pos1.y - pos2.y;
+			
+			Vec3d pos3 = new Vec3d(xx, yy, zz).normalize();
+			double scale = 2;
+			if (dist > 0)
+			for (double i = 0; i < dist; i+=0.25) {
+				GlStateManager.pushMatrix();
+				GlStateManager.translated(pos3.x * i, pos3.y * i - (scale + 0.5) + 1 * ((dist - i) / dist), pos3.z * i);
+				GlStateManager.scaled(scale, scale, scale);
+				chain.render(entity,x, y, z, f3, f4, f5);
+				GlStateManager.popMatrix();
+			}
+			
+			
+
+		}
+//		GlStateManager.popMatrix();
 		
 	}
 	public void setRotationAngle(RendererModel RendererModel, float x, float y, float z) {

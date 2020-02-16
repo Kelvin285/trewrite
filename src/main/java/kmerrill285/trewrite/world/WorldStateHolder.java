@@ -250,53 +250,57 @@ public class WorldStateHolder extends WorldSavedData {
 	public void update(World world, DimensionType type) {
 		int updated = 0;
 		HashMap<BlockPos, Integer> lights = null;
-		
-		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
-		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
-		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
-		
-		if (type == sky) {
-			lights = this.lights_sky;
-		} else if (type == underground) {
-			lights = this.lights_underground;
-		} else if (type == underworld) {
-			lights = this.lights_underworld;
-		} else {
-			lights = this.lights;
-		}
-		
 		if (world.getWorld().getGameTime() % 5 == 0)
-		for (BlockPos p : lights.keySet()) {
-			updated++;
-			if (updated > 100) {
+		for (int i = 0; i < 4; i++) {
+			switch (i) {
+			case 0:
+				lights = this.lights;
+				break;
+			case 1:
+				lights = lights_sky;
+				break;
+			case 2:
+				lights = lights_underground;
+				break;
+			case 3:
+				lights = lights_underworld;
 				break;
 			}
-			lights.put(p, lights.get(p)-1);
-			
-			if (lights.get(p) <= 0) {
-				if (world.getBlockState(p).getBlock() instanceof BlockT) {
-					world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+			for (BlockPos p : lights.keySet()) {
+				updated++;
+				if (updated > 100) {
+					break;
 				}
-				if (world.getBlockState(p).getBlock() == BlocksT.AIR_BLOCK) {
-					if (world.getBlockState(p).has(BlockAirT.WATERLOGGED)) {
-						if (world.getBlockState(p).get(BlockAirT.WATERLOGGED).booleanValue()) {
-							world.getWorld().setBlockState(p, Blocks.WATER.getDefaultState());
+				lights.put(p, lights.get(p)-1);
+				
+				if (lights.get(p) <= 0) {
+					if (world.getBlockState(p).getBlock() instanceof BlockT) {
+						world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+					}
+					if (world.getBlockState(p).getBlock() == BlocksT.AIR_BLOCK) {
+						if (world.getBlockState(p).has(BlockAirT.WATERLOGGED)) {
+							if (world.getBlockState(p).get(BlockAirT.WATERLOGGED).booleanValue()) {
+								world.getWorld().setBlockState(p, Blocks.WATER.getDefaultState());
+							}
 						}
 					}
-				}
-				lights.remove(p);
-				break;
-			} else {
-				if (world.getBlockState(p).getBlock() == Blocks.WATER && world.getBlockState(p).getFluidState().isSource()) {
-					world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)).with(BlockAirT.WATERLOGGED, true));
-				}
-				if (world.getBlockState(p).getBlock() instanceof AirBlock) {
-					world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)));
-				} else if (world.getBlockState(p).getBlock() instanceof BlockT) {
-					world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+					lights.remove(p);
+					break;
+				} else {
+					if (world.getBlockState(p).getBlock() == Blocks.WATER && world.getBlockState(p).getFluidState().isSource()) {
+						world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)).with(BlockAirT.WATERLOGGED, true));
+					}
+					if (world.getBlockState(p).getBlock() instanceof AirBlock) {
+						world.getWorld().setBlockState(p, BlocksT.AIR_BLOCK.getDefaultState().with(BlockT.light, lights.get(p)));
+					} else if (world.getBlockState(p).getBlock() instanceof BlockT) {
+						world.getWorld().setBlockState(p, world.getBlockState(p).with(BlockT.light, lights.get(p)));
+					}
 				}
 			}
+			
 		}
+		
+		
 		this.markDirty();
 	}
 	

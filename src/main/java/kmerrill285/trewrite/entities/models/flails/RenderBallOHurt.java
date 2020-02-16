@@ -11,13 +11,11 @@ public class RenderBallOHurt extends MobRenderer<EntityBallOHurt, ModelBallOHurt
 {
     private ResourceLocation texture = new ResourceLocation("trewrite:textures/entity/flail/ball_of_hurt.png");
 
-    private ModelBallOHurtChain chain;
     
     public RenderBallOHurt(EntityRendererManager renderManagerIn)
     {
     	
         super(renderManagerIn, new ModelBallOHurt(), 4.0f);
-        chain = new ModelBallOHurtChain();
     }
 
     /**
@@ -30,12 +28,11 @@ public class RenderBallOHurt extends MobRenderer<EntityBallOHurt, ModelBallOHurt
     {
 //    	BossStatus.setBossStatus(entity, true);
         this.shadowSize = 0.25F;
+        entity.rotationYaw = 0;
+        entity.prevRotationYaw = 0;
+        entity.rotationYawHead = 0;
+        entity.prevRotationYawHead = 0;
         super.doRender(entity, x, y, z, 0, partialTicks);
-        
-        if (entity.owner != null) {
-            int distance = (int)(entity.getPositionVec().distanceTo(entity.owner.getPositionVec()));
-            
-        }
     }
 
     /**

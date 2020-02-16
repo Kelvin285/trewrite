@@ -65,7 +65,6 @@ public class ThrowableItem extends ItemT {
 	    	      if (!playerIn.abilities.isCreativeMode) {
 	    	    	  inventory.hotbar[inventory.hotbarSelected].decrementStack(1);
 	    	      }
-	    	      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 	    	      
 	    	      
 	        	  if (!worldIn.isRemote) {

@@ -23,8 +23,10 @@ public class MoltenFury extends Bow {
 	}
 	
 	public void onShoot(EntityArrowT arrow) {
+		
 		if (arrow.arrow instanceof WoodenArrow) {
 			arrow.arrow = ItemsT.FLAMING_ARROW;
+			arrow.setFire(10);
 		}
 	}
 	

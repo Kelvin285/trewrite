@@ -171,6 +171,7 @@ public class Bow extends ItemT {
 	 	        	arrowentity.func_213872_b((byte)arrow.piercing);
 	 	         }
 	 	         arrow.onArrowShoot(arrowentity);
+	 	         this.onShoot(arrowentity);
 	 	         worldIn.addEntity(arrowentity);
 	 	         
 	 	         //worldIn.addEntity(snowballentity);

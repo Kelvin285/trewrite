@@ -343,6 +343,8 @@ public class Trewrite
 					item.pickupDelay = 0;
 					world.addEntity(item);
 					item.hitGround = false;
+					
+					
 				}
 			}
 			
@@ -351,20 +353,19 @@ public class Trewrite
 			
 				
 			
-				if (world.rand.nextInt(100) <= 10)
-				for (PlayerEntity player : world.getPlayers()) {
-					int battle = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints();
-					if (world.rand.nextDouble() <= Util.entitySpawnRate * (battle > 0 ? 2 : 1)) {
-					if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).getScorePoints() > 0)
-						if (world.rand.nextBoolean()) continue;
-					double x = player.posX + world.rand.nextInt(80) - 40, y = player.posY + world.rand.nextInt(80) - 40, z = player.posZ + world.rand.nextInt(80) - 40;
-					
-					for (PlayerEntity p2 : world.getPlayers()) {
-						
+			A:
+			if (world.getPlayers().size() > 0) {
+				PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
+				int battle = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints();
+				if (world.rand.nextDouble() <= Util.entitySpawnRate * (battle > 0 ? 2 : 1)) {
+				if (ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.CALMING).getScorePoints() > 0)
+					if (world.rand.nextBoolean()) break A;
+				double x = player.posX + world.rand.nextInt(80) - 40, y = player.posY + world.rand.nextInt(80) - 40, z = player.posZ + world.rand.nextInt(80) - 40;
+				
+				for (PlayerEntity p2 : world.getPlayers()) {
 						if (p2.getPositionVec().distanceTo(new Vec3d(x, y, z)) >= Util.minSpawnDistance) {
 							new Thread () {
 								public void run() {
-									
 									EntitySpawner.spawnEntities(player, x, y, z);
 								}
 							}.start();
@@ -372,9 +373,6 @@ public class Trewrite
 							break;
 						}
 					}
-					
-					
-					
 				}
 			}
 		}

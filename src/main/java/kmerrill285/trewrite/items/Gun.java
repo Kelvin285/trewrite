@@ -89,7 +89,7 @@ public class Gun extends ItemT {
 		    		      bullet = (Bullet) inventory.main[i].stack.item;
 		    			  inventory.main[i].decrementStack(1);
 		    			  
-//		    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_bullet_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+		    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.PLAYERS, 2F, 2);
 		    		      shoot = true;
 		    		      ii = i;
 		    		      break;
@@ -103,7 +103,7 @@ public class Gun extends ItemT {
 			    		  if (inventory.hotbar[i].stack.item instanceof Bullet) {
 			    		      bullet = (Bullet) inventory.hotbar[i].stack.item;
 			    			  inventory.hotbar[i].decrementStack(1);
-//			    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_bullet_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+			    		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.PLAYERS, 2F, 2);
 			    		      shoot = true;
 			    		      ii = i;
 			    		      break;
@@ -113,7 +113,7 @@ public class Gun extends ItemT {
 			      }
 		      }
 	      } else {
-		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.PLAYERS, 2F, 2);
 		      shoot = false;
 		      for (int i = 0; i < inventory.main.length; i++) {
 		    	  if (inventory.main[i].stack != null) {

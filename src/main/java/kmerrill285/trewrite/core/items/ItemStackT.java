@@ -23,6 +23,7 @@ public class ItemStackT {
 	public int size;
 	public ItemStack itemForRender;
 	public int modifier;
+	public int renderStack;
 		
 	public ItemStackT(Item item, ItemModifier modifier) {
 		this.item = item;

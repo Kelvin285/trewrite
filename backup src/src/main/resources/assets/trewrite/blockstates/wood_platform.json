@@ -1,7 +1,0 @@
-{
-    "variants": {
-        "type=bottom": { "model": "trewrite:block/wood_platform" },
-        "type=top": { "model": "trewrite:block/wood_platform_top" },
-        "type=double": { "model": "trewrite:block/wood" }
-    }
-}

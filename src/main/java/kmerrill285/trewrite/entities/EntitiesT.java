@@ -23,6 +23,7 @@ import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import kmerrill285.trewrite.entities.projectiles.boomerangs.EntityEnchantedBoomerang;
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
+import kmerrill285.trewrite.entities.summoning.EntitySummoningImp;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -68,6 +69,7 @@ public class EntitiesT {
 	   public static EntityType<EntityBallOHurt> BALL_O_HURT;
 	   public static EntityType<EntityTekhairaProjectile> TEKHAIRA_PROJECTILE;
 	   public static EntityType<EntityEnchantedBoomerang> ENCHANTED_BOOMERANG;
+	   public static EntityType<EntitySummoningImp> SUMMONING_IMP;
 
 	   
 	   @SubscribeEvent
@@ -110,6 +112,8 @@ public class EntitiesT {
 		 EntitiesT.BALL_O_HURT = register("trewrite" + ":ball_o_hurt", EntityType.Builder.<EntityBallOHurt>create(EntityBallOHurt::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityBallOHurt(world)));
 		 EntitiesT.TEKHAIRA_PROJECTILE = register("trewrite" + ":tekhaira_projectile", EntityType.Builder.<EntityTekhairaProjectile>create(EntityTekhairaProjectile::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityTekhairaProjectile(world)));
 		 EntitiesT.ENCHANTED_BOOMERANG = register("trewrite" + ":enchanted_boomerang", EntityType.Builder.<EntityEnchantedBoomerang>create(EntityEnchantedBoomerang::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEnchantedBoomerang(world)));
+
+		 EntitiesT.SUMMONING_IMP = register("trewrite" + ":summoning_imp", EntityType.Builder.<EntitySummoningImp>create(EntitySummoningImp::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntitySummoningImp(world)));
 
 		 
 		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));

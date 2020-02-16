@@ -43,8 +43,11 @@ public class EnchantedBoomerang extends Boomerang {
 	
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 	    ItemStack itemstack = playerIn.getHeldItem(handIn);
-	    	
+	    
 	    if (shotEntity.get(playerIn.getScoreboardName()) != null) {
+	    	if (shotEntity.get(playerIn.getScoreboardName()).getPositionVec().distanceTo(playerIn.getPositionVec()) >= 15) {
+	    		shotEntity.get(playerIn.getScoreboardName()).setAge(0);
+	    	}
 	    	if (shotEntity.get(playerIn.getScoreboardName()).getAge() <= 0) {
 	    		shotEntity.get(playerIn.getScoreboardName()).remove();
 	    		shotEntity.put(playerIn.getScoreboardName(), null);

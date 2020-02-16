@@ -270,21 +270,21 @@ public class EntityEvents {
 	
 	@SubscribeEvent
 	public static void handlePlayerAttack(AttackEntityEvent event) {
-//		if (event.getPlayer() instanceof PlayerEntity) {
-//			PlayerEntity player = (PlayerEntity)event.getPlayer();
-//			if (player != null) {
-//				if (player.getHeldItemMainhand() != null) {
-//					if (player.getHeldItemMainhand().getItem() != null) {
-//						if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
-//							if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
-//								ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
-//								item.onLeftClick(event.getTarget(), event.getTarget().getPosition(), player, player.world, Hand.MAIN_HAND);
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
+		if (event.getPlayer() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)event.getPlayer();
+			if (player != null) {
+				if (player.getHeldItemMainhand() != null) {
+					if (player.getHeldItemMainhand().getItem() != null) {
+						if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
+							if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
+								ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
+								item.onLeftClick(event.getTarget(), event.getTarget().getPosition(), player, player.world, Hand.MAIN_HAND);
+							}
+						}
+					}
+				}
+			}
+		}
 				
 			
 	}
@@ -1024,11 +1024,11 @@ public class EntityEvents {
 					
 					if (_item instanceof ItemT) {
 						ItemT item = (ItemT)_item;
-//						System.out.println(event.getOriginalSpeed() * block.getMiningSpeed(item));
 						if (block.difficulty > 0) {
 							float miningSpeed = block.getMiningSpeed(item);
 							if (miningSpeed > 0) miningSpeed *= speedMul;
 							event.setNewSpeed(miningSpeed);
+							
 						}
 					} else {
 						event.setNewSpeed(-1);
@@ -1052,23 +1052,6 @@ public class EntityEvents {
 						if (hasItems == true) {
 							event.setNewSpeed(-1);
 						}
-					}
-				} else {
-					if (_item instanceof ItemT) {
-						ItemT item = (ItemT)_item;
-						
-						float miningSpeed = BlocksT.DIRT_BLOCK.getMiningSpeed(item);
-						if (miningSpeed > 0) miningSpeed *= speedMul;
-						event.setNewSpeed(miningSpeed * 0.35f);
-						
-						if (blockstate.getMaterial() == Material.ROCK || blockstate.getMaterial() == Material.IRON) {
-							miningSpeed = BlocksT.STONE_BLOCK.getMiningSpeed(item);
-							if (miningSpeed > 0) miningSpeed *= speedMul;
-							event.setNewSpeed(miningSpeed * 3.0f);
-						}
-						
-					} else {
-						event.setNewSpeed(-1);
 					}
 				}
 				
@@ -1211,7 +1194,10 @@ public class EntityEvents {
 											pos = new BlockPos(result.getHitVec());
 										}
 										
+										if (player.swingProgressInt == 0)
 										item.onLeftClick(null, pos, player, player.world, Hand.MAIN_HAND);
+										
+
 									}
 								}
 							}

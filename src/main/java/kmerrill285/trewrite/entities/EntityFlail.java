@@ -123,18 +123,41 @@ public class EntityFlail extends MobEntity implements IEntityAdditionalSpawnData
 		super.tick();
 		
 		if (world.isRemote) return;
-		
-		age++;
-		if (age > 20) {
-			this.age = 0;
-			remove();
-			return;
-		}
 		if (this.owner == null) {
 			this.age = 0;
 			remove();
 			return;
 		}
+		age++;
+		if (age > 5) {
+			if (owner != null) {
+				
+				
+				if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 1, 0)) > 1) {
+					this.noClip = true;
+					
+					posX = lerp(posX, owner.posX, 0.2);
+					posY = lerp(posY, owner.posY + 1, 0.2);
+					posZ = lerp(posZ, owner.posZ, 0.2);
+					setPosition(posX, posY, posZ);
+					this.setMotion(0, 0, 0);
+				} else {
+					this.age = 0;
+					remove();
+					return;
+				}
+				
+				
+			} else {
+				this.age = 0;
+				remove();
+				return;
+			}
+			
+		} else {
+			this.noClip = false;
+		
+		
 		
 		if (this.owner instanceof LivingEntity) {
 			LivingEntity e = (LivingEntity)owner;
@@ -146,37 +169,37 @@ public class EntityFlail extends MobEntity implements IEntityAdditionalSpawnData
 		}
 		
 		float speed = 5f;
-		float acceleration = 0.1f;
+		float acceleration = 0.05f;
 		int dirX = posX < owner.posX ? 1 : -1, dirY = posY < (owner.posY + 1) ? 1 : -1, dirZ = posZ < owner.posZ ? 1 : -1;
 
 		
 		
-		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 3) {
 			
+		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 3) {
+
 			setMotion(getMotion().add(acceleration * dirX, acceleration * dirY, acceleration * dirZ));
 			
-			if (Math.abs(getMotion().x) >= speed) {
-				getMotion().add(-acceleration * dirX, acceleration * dirY, 0);
-			}
-			if (Math.abs(getMotion().y) >= speed * 0.5) {
-				getMotion().add(acceleration * dirX, -acceleration * dirY * 0.5, acceleration * dirZ);
-			}
-			if (Math.abs(getMotion().z) >= speed) {
-				getMotion().add(0, acceleration * dirY, -acceleration * dirZ);
-			}
+//			if (Math.abs(getMotion().x) >= speed) {
+//				getMotion().add(-acceleration * dirX, acceleration * dirY, 0);
+//			}
+//			if (Math.abs(getMotion().y) >= speed) {
+//				getMotion().add(acceleration * dirX, -acceleration * dirY, acceleration * dirZ);
+//			}
+//			if (Math.abs(getMotion().z) >= speed) {
+//				getMotion().add(0, acceleration * dirY, -acceleration * dirZ);
+//			}
 			
-			if (world.getBlockState(getPosition().down()).getMaterial().blocksMovement()) {
-				setMotion(getMotion().add(0, 0.1, 0));
-				
-			}
+			
 		}
 		
-		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 8) {
+		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 1, 0)) > 5) {
 			posX = lerp(posX, owner.posX, 0.2);
 			posY = lerp(posY, owner.posY + 1, 0.2);
 			posZ = lerp(posZ, owner.posZ, 0.2);
 		}
 		
+				
+		}
 		AxisAlignedBB axisalignedbb = this.getBoundingBox().expand(this.getMotion()).grow(1.0D);
 		
 		RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, axisalignedbb, (p_213880_1_) -> {
@@ -190,6 +213,8 @@ public class EntityFlail extends MobEntity implements IEntityAdditionalSpawnData
 	            this.onImpact(raytraceresult);
 	         }
 	      }
+	   this.setRotation(0, 0);
+
 	}
 
 	protected void hitEntity(LivingEntity entity) {

@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.events;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import kmerrill285.trewrite.core.inventory.InventorySlot;
@@ -13,6 +15,10 @@ import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.Arrow;
+import kmerrill285.trewrite.items.Bow;
+import kmerrill285.trewrite.items.Bullet;
+import kmerrill285.trewrite.items.Gun;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
@@ -217,6 +223,60 @@ public class OverlayEvents {
 		
 		if (ContainerTerrariaInventory.inventory != null) {
 			InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+			
+
+	        ArrayList<InventorySlot> guns = new ArrayList<InventorySlot>();
+	        ArrayList<InventorySlot> bows = new ArrayList<InventorySlot>();
+
+	        int bullets = 0;
+	        int arrows = 0;
+	        int stars = 0;
+	      
+	        for (int m = 0; m < InventoryTerraria.MAIN_SLOTS; m++) {
+	        	if (inventory.main[m].stack != null) {
+	    		  if (inventory.main[m].stack.item instanceof Gun) {
+	    				guns.add(inventory.main[m]);
+	    		  }
+	    		  if (inventory.main[m].stack.item instanceof Bow) {
+	    			  bows.add(inventory.main[m]);
+	    		  }
+	    		  if (inventory.main[m].stack.item instanceof Bullet) {
+	    			  bullets+=inventory.main[m].stack.size;
+	    		  }
+	    		  if (inventory.main[m].stack.item instanceof Arrow) {
+	    			  arrows+=inventory.main[m].stack.size;
+	    		  }
+	    		  if (inventory.main[m].stack.item == ItemsT.FALLEN_STAR) {
+	    			  stars+=inventory.main[m].stack.size;
+	    		  }
+	        	}
+	        }
+	        for (int m = 0; m < inventory.hotbar.length; m++) {
+	        	if (inventory.hotbar[m].stack != null) {
+	    		  if (inventory.hotbar[m].stack.item instanceof Gun) {
+	    				guns.add(inventory.hotbar[m]);
+	    		  }
+	    		  if (inventory.hotbar[m].stack.item instanceof Bow) {
+	    			  bows.add(inventory.hotbar[m]);
+	    		  }
+	    		  if (inventory.hotbar[m].stack.item instanceof Bullet) {
+	    			  bullets+=inventory.hotbar[m].stack.size;
+	    		  }
+	    		  if (inventory.hotbar[m].stack.item instanceof Arrow) {
+	    			  arrows+=inventory.hotbar[m].stack.size;
+	    		  }
+	    		  if (inventory.hotbar[m].stack.item == ItemsT.FALLEN_STAR) {
+	    			  stars+=inventory.hotbar[m].stack.size;
+	    		  }
+	        	}
+	        }
+	        for (InventorySlot slot : guns) {
+	        	slot.stack.renderStack = bullets;
+	        }
+	        for (InventorySlot slot : bows) {
+	        	slot.stack.renderStack = arrows;
+	        }
+			
 			for (InventorySlot slot : inventory.accessory) {
 				ItemStackT stack = slot.stack;
 				if (stack == null) {

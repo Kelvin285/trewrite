@@ -8,6 +8,7 @@ import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.EntityStar;
+import kmerrill285.trewrite.entities.IHostile;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -28,7 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityBlueSlime extends SlimeEntity
+public class EntityBlueSlime extends SlimeEntity implements IHostile
 {
     //float f = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue();
     //float f1 = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).getValue();

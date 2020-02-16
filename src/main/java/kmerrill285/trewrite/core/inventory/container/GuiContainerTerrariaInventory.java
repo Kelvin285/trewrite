@@ -38,6 +38,10 @@ import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.Arrow;
+import kmerrill285.trewrite.items.Bow;
+import kmerrill285.trewrite.items.Bullet;
+import kmerrill285.trewrite.items.Gun;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
@@ -53,7 +57,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -304,10 +307,12 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         
         //23, 191
         InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
+        
+        
         for (int m = 0; m < InventoryTerraria.MAIN_SLOTS; m++) {
         	if (inventory.main[m].stack != null) {
         		GuiContainerTerrariaInventory.renderItemIntoGUI(inventory.main[m].stack, i + inventory.main[m].x, j + inventory.main[m].y);
-    		}
+        	}
         	if (mouseInRect(inventory.main[m].x + i, inventory.main[m].y + j, 16, 16, mouseX, mouseY)) {
         		selectedSlot = inventory.main[m];
         		this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
@@ -327,6 +332,7 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
         		GuiContainerTerrariaInventory.drawTexturedRectangle(inventory.hotbar[m].x + i, inventory.hotbar[m].y + j, 23, 191, 16, 16);
         	}
         }
+        
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         for (int m = 0; m < InventoryTerraria.ARMOR_SLOTS; m++) {
         	if (inventory.armor[m].stack != null) {
@@ -538,6 +544,19 @@ public class GuiContainerTerrariaInventory extends ContainerScreen<ContainerTerr
             GlStateManager.disableDepthTest();
             GlStateManager.disableBlend();
             Minecraft.getInstance().fontRenderer.drawStringWithShadow(""+item.size, x + 16 - (""+item.size).length()*5.5f, y+8, 0xFFFFFF);
+            GlStateManager.enableBlend();
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepthTest();
+            // Fixes opaque cooldown overlay a bit lower
+            // TODO: check if enabled blending still screws things up down the line.
+            GlStateManager.enableBlend();
+    	}
+    	
+    	if (item.renderStack > 0) {
+    		GlStateManager.disableLighting();
+            GlStateManager.disableDepthTest();
+            GlStateManager.disableBlend();
+            Minecraft.getInstance().fontRenderer.drawStringWithShadow(""+item.renderStack, x + 16 - (""+item.renderStack).length()*5.5f, y+8, 0xFFFFFF);
             GlStateManager.enableBlend();
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();

@@ -7,6 +7,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.IHostile;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -37,7 +38,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditionalSpawnData {
+public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditionalSpawnData, IHostile {
 	
 	public int damage = 18;
 	
@@ -528,7 +529,6 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     	amount -= defense;
     	if (amount < 1) amount = 1;
     	this.bosshealth -= amount;
-    	System.out.println("OUCH!: " + bosshealth);
     	super.setHealth(this.bosshealth);
     	if (this.bosshealth <= 0) {
     		this.dropLoot(DamageSource.GENERIC, true);

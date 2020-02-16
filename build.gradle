@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+		// classpath group: 'com.cout970.modelloader, name: 'ModelLoader', version: '2.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -98,9 +99,29 @@ dependencies {
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
+	// compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50"
+	// compile fg.deobf("com.cout970.modelloader:ModelLoader:2.0.1")
+    //compile "com.cout970.modelloader:ModelLoader:2.0.2"
     // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
     // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    // This is the important part that you need in your mod
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    
+	compile files("lib/ModelLoader-2.0.2-deobf.jar")
+
+
+
+    // Required by ModelLoader in the dev environment, 
+
+    // on release you probably want to add a dependency for Forgelin or Kottle
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50"
+
 
     // These dependencies get remapped to your current MCP mappings
     // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'

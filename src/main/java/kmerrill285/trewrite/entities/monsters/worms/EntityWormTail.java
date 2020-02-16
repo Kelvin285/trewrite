@@ -1,6 +1,7 @@
 package kmerrill285.trewrite.entities.monsters.worms;
 
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.entities.IHostile;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.MobEntity;
@@ -17,7 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityWormTail extends MobEntity {
+public class EntityWormTail extends MobEntity implements IHostile {
 
 	public float velX, velY, velZ;
 	public float oldVelX, oldVelY, oldVelZ;

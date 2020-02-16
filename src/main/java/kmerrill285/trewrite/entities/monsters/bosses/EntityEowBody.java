@@ -7,6 +7,7 @@ import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.entities.IHostile;
 import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
@@ -30,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnData {
+public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnData, IHostile {
 
 	public float velX, velY, velZ;
 	public float oldVelX, oldVelY, oldVelZ;

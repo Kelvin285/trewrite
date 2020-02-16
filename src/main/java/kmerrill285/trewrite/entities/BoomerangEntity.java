@@ -101,10 +101,9 @@ public class BoomerangEntity extends MobEntity implements IEntityAdditionalSpawn
 	}
 	
 	
-	
+	private double velX, velY, velZ;
 	public boolean grabbed = false;
 	@Override
-	
 	public void tick() {
 		if (this.getHealth() <= 0) {
 			this.age = 0;
@@ -161,26 +160,43 @@ public class BoomerangEntity extends MobEntity implements IEntityAdditionalSpawn
 			int dirX = posX < owner.posX ? 1 : -1, dirY = posY < (owner.posY + 1) ? 1 : -1, dirZ = posZ < owner.posZ ? 1 : -1;
 
 			
-			
-			if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 2) {
+			if (getPositionVec().distanceTo(owner.getPositionVec()) > 1.5) {
 				
-				setMotion(getMotion().add(acceleration * dirX, acceleration * dirY * 0.25, acceleration * dirZ));
+				velX += acceleration*dirX;
+				velY += acceleration*dirY;
+				velZ += acceleration*dirZ;
 				
-				if (Math.abs(getMotion().x) >= speed) {
-					getMotion().add(-acceleration * dirX, 0, 0);
+				if (Math.abs(velX) >= speed * 0.5) {
+					velX -= acceleration*dirX;
 				}
-				if (Math.abs(getMotion().y) >= speed * 0.25) {
-					getMotion().add(0, -acceleration * dirY * 0.25, 0);
+				
+				if (Math.abs(velZ) >= speed * 0.5) {
+					velZ -= acceleration*dirZ;
 				}
-				if (Math.abs(getMotion().z) >= speed) {
-					getMotion().add(0, 0, -acceleration * dirZ);
+				
+				if (Math.abs(velY) >= speed * 0.5) {
+					velY -= acceleration*dirY;
 				}
+				
+				setMotion(0, 0, 0);
+				posX += velX;
+				posY += velY;
+				posZ += velZ;
+				this.setPosition(posX, posY, posZ);
+				this.noClip = true;
 			} else {
 				this.age = 0;
 				remove();
 				return;
 			}
 			
+		}
+		
+		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 1, 0)) > 10) {
+			posX = lerp(posX, owner.posX, 0.2);
+			posY = lerp(posY, owner.posY + 1, 0.2);
+			posZ = lerp(posZ, owner.posZ, 0.2);
+			setPosition(posX, posY, posZ);
 		}
 		
 		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 8) {

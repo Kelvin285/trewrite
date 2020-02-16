@@ -17,6 +17,7 @@ public class Boomerang extends ItemT {
 		this.melee = true;
 		this.setBuySell(10000);
 		this.MODIFIER_TYPE = EnumModifierType.MELEE;
+		this.setMaxStack(1);
 	}
 	
 	public void onHitEntity(Entity entity) {
