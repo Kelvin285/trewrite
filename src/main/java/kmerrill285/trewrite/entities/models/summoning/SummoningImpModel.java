@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.entities.models.summoning;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import kmerrill285.trewrite.entities.summoning.EntitySummoningImp;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -57,10 +59,19 @@ public class SummoningImpModel extends EntityModel<EntitySummoningImp> {
 
 	@Override
 	public void render(EntitySummoningImp entity, float f, float f1, float f2, float f3, float f4, float f5) {
+		GlStateManager.rotated(-90, 0, 1, 0);
 		bone.render(f5);
-		wingl.render(f5);
-		wingr.render(f5);
 		bone5.render(f5);
+		double wingMove = 15 * Math.cos(Math.toRadians(System.nanoTime()));
+		GlStateManager.pushMatrix();
+		GlStateManager.rotated(wingMove, 0, 1, 0);
+		wingl.render(f5);
+		GlStateManager.popMatrix();
+		GlStateManager.pushMatrix();
+		GlStateManager.rotated(-wingMove, 0, 1, 0);
+		wingr.render(f5);
+		GlStateManager.popMatrix();
+
 	}
 	public void setRotationAngle(RendererModel RendererModel, float x, float y, float z) {
 		RendererModel.rotateAngleX = x;

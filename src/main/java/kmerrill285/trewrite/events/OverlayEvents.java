@@ -11,6 +11,8 @@ import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInvento
 import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.entities.models.ModelRegistry;
+import kmerrill285.trewrite.entities.models.PlayerModel;
+import kmerrill285.trewrite.entities.models.RenderPlayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
@@ -24,6 +26,7 @@ import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.util.Conversions;
+import kmerrill285.trewrite.util.Sounds;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
 import kmerrill285.trewrite.world.client.ChunkEncoder;
@@ -38,16 +41,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.sound.PlayStreamingSourceEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 
@@ -81,9 +88,21 @@ public class OverlayEvents {
 	public static float blockMiningProgress = 0.0f;
 	
 	@SubscribeEvent
+	public static void streamMusicEvent(PlayStreamingSourceEvent event) {
+		if (event.getSound() == SoundEvents.MUSIC_MENU) {
+			Sounds.playMusic(Sounds.MUSIC_TITLE);
+			System.out.println("bruh music");
+		}
+	}
+	
+	@SubscribeEvent
+	public static void handleGuiEvents(GuiScreenEvent event) {
+//		Sounds.playMusic(Sounds.MUSIC_TITLE);
+	}
+	
+	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleWorldRenderEvent(RenderWorldLastEvent event) {
-		
 		
 		
 		if (Util.refreshDimensionRenderer) {
@@ -180,7 +199,9 @@ public class OverlayEvents {
 //		System.out.println(Models.GUIDE);
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+			
 			ModelRegistry.renderPlayer.doRender(player, event.getX(), event.getY(), event.getZ(), player.getYaw(event.getPartialRenderTick()), event.getPartialRenderTick());
+			if (event.isCancelable())
 			event.setCanceled(true);
 		}
 	}
@@ -419,7 +440,7 @@ public class OverlayEvents {
 			scaledWidth = instance.mainWindow.getScaledWidth();
 		    scaledHeight = instance.mainWindow.getScaledHeight();
 			
-		    int xx = scaledWidth - 20;
+		    int xx = scaledWidth - 10;
 		    int yy = 10;
 		    
 		    		    
@@ -449,10 +470,10 @@ public class OverlayEvents {
 				int gold = (coins / 10000) % 100;
 				int platinum = (coins / 1000000) % 100;
 				
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+copper, xx - (10 + (""+copper).length()), yy, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+silver, xx - (10 + (""+silver).length()), yy + 3 * 5, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+gold, xx - (10 + (""+gold).length()), yy + 3 * 10, 0xFFFFFF);
-				instance.ingameGUI.drawString(instance.fontRenderer, ""+platinum, xx - (10 + (""+platinum).length()), yy + 3 * 15, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+copper, xx + ((1-(""+copper).length()))*5 - (int)5.5, yy+ 1, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+silver, xx + ((1-(""+silver).length()))*5 - (int)5.5, yy + 3 * 5+ 1, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+gold, xx + ((1-(""+gold).length()))*5 - (int)5.5, yy + 3 * 10+ 1, 0xFFFFFF);
+				instance.ingameGUI.drawString(instance.fontRenderer, ""+platinum, xx + ((1-(""+platinum).length()))*5 - (int)5.5, yy + 3 * 15+ 1, 0xFFFFFF);
 				
 					
 				//RENDER BUFFS / DEBUFFS
@@ -478,6 +499,14 @@ public class OverlayEvents {
 					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
 					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 2, 27 + 12 * 3, 12, 12); //debuff image
 					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderWeakDebuff)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
+					effectCounter++;
+				}
+				
+				if (Util.renderHorrified > 0) {
+					instance.getTextureManager().bindTexture(new ResourceLocation("trewrite", "textures/gui/icons.png"));
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 0, 27 + 12 * 0, 12, 12); //debuff background
+					instance.ingameGUI.blit(Conversions.toScreenX(5), Conversions.toScreenY(12 * 2 + 12 * effectCounter) + accessory * textSize, 12 * 3, 27 + 12 * 3, 12, 12); //debuff image
+					instance.ingameGUI.drawString(instance.fontRenderer, "["+Util.getTimerString(Util.renderHorrified)+"]", 5 + 12 + 3, 12 * 2 + 12 * effectCounter + 3 + accessory * textSize, 0xFFFFFF);
 					effectCounter++;
 				}
 				

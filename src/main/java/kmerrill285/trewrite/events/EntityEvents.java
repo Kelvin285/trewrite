@@ -42,7 +42,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -51,6 +50,7 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -67,8 +67,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -79,6 +81,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -87,6 +90,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
@@ -134,10 +138,66 @@ public class EntityEvents {
 	}
 	
 	@SubscribeEvent
+	public static void handleLivingSpawn(LivingSpawnEvent event) {
+		
+	}
+	
+	@SubscribeEvent
 	public static void handleEntityDeath(LivingDeathEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+			if (!player.world.isRemote) {
+				if (player.world.getServer() != null)
+				if (player.world.getServer().getWorld(DimensionType.OVERWORLD) != null) {
+					BlockPos pos = WorldStateHolder.get(player.world.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
+					if (pos != null) {
+						if ((player.world.getBlockState(pos).getBlock() instanceof Bed)) {
+							player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+						} else {
+							Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, player.getPosition());
+							player.setSpawnDimenion(DimensionType.OVERWORLD);
+						}
+					}
+				}
+				
+			}
+			
+			if (!player.world.isRemote)
+				if (WorldStateHolder.get(player.world.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName()) == null) {
+					if (player instanceof ServerPlayerEntity) {
+						BlockPos a = player.world.getServer().getWorld(DimensionType.OVERWORLD).getSpawnPoint();
+						BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos(a.getX(), 255, a.getZ());
+						World world = player.world.getServer().getWorld(DimensionType.OVERWORLD);
+						for (int y = 254; y > 0; y--) {
+							spawnPos.setPos(a.getX(), y, a.getZ());
+							if (world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
+								spawnPos.setPos(a.getX(), y+1, a.getZ());
+								if (!world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
+									new Thread() {
+										public void run() {
+											try {
+												Thread.sleep(1000);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+											
+											Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, spawnPos);
+										}
+									}.start();
+									break;
+								}
+							}
+						}
 
+					}
+				}
+		}
+		
+		
+		if (event.getEntityLiving() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+
+			
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.ARCHERY).setScorePoints(0);
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.POTION_SICKNESS).setScorePoints(0);
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.MANA_SICKNESS).setScorePoints(0);
@@ -164,7 +224,7 @@ public class EntityEvents {
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.TITAN).setScorePoints(0);
 			ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.WATER_WALKING).setScorePoints(0);
 			
-			
+			WorldEvents.summons.put(player.getScoreboardName(), null);
 			if (WorldEvents.getOrLoadInventory(player) != null) {
 				WorldEvents.getOrLoadInventory(player).save(player.getScoreboardName(), player.world.getServer().getFolderName());
 			}
@@ -183,7 +243,7 @@ public class EntityEvents {
 		
 		if (event.getEntity() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntity();
-			
+			WorldEvents.summons.put(player.getScoreboardName(), null);
 			
 			if (player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() < 100) {
 				player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100);
@@ -194,10 +254,10 @@ public class EntityEvents {
 				player.setHealth((float)player.getAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue() / 2.0f);
 			}
 			
-			if (!event.getWorld().isRemote) {
-				if (event.getWorld().getServer() != null)
-				if (event.getWorld().getServer().getWorld(DimensionType.OVERWORLD) != null) {
-					BlockPos pos = WorldStateHolder.get(event.getWorld().getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
+			if (!player.world.isRemote) {
+				if (player.world.getServer() != null)
+				if (player.world.getServer().getWorld(DimensionType.OVERWORLD) != null) {
+					BlockPos pos = WorldStateHolder.get(player.world.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName());
 					if (pos != null) {
 						if ((player.world.getBlockState(pos).getBlock() instanceof Bed)) {
 							player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
@@ -209,36 +269,6 @@ public class EntityEvents {
 				}
 				
 			}
-			
-			if (!event.getWorld().isRemote)
-				if (WorldStateHolder.get(player.world.getServer().getWorld(DimensionType.OVERWORLD)).spawnPositions.get(player.getScoreboardName()) == null) {
-					if (player instanceof ServerPlayerEntity) {
-						BlockPos a = player.world.getServer().getWorld(DimensionType.OVERWORLD).getSpawnPoint();
-						BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos(a.getX(), 255, a.getZ());
-						World world = player.world.getServer().getWorld(DimensionType.OVERWORLD);
-						for (int y = 254; y > 0; y--) {
-							spawnPos.setPos(a.getX(), y, a.getZ());
-							if (world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
-								spawnPos.setPos(a.getX(), y+1, a.getZ());
-								if (!world.getBlockState(spawnPos).getMaterial().blocksMovement()) {
-									new Thread() {
-										public void run() {
-											try {
-												Thread.sleep(100);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
-											
-											Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, spawnPos);
-										}
-									}.start();
-									break;
-								}
-							}
-						}
-
-					}
-				}
 			
 		}
 	}
@@ -272,6 +302,13 @@ public class EntityEvents {
 	public static void handlePlayerAttack(AttackEntityEvent event) {
 		if (event.getPlayer() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getPlayer();
+			
+			if (player.world.isRemote)
+			if (player.getSwingProgress(0) > 0.25) {
+				event.setCanceled(true);
+				return;
+			}
+			
 			if (player != null) {
 				if (player.getHeldItemMainhand() != null) {
 					if (player.getHeldItemMainhand().getItem() != null) {
@@ -582,25 +619,39 @@ public class EntityEvents {
 	}
 	@SubscribeEvent
 	public static void handleInteract(PlayerInteractEvent event) {	
-//		if (event instanceof PlayerInteractEvent.LeftClickEmpty ||
-//				event instanceof PlayerInteractEvent.LeftClickBlock) {
-//			if (event.getEntity() instanceof PlayerEntity) {
-//				PlayerEntity player = (PlayerEntity)event.getEntity();
-//				if (player != null) {
-//					if (player.getHeldItemMainhand() != null) {
-//						if (player.getHeldItemMainhand().getItem() != null) {
-//							if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
-//								if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
-//									ItemT item = (ItemT)player.getHeldItemMainhand().getItem();
-//									item.onLeftClick(null, event.getPos(), player, player.world, Hand.MAIN_HAND);
-//								}
-//							}
-//						}
-//					}
-//					
-//				}
-//			}
-//		}
+		if (event instanceof PlayerInteractEvent.LeftClickEmpty) {
+			PlayerEntity player = event.getPlayer();
+			float rd = 1000.0f;
+			float reach = (float)player.getAttribute(PlayerEntity.REACH_DISTANCE).getBaseValue();
+		      Vec3d vec3d = player.getEyePosition(0);
+		      Vec3d vec3d1 = player.getLook(0);
+		      Vec3d vec3d2 = vec3d.add(vec3d1.x * reach, vec3d1.y * reach, vec3d1.z * reach);
+		     //   public static EntityRayTraceResult func_221269_a(World p_221269_0_, Entity p_221269_1_, Vec3d p_221269_2_, Vec3d p_221269_3_, AxisAlignedBB p_221269_4_, Predicate<Entity> p_221269_5_, double p_221269_6_) {
+	
+		      AxisAlignedBB axisalignedbb = player.getBoundingBox().expand(vec3d1.scale(rd)).grow(1.0D, 1.0D, 1.0D);
+	          EntityRayTraceResult result = ProjectileHelper.func_221269_a(player.world, player, vec3d, vec3d2, axisalignedbb, (p_215312_0_) -> {
+	             return !p_215312_0_.isSpectator() && p_215312_0_.canBeCollidedWith();
+	          }, rd);
+
+	          
+	          if (result != null) {
+	        	  if (result.getEntity() != null && result.getEntity() instanceof LivingEntity) {
+
+	        		  LivingEntity entity = (LivingEntity) result.getEntity();
+	        		  if (ForgeHooks.onPlayerAttackTarget(player, entity)) {
+	        			  if (player.getHeldItemMainhand() != null) {
+	        				  if (player.getHeldItemMainhand().getItem() instanceof ItemT) {
+	                			  player.attackTargetEntityWithCurrentItem(entity);
+	        				  }
+	        			  }
+		        		  
+	        		  }
+        			  if (event.isCancelable())
+        			  event.setCanceled(true);
+        			  return;
+	        	  }
+	          }
+		}
 	}
 	//public ItemUseContext(PlayerEntity player, Hand handIn, BlockRayTraceResult rayTraceResultIn) {
 	@SubscribeEvent
@@ -1165,12 +1216,41 @@ public class EntityEvents {
 		
 		if (event.getEntity() != null) {
 			
-			
+			if (event.getEntity() instanceof LivingEntity) {
+				LivingEntity entity = (LivingEntity)event.getEntity();
+				if (!(entity instanceof PlayerEntity)) {
+					if (entity.hurtResistantTime > 5) {
+						entity.hurtResistantTime = 5;
+					}
+				} else {
+					if (entity.hurtResistantTime > 15) {
+						entity.hurtResistantTime = 15;
+					}
+				}
+				
+			}
 			
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-				
+
+				if (player.isSwingInProgress)
+				if (player.swingProgressInt == 0) {
+					ItemStack stack = player.getHeldItemMainhand();
+					if (stack != null)
+						if (stack.getItem() != null)
+						if (stack.getItem() instanceof Broadsword) {
+						if (stack.getItem() instanceof Shortsword) {
+							if (player.world.isRemote()) {
+								player.world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.75F);
+							}
+						} else {
+							if (player.world.isRemote()) {
+								player.world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.5F);
+							}
+						}
+					}
+				}
 				if (player.isSwingInProgress) {
 					if (player != null) {
 						if (player.getHeldItemMainhand() != null) {
@@ -1178,7 +1258,7 @@ public class EntityEvents {
 								if (player.getCooldownTracker().getCooldown(player.getHeldItemMainhand().getItem(), 0) <= 0) {
 									RayTraceResult result;
 									
-									double rd = (double)Minecraft.getInstance().playerController.getBlockReachDistance();
+									double rd = (double)player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
 								    Vec3d vec3d = player.getEyePosition(0).subtract(0,player.getEyeHeight(),0);
 								    Vec3d vec3d1 = player.getLook(0);

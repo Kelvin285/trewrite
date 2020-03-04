@@ -206,6 +206,7 @@ public class BlocksT {
 	
 	public static BlockT SHADOW_ORB;
 
+	public static BlockT METEORITE;
 	
 	public static float mul = 1.5f;
 	public static float GROUND_HARDNESS = 30.0f * mul, STONE_HARDNESS = 45.0f * mul, ORE_HARDNESS = 50.0f * mul, DUNGEON_HARDNESS = 60.0f * mul;
@@ -217,7 +218,7 @@ public class BlocksT {
 					DIRT_BLOCK = new DirtBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("dirt_block"),
 					IRON_ORE = new IronOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
 					STONE_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "stone_block", "stone_block"),
-					MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "mushroom", 15, 0, "mushroom").setShape(Shape.MUSHROOM).setPotionSickness(60).setSell(250).setConsumable().setMaterial().addAllowed("grass_block", "highlands_grass"),
+					MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "mushroom", 15, 0, true, "mushroom").setShape(Shape.MUSHROOM).setPotionSickness(60).setSell(250).setConsumable().setMaterial().addAllowed("grass_block", "highlands_grass"),
 					GOLD_ORE = new GoldOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
 					COPPER_ORE = new CopperOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
 					SILVER_ORE = new SilverOre(Properties.create(Material.EARTH).sound(SoundType.STONE)),
@@ -276,12 +277,12 @@ public class BlocksT {
 					CHEST = new Chest(Properties.create(Material.EARTH).sound(SoundType.WOOD), "chest"),
 					DEMONITE_ORE = new DemoniteOre(Properties.create(Material.EARTH).sound(SoundType.STONE).lightValue(2)),
 					CORRUPTION_PLANTS = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, false, "corruption_plants", "no drop").setShape(Shape.MUSHROOM).addAllowed("corrupt_grass"),
-					VILE_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "vile_mushroom", 0, 0, "vile_mushroom").setShape(Shape.MUSHROOM).setSell(10).setMaterial().addAllowed("corrupt_grass"),
+					VILE_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "vile_mushroom", 0, 0, false, "vile_mushroom").setShape(Shape.MUSHROOM).setSell(10).setMaterial().addAllowed("corrupt_grass"),
 					CORRUPT_GRASS = new CorruptGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("corrupt_grass").addAllowed("corruption_plants", "vile_mushroom"),
 					EBONSTONE = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 65, true, false, false, true, "ebonstone", "ebonstone"),
 					SAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "sand", "sand"),
 					EBONSAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "ebonsand", "ebonsand"),
-					SUNFLOWER = (BasicPlant) new BasicPlant(Properties.create(Material.PLANTS).sound(SoundType.PLANT).doesNotBlockMovement().lightValue(4), 0, 0, true, true, true, false, "sunflower", 0, 0, "sunflower").setShape(Shape.BLOCK).setSell(40).addAllowed("grass_block", "highlands_grass"),
+					SUNFLOWER = (BasicPlant) new BasicPlant(Properties.create(Material.PLANTS).sound(SoundType.PLANT).doesNotBlockMovement().lightValue(4), 0, 0, true, true, true, false, "sunflower", 15, 10, false, "sunflower").setShape(Shape.BLOCK).setSell(40).addAllowed("grass_block", "highlands_grass").setPotionSickness(15),
 					DEMON_ALTAR = (BasicBlock) new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.NETHER_WART).doesNotBlockMovement().lightValue(3), 25, 80, false, false, true, false, "altar", "no drop").setRenderLayer(BlockRenderLayer.CUTOUT),
 					POT = new Pot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement(), "pot").setShape(Shape.BLOCK),
 					PIGGY_BANK = (PiggyBank) new PiggyBank(Properties.create(Material.EARTH).sound(SoundType.GLASS), "piggy_bank").setRenderLayer(BlockRenderLayer.CUTOUT),
@@ -319,7 +320,7 @@ public class BlocksT {
 					CORRUPT_CACTUS = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "corrupt_cactus", "cactus_block").addAllowed("corrupt_cactus", "sand"),
 					TALL_GRASS = (CrossedBlock) new CrossedBlock(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, false, true, "tall_grass", "none").setShape(Shape.SMALL_GRASS),
 					LARGE_MUSHROOM = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "large_mushroom", "glowing_mushroom").addAllowed("large_mushroom", "mushroom_grass"),
-					GLOWING_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "glowing_mushroom", 0, 0, "glowing_mushroom").setShape(Shape.MUSHROOM).setSell(250).setMaterial(),
+					GLOWING_MUSHROOM = (BasicPlant) new BasicPlant(Properties.create(Material.TALL_PLANTS).sound(SoundType.PLANT).doesNotBlockMovement(), 0, 0, true, true, true, true, "glowing_mushroom", 0, 0, false, "glowing_mushroom").setShape(Shape.MUSHROOM).setSell(250).setMaterial(),
 					MUSHROOM_GRASS = new MushroomGrassBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND)).setLocation("mushroom_grass"),
 					MUSHROOM_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, false, "mushroom_block", "glowing_mushroom"),
 					MUSHROOM_STEM_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, false, "mushroom_stem_block", "glowing_mushroom"),
@@ -364,7 +365,8 @@ public class BlocksT {
 					OBSIDIAN_POT = new ObsidianPot(Properties.create(Material.EARTH).sound(SoundType.GLASS).doesNotBlockMovement()).setShape(Shape.BLOCK),
 					ROPE = new RopeBlock(true, "rope", "rope"),
 					OBSIDIAN_BOOKCASE = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WOOD), GROUND_HARDNESS, 15, true, false, false, true, "obsidian_bookcase", "obsidian_bookcase"),
-					SHADOW_ORB = new ShadowOrb()
+					SHADOW_ORB = new ShadowOrb(),
+					METEORITE = (BlockT) new MeteoriteBlock().setRegistryName("meteorite")
 
 
 

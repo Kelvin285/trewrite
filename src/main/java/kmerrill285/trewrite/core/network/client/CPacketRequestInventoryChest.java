@@ -1,6 +1,5 @@
 package kmerrill285.trewrite.core.network.client;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
@@ -8,6 +7,7 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryChest;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -53,14 +53,19 @@ public class CPacketRequestInventoryChest {
             		System.out.println("Loading and sending over an inventory.");
     	 			InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender);
     	 			
-    	 			InventoryChestTerraria inventory = new InventoryChestTerraria(false);
+    	 			InventoryChestTerraria inventory = WorldStateHolder.get(sender.world).chests.get(position);
+    	 			if (inventory == null) { 
+    	 				System.out.println("NuLLLLL");
+    	 				inventory = new InventoryChestTerraria(false);
+    	 				}
+    	 			WorldStateHolder.get(sender.world).markDirty();
     	 			inventory.player = sender;
-    	 			inventory.load(this.position, this.worldfile);
+//    	 			inventory.load(this.position, this.worldfile);
 //	    	    	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSendInventoryTerraria(this.playername, inv));
     	 			sendInventoryData(this, ctx, sender, inventory, inventoryPlayer);
     	 			inventory.canSave = true;
 
-    	 			WorldEvents.chests.put(this.position, inventory);
+    	 			WorldStateHolder.get(sender.world).chests.put(this.position, inventory);
 
 	            	
 	            	
@@ -69,10 +74,8 @@ public class CPacketRequestInventoryChest {
 	        ctx.get().setPacketHandled(true);
 	    }
 	 	private void sendInventoryData(CPacketRequestInventoryChest msg, Supplier<NetworkEvent.Context> ctx, ServerPlayerEntity sender, InventoryChestTerraria inventory, InventoryTerraria inventoryPlayer) {
-	 		System.out.println("SEND INVENTORY DATA: " + msg + ", " + ctx + ", " + sender + ", " + inventory);
 	 		
 	 		for (int i = 0; i < 30; i++) {
-	 			System.out.println("SEND TO CHEST: " + inventoryPlayer.main[i].stack);
 	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSyncInventoryChest(0, i, inventoryPlayer.main[i].stack));
 	 		}
 	 		

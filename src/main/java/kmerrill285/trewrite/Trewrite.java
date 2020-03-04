@@ -5,11 +5,6 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.cout970.modelloader.api.ItemTransforms;
-import com.cout970.modelloader.api.ModelConfig;
-import com.cout970.modelloader.api.ModelRegisterEvent;
-import com.cout970.modelloader.api.ModelRetrieveEvent;
-
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.commands.CommandsT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
@@ -19,7 +14,6 @@ import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
-import kmerrill285.trewrite.entities.models.RenderPlayer;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
 import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.ScoreboardEvents;
@@ -28,7 +22,6 @@ import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
-import kmerrill285.trewrite.util.Models;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.DimensionTypeT;
 import kmerrill285.trewrite.world.EntitySpawner;
@@ -38,13 +31,11 @@ import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -62,7 +53,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -101,9 +91,7 @@ public class Trewrite
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         
         
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerModels);
         
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::retrieveModels);
         
         
         
@@ -141,19 +129,6 @@ public class Trewrite
         WorldType.WORLD_TYPES = types2;
     }
     
-    private void retrieveModels(final ModelRetrieveEvent event) {
-
-        // For each TileEntityRenderer we add the models to be rendered
-        Models.loadModels(event);
-
-    }
-
-
-
-    private void registerModels(final ModelRegisterEvent event) {
-
-        Models.registerModels(event);
-    }
     
     @SubscribeEvent
 	public static void onBlockUpdate(NeighborNotifyEvent e) {
@@ -354,6 +329,7 @@ public class Trewrite
 				
 			
 			A:
+				if (world.rand.nextInt(100) <= 10)
 			if (world.getPlayers().size() > 0) {
 				PlayerEntity player = world.getPlayers().get(world.rand.nextInt(world.getPlayers().size()));
 				int battle = ScoreboardEvents.getScore(player.getWorldScoreboard(), player, ScoreboardEvents.BATTLE).getScorePoints();
@@ -391,7 +367,7 @@ public class Trewrite
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
-//    	RenderingRegistry.registerEntityRenderingHandler(EntityItemT.class, manager -> new RenderEntityItemT(manager, Minecraft.getInstance().getItemRenderer()));
+    	ResourcePackInfo info;
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

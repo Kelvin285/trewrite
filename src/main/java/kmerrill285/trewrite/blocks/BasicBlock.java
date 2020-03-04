@@ -17,7 +17,7 @@ public class BasicBlock extends BlockT {
 	}
 
 	
-	public BasicBlock(Properties properties, float hardness, float difficulty, boolean pick, boolean axe, boolean hammer, boolean material, String name, int health, int mana, String drop) {
+	public BasicBlock(Properties properties, float hardness, float difficulty, boolean pick, boolean axe, boolean hammer, boolean material, String name, int health, int mana, boolean consumable, String drop) {
 		super(properties, hardness, difficulty, drop);
 		this.pick = pick;
 		this.axe = axe;
@@ -26,7 +26,7 @@ public class BasicBlock extends BlockT {
 		this.setLocation(name);
 		this.health = health;
 		this.mana = mana;
-		this.consumable = true;
+		this.consumable = consumable;
 	}
 	
 	private boolean fullCube = true;

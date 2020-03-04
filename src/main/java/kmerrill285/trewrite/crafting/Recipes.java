@@ -11,8 +11,10 @@ import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.registry.Registry;
 
 public class Recipes {
 	public static HashMap<Block, List<CraftingRecipe>> recipes = new HashMap<Block, List<CraftingRecipe>>();
@@ -114,6 +116,41 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_BAR, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.COPPER_ORE, 3)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_BAR, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.SILVER_ORE, 4)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_BAR, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.IRON_ORE, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_BROADSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 8)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_PICKAXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 12), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_HAMMER, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 10), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_SHORTSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 7)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_BOW, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 7)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRON_AXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.IRON_BAR, 9), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_AXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 9), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_BROADSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 8)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_PICKAXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 12), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_HAMMER, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 10), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_SHORTSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 7)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_AXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 9), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_BROADSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 8)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_PICKAXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 12), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_HAMMER, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 10), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_SHORTSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 7)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_AXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 9), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_BROADSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 8)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_PICKAXE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 12), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_HAMMER, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 10), new ItemStackT(ItemsT.ANY_WOOD, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_SHORTSWORD, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 7)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_BULLET, 70), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 1), new ItemStackT(ItemsT.MUSKET_BALL, 70)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CACTUS_PICKAXE, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.CACTUS_BLOCK, 15)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CACTUS_SWORD, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.CACTUS_BLOCK, 10)));
+
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_BOW, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.COPPER_BAR, 7)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_BOW, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 7)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOLD_BOW, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.GOLD_BAR, 7)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.DEPTH_METER, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.COPPER_BAR, 10), new ItemStackT(ItemsT.SILVER_BAR, 8), new ItemStackT(ItemsT.GOLD_BAR, 6)));
 
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.LESSER_HEALING_POTION, 2), BlocksT.BOTTLE, new ItemStackT(ItemsT.MUSHROOM, 1), new ItemStackT(ItemsT.GEL, 2), new ItemStackT(ItemsT.BOTTLE, 2)));
 	
@@ -164,10 +201,14 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.FIERY_GREATSWORD), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 30)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BAR), BlocksT.HELLFORGE, new ItemStackT(ItemsT.HELLSTONE, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLFIRE_ARROW, 100), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 1), new ItemStackT(ItemsT.WOODEN_ARROW, 100)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.METEORITE_BAR, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.METEORITE, 3)));
 //		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 
 		for (String str : ItemsT.items.keySet()) {
 			ItemsT.items.get(str).setCraftingRecipes();
 		}
+		
+		
 	}
 }

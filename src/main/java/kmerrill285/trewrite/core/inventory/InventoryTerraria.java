@@ -233,10 +233,10 @@ public class InventoryTerraria {
 		//main, hotbar, armor, armor vanity, armor dyes, accessory, accessory vanity, accesory dyes, trash
 		
 		String[] lines = inventory.split("\n");
-		//System.out.println("LOAD FROM STRING: " + lines.length + " LINES TO LOAD");
-		for (int i = 0; i < lines.length; i++) {
-			//System.out.println(lines[i]);
-		}
+//		System.out.println("LOAD FROM STRING: " + lines.length + " LINES TO LOAD");
+//		for (int i = 0; i < lines.length; i++) {
+//			System.out.println(lines[i]);
+//		}
 		int i = 0;
 		int j = 0;
 		for (String line : lines) {

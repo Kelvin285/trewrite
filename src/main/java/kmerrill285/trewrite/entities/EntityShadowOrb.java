@@ -119,7 +119,13 @@ public class EntityShadowOrb extends MobEntity {
 		
 		float speed = 3f;
 		float acceleration = 0.08f;
-		int dirX = posX < owner.posX ? 1 : -1, dirY = posY < (owner.posY + 2.5) ? 1 : -1, dirZ = posZ < owner.posZ ? 1 : -1;
+		
+		
+		double followY = 2.5;
+		if (owner.onGround == false) {
+			followY = -0.5;
+		}
+		int dirX = posX < owner.posX ? 1 : -1, dirY = posY < (owner.posY + followY) ? 1 : -1, dirZ = posZ < owner.posZ ? 1 : -1;
 
 		setMotion(getMotion().add(acceleration * dirX, acceleration * dirY, acceleration * dirZ));
 		
@@ -133,12 +139,12 @@ public class EntityShadowOrb extends MobEntity {
 			getMotion().add(0, acceleration * dirY, -acceleration * dirZ);
 		}
 
-		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 2) {
+		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 0) {
 			posX = lerp(posX, owner.posX, 0.2);
-			posY = lerp(posY, owner.posY + 2.5, 0.2);
+			posY = lerp(posY, owner.posY + followY, 0.2);
 			posZ = lerp(posZ, owner.posZ, 0.2);
 		}
-		
+		setPosition(posX, posY, posZ);
 //		
 //		
 //		setPosition(posX, posY, posZ);

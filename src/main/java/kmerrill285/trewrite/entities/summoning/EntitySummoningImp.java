@@ -3,8 +3,9 @@ package kmerrill285.trewrite.entities.summoning;
 import java.util.List;
 
 import kmerrill285.trewrite.entities.EntitiesT;
-import kmerrill285.trewrite.entities.EntityShadowOrb;
-import kmerrill285.trewrite.world.WorldStateHolder;
+import kmerrill285.trewrite.entities.IHostile;
+import kmerrill285.trewrite.entities.projectiles.EntitySummoningImpFireball;
+import kmerrill285.trewrite.events.WorldEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -16,6 +17,8 @@ import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -119,34 +122,91 @@ public class EntitySummoningImp extends MobEntity {
 			}
 		}
 		
-		float speed = 3f;
-		float acceleration = 0.08f;
-		int dirX = posX < owner.posX ? 1 : -1, dirY = posY < (owner.posY + 2.5) ? 1 : -1, dirZ = posZ < owner.posZ ? 1 : -1;
-
-		setMotion(getMotion().add(acceleration * dirX, acceleration * dirY, acceleration * dirZ));
+		Vec3d targetPos = owner.getPositionVec();
+		Entity target = null;
+		if (WorldEvents.summoningTargets.get(owner.getScoreboardName()) != null) {
+			target = WorldEvents.summoningTargets.get(owner.getScoreboardName());
+			if (target instanceof LivingEntity) {
+				LivingEntity entity = (LivingEntity)target;
+				if (entity.getHealth() <= 0) {
+					target = null;
+					WorldEvents.summoningTargets.put(owner.getScoreboardName(), null);
+				}
+			}
+		} else {
+			List<Entity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(owner.getPositionVec().add(-25, -25, -25), owner.getPositionVec().add(25, 25, 25)));
+			double dist = 1000;
+			for (int i = 0; i < entities.size(); i++) {
+				Entity entity = entities.get(i);
+				if (entity instanceof IHostile) {
+					double d = entity.getPositionVec().distanceTo(getPositionVec());
+					if (d < dist) {
+						dist = d;
+						target = entity;
+					}
+				}
+			}
+		}
 		
-		if (Math.abs(getMotion().x) >= speed) {
-			getMotion().add(-acceleration * dirX, acceleration * dirY, 0);
-		}
-		if (Math.abs(getMotion().y) >= speed * 0.5) {
-			getMotion().add(acceleration * dirX, -acceleration * dirY * 0.5, acceleration * dirZ);
-		}
-		if (Math.abs(getMotion().z) >= speed) {
-			getMotion().add(0, acceleration * dirY, -acceleration * dirZ);
-		}
-
-		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 2.5, 0)) > 2) {
-			posX = lerp(posX, owner.posX, 0.2);
-			posY = lerp(posY, owner.posY + 2.5, 0.2);
-			posZ = lerp(posZ, owner.posZ, 0.2);
+		if (target != null) {
+			targetPos = target.getPositionVec();
+			
+			if (this.ticksExisted % (20 * 4) >= 20 * 4 - 10 * 3) {
+				if (this.ticksExisted % 10 == 0) {
+					EntitySummoningImpFireball spit = EntitiesT.SUMMONING_IMP_FIREBALL.create(world);
+					spit.setPosition(posX, posY, posZ);
+					
+					Vec3d point = new Vec3d(posX - target.posX, (posY + 1) - target.posY, posZ - target.posZ).normalize();
+					point = point.mul(2, 2, 2);
+					
+					spit.setMotion(-point.x, -point.y, -point.z);
+					
+					world.addEntity(spit);
+				}
+				
+			}
 		}
 		
+		if (getPositionVec().distanceTo(owner.getPositionVec().add(0, 4, 0)) > 25) {
+			targetPos = owner.getPositionVec();
+			WorldEvents.summoningTargets.put(owner.getScoreboardName(), null);
+		}
+		
+		
+		if (!world.isRemote()) {
+			float speed = 2f;
+			float acceleration = 0.08f;
+			int dirX = posX < (targetPos.x + (rand.nextDouble() * 2 - 1) * 3) ? 1 : -1, dirY = posY < (targetPos.y + 4 + rand.nextDouble() * 2 - 1) ? 1 : -1, dirZ = posZ < (targetPos.z + (rand.nextDouble() * 2 - 1) * 3) ? 1 : -1;
+
+			setMotion(getMotion().add(acceleration * dirX, acceleration * dirY, acceleration * dirZ));
+			
+			if (Math.abs(getMotion().x) >= speed) {
+				getMotion().add(-acceleration * dirX, 0, 0);
+			}
+			if (Math.abs(getMotion().y) >= speed * 0.5) {
+				getMotion().add(0, -acceleration * dirY * 0.5, 0);
+			}
+			if (Math.abs(getMotion().z) >= speed) {
+				getMotion().add(0, 0, -acceleration * dirZ);
+			}
+
+			if (getPositionVec().distanceTo(targetPos.add(0, 4, 0)) > 4) {
+				posX = lerp(posX, targetPos.x, 0.2);
+				posY = lerp(posY, targetPos.y + 4, 0.5);
+				posZ = lerp(posZ, targetPos.z, 0.2);
+			}
+		}
+		
+		setPosition(posX, posY, posZ);
+
+
+		float f = MathHelper.sqrt(func_213296_b(getMotion()));
+		this.rotationYaw = (float)(MathHelper.atan2(getMotion().z, getMotion().x) * (double)(180F / (float)Math.PI));
+	    this.prevRotationYaw = this.rotationYaw;
 //		
 //		
 //		setPosition(posX, posY, posZ);
 //		setMotion(0, 0, 0);
-		
-		WorldStateHolder.get(world).setLight(getPosition(), 15, world.getDimension().getType());
 	}
 
 	public double lerp(double a, double b, double f) 
@@ -165,7 +225,7 @@ public class EntitySummoningImp extends MobEntity {
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			if (e instanceof EntitySummoningImp) {
-				if (((EntitySummoningImp)e).created < orb.created && ((EntityShadowOrb)e).owner == owner) {
+				if (((EntitySummoningImp)e).created < orb.created && ((EntitySummoningImp)e).owner == owner) {
 					((EntitySummoningImp)e).setHealth(0);
 					entities.remove(i);
 					continue;

@@ -1,0 +1,14 @@
+{
+
+  "trewrite_menu": {
+  
+    "category": "music",
+    "sounds": [
+      {
+        "name": "trewrite:music/title",
+        "stream": true
+      }
+    ]
+  }
+
+}

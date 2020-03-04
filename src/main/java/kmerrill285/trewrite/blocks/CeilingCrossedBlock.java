@@ -35,8 +35,8 @@ public class CeilingCrossedBlock extends BasicBlock {
 	}
 	
 	public CeilingCrossedBlock(Properties properties, float hardness, float difficulty, boolean pick, boolean axe,
-			boolean hammer, boolean material, String name, int health, int mana, String drop) {
-		super(properties, hardness, difficulty, pick, axe, hammer, material, name, health, mana, drop);
+			boolean hammer, boolean material, String name, int health, int mana, boolean consumable, String drop) {
+		super(properties, hardness, difficulty, pick, axe, hammer, material, name, health, mana, consumable,  drop);
 		this.setDefaultState(this.getDefaultState().with(WATERLOGGED, Boolean.valueOf(false)));
 	}
 	

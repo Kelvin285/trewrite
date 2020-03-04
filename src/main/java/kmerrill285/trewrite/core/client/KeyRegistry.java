@@ -60,6 +60,8 @@ public class KeyRegistry {
     public static KeyBinding hotbar8;
 
     public static KeyBinding hotbar9;
+    
+    public static KeyBinding clearSummons;
 
     public static void registerKeys() {
     	try {
@@ -109,6 +111,7 @@ public class KeyRegistry {
                 "key.trewrite.category"));
         drop = registerKeybinding(new KeyBinding("key.trewrite.drop.desc", GLFW.GLFW_KEY_Q,
                 "key.trewrite.category"));
+        clearSummons = registerKeybinding(new KeyBinding("key.trewrite.clearsummons.desc", GLFW.GLFW_KEY_K, "key.trewrite.category"));
     }
 
     private static KeyBinding registerKeybinding(KeyBinding key) {

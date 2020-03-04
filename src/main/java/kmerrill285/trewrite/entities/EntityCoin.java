@@ -3,6 +3,7 @@ package kmerrill285.trewrite.entities;
 import java.util.List;
 
 import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -109,6 +111,31 @@ public class EntityCoin extends MobEntity implements IEntityAdditionalSpawnData 
 			this.remove();
 			this.removed = true;
 			return;
+		}
+		
+		List<? extends EntityCoin> items = world.getEntitiesWithinAABB(EntityCoin.class, new AxisAlignedBB(getPositionVec().add(-5, -5, -5), getPositionVec().add(5, 5, 5)));
+		noClip = false;
+		for (int i = 0; i < items.size(); i++) {
+			EntityCoin item = items.get(i);
+			if (item != this) {
+				if (item.ticksExisted > this.ticksExisted) {
+					if (item.coin == coin)
+					if (item.amount + this.amount <= 99) {
+						if (getPositionVec().distanceTo(item.getPositionVec()) > 1) {
+							noClip = true;
+							posX = lerp((float)posX, (float)item.posX, 0.5f);
+							posY = lerp((float)posY, (float)item.posY, 0.5f);
+							posZ = lerp((float)posZ, (float)item.posZ, 0.5f);
+							setPosition(posX, posY, posZ);
+						} else {
+							item.amount += this.amount;
+							remove();
+							this.removed = true;
+							return;
+						}
+					}
+				}
+			}
 		}
 		
 		World world = this.world;

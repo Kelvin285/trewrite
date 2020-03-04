@@ -22,37 +22,56 @@ import kmerrill285.trewrite.items.terraria.arrows.JestersArrow;
 import kmerrill285.trewrite.items.terraria.arrows.UnholyArrow;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import kmerrill285.trewrite.items.terraria.axes.CopperAxe;
+import kmerrill285.trewrite.items.terraria.axes.GoldAxe;
 import kmerrill285.trewrite.items.terraria.axes.IronAxe;
 import kmerrill285.trewrite.items.terraria.axes.MoltenHamaxe;
+import kmerrill285.trewrite.items.terraria.axes.SilverAxe;
 import kmerrill285.trewrite.items.terraria.axes.WarAxeOfTheNight;
 import kmerrill285.trewrite.items.terraria.boomerangs.EnchantedBoomerang;
 import kmerrill285.trewrite.items.terraria.boss_summon.SuspiciousLookingEye;
+import kmerrill285.trewrite.items.terraria.bows.CopperBow;
 import kmerrill285.trewrite.items.terraria.bows.DemonBow;
+import kmerrill285.trewrite.items.terraria.bows.GoldBow;
+import kmerrill285.trewrite.items.terraria.bows.IronBow;
 import kmerrill285.trewrite.items.terraria.bows.MoltenFury;
+import kmerrill285.trewrite.items.terraria.bows.SilverBow;
 import kmerrill285.trewrite.items.terraria.bows.WoodenBow;
+import kmerrill285.trewrite.items.terraria.broadswords.CactusSword;
 import kmerrill285.trewrite.items.terraria.broadswords.CopperBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.FieryGreatsword;
+import kmerrill285.trewrite.items.terraria.broadswords.GoldBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
+import kmerrill285.trewrite.items.terraria.broadswords.SilverBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.Tekhaira;
 import kmerrill285.trewrite.items.terraria.bullet.MusketBall;
+import kmerrill285.trewrite.items.terraria.bullet.SilverBullet;
 import kmerrill285.trewrite.items.terraria.clickable.Coin;
 import kmerrill285.trewrite.items.terraria.flails.BallOHurt;
 import kmerrill285.trewrite.items.terraria.guns.Handgun;
 import kmerrill285.trewrite.items.terraria.guns.Musket;
 import kmerrill285.trewrite.items.terraria.guns.PhoenixBlaster;
 import kmerrill285.trewrite.items.terraria.hammers.CopperHammer;
+import kmerrill285.trewrite.items.terraria.hammers.GoldHammer;
 import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
+import kmerrill285.trewrite.items.terraria.hammers.SilverHammer;
+import kmerrill285.trewrite.items.terraria.hammers.WoodenHammer;
 import kmerrill285.trewrite.items.terraria.loot_bags.Present;
 import kmerrill285.trewrite.items.terraria.magic_weapons.Vilethorn;
 import kmerrill285.trewrite.items.terraria.pets.ShadowOrbItem;
+import kmerrill285.trewrite.items.terraria.picks.CactusPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
+import kmerrill285.trewrite.items.terraria.picks.GoldPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.MoltenPickaxe;
+import kmerrill285.trewrite.items.terraria.picks.SilverPickaxe;
 import kmerrill285.trewrite.items.terraria.potions.DefaultPotion;
 import kmerrill285.trewrite.items.terraria.potions.PotionTest;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
+import kmerrill285.trewrite.items.terraria.shortswords.GoldShortsword;
 import kmerrill285.trewrite.items.terraria.shortswords.IronShortsword;
+import kmerrill285.trewrite.items.terraria.shortswords.SilverShortsword;
+import kmerrill285.trewrite.items.terraria.summoning.ImpStaff;
 import kmerrill285.trewrite.items.terraria.throwable.Bomb;
 import kmerrill285.trewrite.items.terraria.throwable.Glowstick;
 import kmerrill285.trewrite.items.terraria.throwable.Grenade;
@@ -303,6 +322,18 @@ public class ItemsT {
 	public static ItemT MOLTEN_PICKAXE;
 	
 	public static ItemT ENCHANTED_BOOMERANG;
+	
+	public static ItemT IMP_STAFF;
+	
+	public static ItemT COPPER_BOW, GOLD_BOW, IRON_BOW, SILVER_BOW;
+	public static ItemT CACTUS_PICKAXE, CACTUS_SWORD;
+	public static ItemT GOLD_PICKAXE, GOLD_AXE, GOLD_HAMMER, GOLD_BROADSWORD, GOLD_SHORTSWORD;
+	public static ItemT SILVER_PICKAXE, SILVER_AXE, SILVER_HAMMER, SILVER_BROADSWORD, SILVER_SHORTSWORD;
+	public static ItemT SILVER_BULLET;
+	public static ItemT WOODEN_HAMMER;
+	
+	public static ItemT METEORITE;
+	public static ItemT METEORITE_BAR;
 
 	
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
@@ -507,6 +538,9 @@ public class ItemsT {
 				RECALL_POTION = new PotionTest(new Properties().group(ItemGroup.BREWING), "recall_potion", true, false) {
 					@Override
 					protected boolean doPotionStuff(World worldIn, PlayerEntity playerIn) {
+						if (ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.HORRIFIED).getScorePoints() > 0) {
+							 playerIn.onKillCommand();
+						 }
 						if (!worldIn.isRemote) {
 						      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.PLAYERS, 1.0F, 0.5F);
 						      {
@@ -632,7 +666,28 @@ public class ItemsT {
 				HANDGUN = new Handgun(),
 				MOLTEN_HAMAXE = new MoltenHamaxe(),
 				MOLTEN_PICKAXE = new MoltenPickaxe(),
-				ENCHANTED_BOOMERANG = new EnchantedBoomerang()
+				ENCHANTED_BOOMERANG = new EnchantedBoomerang(),
+				IMP_STAFF = new ImpStaff(),
+				COPPER_BOW = new CopperBow(),
+				SILVER_BOW = new SilverBow(),
+				GOLD_BOW = new GoldBow(),
+				IRON_BOW = new IronBow(),
+				CACTUS_PICKAXE = new CactusPickaxe(),
+				CACTUS_SWORD = new CactusSword(),
+				GOLD_PICKAXE = new GoldPickaxe(),
+				GOLD_AXE = new GoldAxe(),
+				GOLD_HAMMER = new GoldHammer(),
+				GOLD_BROADSWORD = new GoldBroadsword(),
+				GOLD_SHORTSWORD = new GoldShortsword(),
+				SILVER_AXE = new SilverAxe(),
+				SILVER_PICKAXE = new SilverPickaxe(),
+				SILVER_HAMMER = new SilverHammer(),
+				SILVER_BROADSWORD = new SilverBroadsword(),
+				SILVER_SHORTSWORD = new SilverShortsword(),
+				SILVER_BULLET = new SilverBullet(),
+				WOODEN_HAMMER = new WoodenHammer(),
+				METEORITE = new ItemBlockT(BlocksT.METEORITE, "meteorite").setBuySell(200),
+				METEORITE_BAR = new MetalBar(1400, "meteorite_bar")
 
 
 				);

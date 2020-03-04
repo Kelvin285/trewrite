@@ -30,6 +30,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -203,6 +204,31 @@ public class EntityItemT extends Entity implements IEntityAdditionalSpawnData {
 			this.remove();
 			this.removed = true;
 			return;
+		}
+		
+		List<? extends EntityItemT> items = world.getEntitiesWithinAABB(EntityItemT.class, new AxisAlignedBB(getPositionVec().add(-5, -5, -5), getPositionVec().add(5, 5, 5)));
+		noClip = false;
+		for (int i = 0; i < items.size(); i++) {
+			EntityItemT item = items.get(i);
+			if (item != this) {
+				if (item.ticksExisted > this.ticksExisted) {
+					if (item.getItem().item instanceof ItemT)
+					if (item.stack + this.stack <= ((ItemT)item.getItem().item).maxStack) {
+						if (getPositionVec().distanceTo(item.getPositionVec()) > 1) {
+							noClip = true;
+							posX = lerp((float)posX, (float)item.posX, 0.5f);
+							posY = lerp((float)posY, (float)item.posY, 0.5f);
+							posZ = lerp((float)posZ, (float)item.posZ, 0.5f);
+							setPosition(posX, posY, posZ);
+						} else {
+							item.stack += stack;
+							remove();
+							this.removed = true;
+							return;
+						}
+					}
+				}
+			}
 		}
 		
 		World world = this.world;

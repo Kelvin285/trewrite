@@ -14,6 +14,7 @@ import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryVanilla;
+import kmerrill285.trewrite.core.network.client.CPacketRemoveSummons;
 import kmerrill285.trewrite.core.network.client.CPacketRequestChunks;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryChest;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
@@ -63,6 +64,7 @@ public class NetworkHandler {
         registerMessage(CPacketAddScore.class, CPacketAddScore::encode, CPacketAddScore::new, CPacketAddScore::handle);
         registerMessage(CPacketChangeScore.class, CPacketChangeScore::encode, CPacketChangeScore::new, CPacketChangeScore::handle);
         registerMessage(CPacketHeal.class, CPacketHeal::encode, CPacketHeal::new, CPacketHeal::handle);
+        registerMessage(CPacketRemoveSummons.class, CPacketRemoveSummons::encode, CPacketRemoveSummons::new, CPacketRemoveSummons::handle);
 
         registerMessage(SPacketSendInventoryTerraria.class, SPacketSendInventoryTerraria::encode, SPacketSendInventoryTerraria::new, SPacketSendInventoryTerraria::handle);
         registerMessage(SPacketSyncInventoryTerraria.class, SPacketSyncInventoryTerraria::encode, SPacketSyncInventoryTerraria::decode, SPacketSyncInventoryTerraria::handle);

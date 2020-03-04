@@ -61,11 +61,14 @@ public class EntityWormBody extends MobEntity implements IHostile {
 	
 	public void tick() {
 		
-		
+		this.noClip = true;
+		this.setNoGravity(true);
 		super.tick();
 		if (this.owner == null) {
-
-			
+			if (this.ticksExisted > 20)
+			if (!world.isRemote) {
+				this.remove();
+			}
 		} else {
 			
 			if (!world.isRemote) {
@@ -103,10 +106,10 @@ public class EntityWormBody extends MobEntity implements IHostile {
 			velY = 0;
 			velZ = 0;
 			
-//			this.posX = this.posX + posX;
-//			this.posY = this.posY + posY;
-//			this.posZ = this.posZ + posZ;
-//			
+			this.posX = this.posX + posX;
+			this.posY = this.posY + posY;
+			this.posZ = this.posZ + posZ;
+
 			this.setMotion(posX, posY, posZ);
 			
 		}

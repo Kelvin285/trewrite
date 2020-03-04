@@ -101,19 +101,23 @@ public class EntityTekhairaProjectile extends MobEntity
 			weapon.tick(this);
 		}
 		
-	    AxisAlignedBB axisalignedbb = this.getBoundingBox().expand(this.getMotion()).grow(1.0D);
+		if (!world.isRemote()) {
+			   float rd = 1000.0f;
+			      Vec3d vec3d = getPositionVec();
+			      Vec3d vec3d1 = getMotion();
+			      Vec3d vec3d2 = vec3d.add(vec3d1.x, vec3d1.y, vec3d1.z);
+			     //   public static EntityRayTraceResult func_221269_a(World p_221269_0_, Entity p_221269_1_, Vec3d p_221269_2_, Vec3d p_221269_3_, AxisAlignedBB p_221269_4_, Predicate<Entity> p_221269_5_, double p_221269_6_) {
 		
-		RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, axisalignedbb, (p_213880_1_) -> {
-	         return !p_213880_1_.isSpectator() && p_213880_1_.canBeCollidedWith();
-	      }, RayTraceContext.BlockMode.OUTLINE, true);
+			      AxisAlignedBB bb = getBoundingBox().expand(vec3d1.scale(rd)).grow(1.0D, 1.0D, 1.0D);
+		          EntityRayTraceResult result = ProjectileHelper.func_221269_a(world, this, vec3d, vec3d2, bb, (p_215312_0_) -> {
+		             return !p_215312_0_.isSpectator() && p_215312_0_.canBeCollidedWith();
+		          }, rd);
 
-	      if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
-	         if (raytraceresult.getType() == RayTraceResult.Type.BLOCK && this.world.getBlockState(((BlockRayTraceResult)raytraceresult).getPos()).getBlock() == Blocks.NETHER_PORTAL) {
-	            this.setPortal(((BlockRayTraceResult)raytraceresult).getPos());
-	         } else if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
-	            this.onImpact(raytraceresult);
-	         }
-	      }
+		          
+		          if (result != null) {
+		        	  onImpact(result);
+		          }
+		   }
 	      this.setMotion(VELOCITY);
 	}
 	public boolean attackEntityFrom(DamageSource source, float amount) {

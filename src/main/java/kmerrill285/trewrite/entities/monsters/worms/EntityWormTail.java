@@ -62,13 +62,16 @@ public class EntityWormTail extends MobEntity implements IHostile {
 	int dirZ = 0;
 	
 	public void tick() {
+		this.noClip = true;
+		this.setNoGravity(true);
 		super.tick();
-		
-		
 		if (this.owner == null) {
-			
-			
+			if (this.ticksExisted > 20)
+			if (!world.isRemote) {
+				this.remove();
+			}
 		} else {
+			
 			if (!world.isRemote) {
 				if (this.owner.getHealth() <= 0) {
 					this.remove();
@@ -82,6 +85,8 @@ public class EntityWormTail extends MobEntity implements IHostile {
 					owner.setHealth(getHealth());
 				}
 			}
+			
+			
 			
 			float dirX = (float)(owner.posX + 0.5f - (posX + 0.5f));
 			float dirY = (float)(owner.posY + 0.5f - (posY + 0.5f));
@@ -102,11 +107,13 @@ public class EntityWormTail extends MobEntity implements IHostile {
 			velY = 0;
 			velZ = 0;
 			
+//			this.posX = this.posX + posX;
+//			this.posY = this.posY + posY;
+//			this.posZ = this.posZ + posZ;
+//			
 			this.setMotion(posX, posY, posZ);
-
-			//this.setPosition(this.posX, this.posY, this.posZ);
+			
 		}
-		
 		
 		this.oldVelX = velX + 0;
 		this.oldVelY = velY + 0;

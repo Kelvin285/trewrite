@@ -9,13 +9,14 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPlayer extends LivingRenderer<PlayerEntity, PlayerModel>
 {
-    private ResourceLocation texture = new ResourceLocation("trewrite:textures/entity/guide_model_gltf_guide.png");
+    private ResourceLocation texture = new ResourceLocation("trewrite:textures/entity/player.png");
     
     public RenderPlayer(EntityRendererManager renderManagerIn)
     {
     	
         super(renderManagerIn, new PlayerModel(), 4.0f);
     }
+    
 
     /**
      * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then

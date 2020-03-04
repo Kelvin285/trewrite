@@ -38,7 +38,7 @@ public class ScoreboardEvents {
 			SHINE = "SHN", BATTLE = "BTL",
 			OBSIDIAN_SKIN = "OBSS",
 			MAGIC_POWER = "MPWR", MANA_REGENERATION = "MNRG",
-			TITAN = "TITAN", WEAK = "WEAK";
+			TITAN = "TITAN", WEAK = "WEAK", HORRIFIED = "HORROR";
 	
 	public static int tickTimer = 0;
 	
@@ -102,7 +102,8 @@ public class ScoreboardEvents {
 		getObjective(ScoreboardEvents.MANA_REGENERATION, scoreboard, player),
 		getObjective(ScoreboardEvents.TITAN, scoreboard, player),
 		getObjective(ScoreboardEvents.HUNTER, scoreboard, player),
-		getObjective(ScoreboardEvents.WEAK, scoreboard, player)
+		getObjective(ScoreboardEvents.WEAK, scoreboard, player),
+		getObjective(ScoreboardEvents.HORRIFIED, scoreboard, player)
 		};
 		String[] PTNSTR = {
 			ScoreboardEvents.BUILDER, ScoreboardEvents.CALMING,
@@ -110,7 +111,8 @@ public class ScoreboardEvents {
 			ScoreboardEvents.REGENERATION, ScoreboardEvents.MINING, ScoreboardEvents.ARCHERY, ScoreboardEvents.FEATHERFALL,
 			ScoreboardEvents.FLIPPER, ScoreboardEvents.GRAVITATION, ScoreboardEvents.HEARTREACH, ScoreboardEvents.INVISIBILITY,
 			ScoreboardEvents.THORNS, ScoreboardEvents.WATER_WALKING, ScoreboardEvents.SHINE, ScoreboardEvents.BATTLE, ScoreboardEvents.OBSIDIAN_SKIN,
-			ScoreboardEvents.MAGIC_POWER, ScoreboardEvents.MANA_REGENERATION, ScoreboardEvents.TITAN, ScoreboardEvents.HUNTER, ScoreboardEvents.WEAK
+			ScoreboardEvents.MAGIC_POWER, ScoreboardEvents.MANA_REGENERATION, ScoreboardEvents.TITAN, ScoreboardEvents.HUNTER, ScoreboardEvents.WEAK,
+			ScoreboardEvents.HORRIFIED
 		};
 		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
@@ -273,6 +275,7 @@ public class ScoreboardEvents {
 		ScoreObjective TITAN = getObjective(ScoreboardEvents.TITAN, scoreboard, player);
 		ScoreObjective HUNTER = getObjective(ScoreboardEvents.HUNTER, scoreboard, player);
 		ScoreObjective WEAK = getObjective(ScoreboardEvents.WEAK, scoreboard, player);
+		ScoreObjective HORRIFIED = getObjective(ScoreboardEvents.HORRIFIED, scoreboard, player);
 		
 		Score builder = scoreboard.getOrCreateScore(player.getScoreboardName(), BUILDER);
 		Score calming = scoreboard.getOrCreateScore(player.getScoreboardName(), CALMING);
@@ -298,6 +301,7 @@ public class ScoreboardEvents {
 		Score mana_regeneration = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_REGENERATION);
 		Score titan = scoreboard.getOrCreateScore(player.getScoreboardName(), TITAN);
 		Score weak = scoreboard.getOrCreateScore(player.getScoreboardName(), WEAK);
+		Score horrified = scoreboard.getOrCreateScore(player.getScoreboardName(), HORRIFIED);
 		
 		Score manaSickness = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS);
 		Score manaSicknessEffect = scoreboard.getOrCreateScore(player.getScoreboardName(), MANA_SICKNESS_EFFECT);
@@ -349,6 +353,7 @@ public class ScoreboardEvents {
 					Util.renderManaRegeneration = mana_regeneration.getScorePoints() / 20;
 					Util.renderTitan = titan.getScorePoints() / 20;
 					Util.renderWeakDebuff = weak.getScorePoints() / 20;
+					Util.renderHorrified = horrified.getScorePoints() / 20;
 				}
 			}
 		}

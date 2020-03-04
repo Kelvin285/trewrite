@@ -5,6 +5,8 @@ import java.util.HashMap;
 import kmerrill285.trewrite.blocks.BlockAirT;
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
+import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
+import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.AirBlock;
@@ -53,6 +55,13 @@ public class WorldStateHolder extends WorldSavedData {
 	public HashMap<BlockPos, Integer> lights_sky = new HashMap<BlockPos, Integer>();
 	public HashMap<BlockPos, Integer> lights_underground = new HashMap<BlockPos, Integer>();
 	public HashMap<BlockPos, Integer> lights_underworld = new HashMap<BlockPos, Integer>();
+	
+	public HashMap<String, InventoryChestTerraria> chests = new HashMap<String, InventoryChestTerraria>();
+
+	public boolean EaterOfWorldsAlive;
+	public int EaterOfWorldsSegments;
+
+	public HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
 
 	public class WorldState {
 		
@@ -122,6 +131,31 @@ public class WorldStateHolder extends WorldSavedData {
 			}
 			
 		}
+		
+		size = nbt.getInt("inventories");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("inventories["+i+"]").trim();
+			String[] data = s.split("!");
+			if (data[1].contentEquals("null")) continue;
+			if (data.length < 2) continue;
+			String name = data[0];
+			InventoryTerraria inventory = new InventoryTerraria();
+			inventory.loadFromString(data[1]);
+			System.out.println("NAME: " + name);
+			inventories.put(name, inventory);
+
+		}
+		size = nbt.getInt("chests");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("chests["+i+"]").trim();
+			String[] data = s.split("!");
+			if (data[1].contentEquals("null")) continue;
+			if (data.length < 2) continue;
+			String name = data[0];
+			InventoryChestTerraria chest = new InventoryChestTerraria();
+			chest.loadFromString(data[1]);
+			chests.put(name, chest);
+		}
 		size = nbt.getInt("lightsLength");
 		for (int i = 0; i < size; i++) {
 			String s = nbt.getString("lights["+i+"]".trim());
@@ -188,7 +222,31 @@ public class WorldStateHolder extends WorldSavedData {
 		compound.putBoolean("eaterOfWorldsDefeated", eaterOfWorldsDefeated);
 		compound.putBoolean("meteoriteSpawn", meteoriteSpawn);
 		compound.putInt("sposLength", spawnPositions.size());
+		compound.putInt("inventories", inventories.size());
+		compound.putInt("chests", chests.size());
+		
 		int i = 0;
+		
+		for (String p : inventories.keySet()) {
+			String savedata = inventories.get(p).getDataForSave();
+			if (savedata == null) {
+				compound.putString("inventories["+i+"]", p+"!null");
+			} else {
+				compound.putString("inventories["+i+"]", p+"!"+savedata);
+			}
+			i++;
+		}
+		i = 0;
+		for (String p : chests.keySet()) {
+			String savedata = chests.get(p).getDataForSave();
+			if (savedata == null) {
+				compound.putString("chests["+i+"]", p+"!null");
+			} else {
+				compound.putString("chests["+i+"]", p+"!"+savedata);
+			}
+			i++;
+		}
+		i = 0;
 		for (String p : spawnPositions.keySet()) {
 			BlockPos pos = spawnPositions.get(p);
 			if (pos == null) {

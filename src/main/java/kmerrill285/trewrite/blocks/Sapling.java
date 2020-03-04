@@ -27,7 +27,7 @@ public class Sapling extends CrossedBlock {
 	public Tree tree;
 	
 	public Sapling(String name, Tree tree) {
-		super(Properties.create(Material.PLANTS).tickRandomly().doesNotBlockMovement(), 0, 0, true, true, true, false, name, 0, 0, "");
+		super(Properties.create(Material.PLANTS).tickRandomly().doesNotBlockMovement(), 0, 0, true, true, true, false, name, 0, 0, false, "");
 		this.tree = tree;
 		
 	}

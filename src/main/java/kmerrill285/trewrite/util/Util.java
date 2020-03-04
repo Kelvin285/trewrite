@@ -47,7 +47,8 @@ public class Util {
 	renderThorns, renderWaterWalking, renderShine, renderBattle, renderObsidianSkin, renderMagicPower,
 	renderManaRegeneration, renderTitan;
 
-	public static int renderWeakDebuff;
+	public static int renderWeakDebuff, renderHorrified;
+
 	
 	public static boolean isChristmas() {
 		return LocalDateTime.now().getMonth() == Month.DECEMBER && LocalDateTime.now().getDayOfMonth() >= 15 && LocalDateTime.now().getDayOfMonth() <= 31;
@@ -84,6 +85,11 @@ public class Util {
 	public static double getAngle(int x, int y)
 	{
 	    return 1.5 * Math.PI - Math.atan2(y,x); //note the atan2 call, the order of paramers is y then x
+	}
+	
+	public static double lerp(double a, double b, double f) 
+	{
+	    return (a * (1.0 - f)) + (b * f);
 	}
 	
 	public static String getSpeedString(int speed) {

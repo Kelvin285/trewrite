@@ -5,17 +5,16 @@ import java.util.Random;
 
 import com.google.common.collect.Multimap;
 
-import kmerrill285.trewrite.entities.projectiles.Projectile;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
 import kmerrill285.trewrite.items.terraria.potions.Potion;
 import kmerrill285.trewrite.util.Conversions;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +25,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -165,7 +167,7 @@ public class ItemT extends Item {
 	
 	
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
-		if (this instanceof MagicWeapon) {
+		if (this instanceof MagicWeapon || this instanceof SummoningItem) {
 			if (worldIn.isRemote()) {
 				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EVOKER_CAST_SPELL, SoundCategory.PLAYERS, 1F, 0.75F);
 			}
@@ -193,20 +195,7 @@ public class ItemT extends Item {
 	
 	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
 		
-		
-		if (this instanceof Broadsword) {
-			if (this instanceof Shortsword) {
-				if (worldIn.isRemote()) {
-					worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.75F);
-				}
-			} else {
-				if (worldIn.isRemote()) {
-					worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 0.5F);
-				}
-			}
-		}
-		
-		if (this instanceof MagicWeapon) {
+		if (this instanceof MagicWeapon || this instanceof SummoningItem) {
 			if (worldIn.isRemote()) {
 				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EVOKER_CAST_SPELL, SoundCategory.PLAYERS, 1F, 0.75F);
 			}

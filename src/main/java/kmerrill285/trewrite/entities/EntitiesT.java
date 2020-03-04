@@ -9,6 +9,13 @@ import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowTail;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityLeechBody;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityLeechHead;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityLeechTail;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityWallOfFlesh;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityWallOfFleshEye;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.EntityWallOfFleshMouth;
+import kmerrill285.trewrite.entities.monsters.bosses.wof.TheHungryEntity;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormBody;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormHead;
 import kmerrill285.trewrite.entities.monsters.worms.EntityWormTail;
@@ -17,11 +24,13 @@ import kmerrill285.trewrite.entities.passive.EntityBunnyT;
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
 import kmerrill285.trewrite.entities.projectiles.EntityBullet;
 import kmerrill285.trewrite.entities.projectiles.EntityMagicProjectile;
+import kmerrill285.trewrite.entities.projectiles.EntitySummoningImpFireball;
 import kmerrill285.trewrite.entities.projectiles.EntityTekhairaProjectile;
 import kmerrill285.trewrite.entities.projectiles.EntityThrowingT;
 import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
 import kmerrill285.trewrite.entities.projectiles.boomerangs.EntityEnchantedBoomerang;
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
+import kmerrill285.trewrite.entities.projectiles.hostile.EntityEyeLaser;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
 import kmerrill285.trewrite.entities.summoning.EntitySummoningImp;
 import net.minecraft.block.Blocks;
@@ -70,6 +79,17 @@ public class EntitiesT {
 	   public static EntityType<EntityTekhairaProjectile> TEKHAIRA_PROJECTILE;
 	   public static EntityType<EntityEnchantedBoomerang> ENCHANTED_BOOMERANG;
 	   public static EntityType<EntitySummoningImp> SUMMONING_IMP;
+	   public static EntityType<EntitySummoningImpFireball> SUMMONING_IMP_FIREBALL;
+	   public static EntityType<EntityWallOfFlesh> WALL_OF_FLESH;
+	   public static EntityType<EntityWallOfFleshEye> WALL_OF_FLESH_EYE;
+	   public static EntityType<EntityWallOfFleshMouth> WALL_OF_FLESH_MOUTH;
+	   
+	   public static EntityType<EntityLeechHead> LEECH_HEAD;
+	   public static EntityType<EntityLeechBody> LEECH_BODY;
+	   public static EntityType<EntityLeechTail> LEECH_TAIL;
+
+	   public static EntityType<EntityEyeLaser> EYE_LASER;
+	   public static EntityType<TheHungryEntity> THE_HUNGRY;
 
 	   
 	   @SubscribeEvent
@@ -114,6 +134,17 @@ public class EntitiesT {
 		 EntitiesT.ENCHANTED_BOOMERANG = register("trewrite" + ":enchanted_boomerang", EntityType.Builder.<EntityEnchantedBoomerang>create(EntityEnchantedBoomerang::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEnchantedBoomerang(world)));
 
 		 EntitiesT.SUMMONING_IMP = register("trewrite" + ":summoning_imp", EntityType.Builder.<EntitySummoningImp>create(EntitySummoningImp::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntitySummoningImp(world)));
+		 EntitiesT.SUMMONING_IMP_FIREBALL = register("trewrite" + ":summoning_imp_fireball", EntityType.Builder.<EntitySummoningImpFireball>create(EntitySummoningImpFireball::new, EntityClassification.MISC).size(100.0f, 100.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntitySummoningImpFireball(world)));
+		 EntitiesT.WALL_OF_FLESH = register("trewrite" + ":wall_of_flesh", EntityType.Builder.<EntityWallOfFlesh>create(EntityWallOfFlesh::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setTrackingRange(50000).setCustomClientFactory((spawnEntity, world) -> new EntityWallOfFlesh(world)));
+		 EntitiesT.WALL_OF_FLESH_EYE = register("trewrite" + ":wall_of_flesh_eye", EntityType.Builder.<EntityWallOfFleshEye>create(EntityWallOfFleshEye::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setTrackingRange(50000).setCustomClientFactory((spawnEntity, world) -> new EntityWallOfFleshEye(world)));
+		 EntitiesT.WALL_OF_FLESH_MOUTH = register("trewrite" + ":wall_of_flesh_mouth", EntityType.Builder.<EntityWallOfFleshMouth>create(EntityWallOfFleshMouth::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setTrackingRange(50000).setCustomClientFactory((spawnEntity, world) -> new EntityWallOfFleshMouth(world)));
+
+		 EntitiesT.LEECH_HEAD = register("trewrite" + ":leech_head", EntityType.Builder.<EntityLeechHead>create(EntityLeechHead::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityLeechHead(world)));
+		 EntitiesT.LEECH_BODY = register("trewrite" + ":leech_body", EntityType.Builder.<EntityLeechBody>create(EntityLeechBody::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityLeechBody(world)));
+		 EntitiesT.LEECH_TAIL = register("trewrite" + ":leech_tail", EntityType.Builder.<EntityLeechTail>create(EntityLeechTail::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityLeechTail(world)));
+
+		 EntitiesT.EYE_LASER = register("trewrite" + ":eye_laser", EntityType.Builder.<EntityEyeLaser>create(EntityEyeLaser::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEyeLaser(world)));
+		 EntitiesT.THE_HUNGRY = register("trewrite" + ":the_hungry", EntityType.Builder.<TheHungryEntity>create(TheHungryEntity::new, EntityClassification.MONSTER).size(2.0f, 2.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new TheHungryEntity(world)));
 
 		 
 		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
@@ -124,7 +155,6 @@ public class EntitiesT {
 		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL, Blocks.WATER));
 		 SpawnCondition.spawnConditions.put(EntitiesT.WORM_HEAD, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
 
-	   
 	   }
 	   
 	   private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {

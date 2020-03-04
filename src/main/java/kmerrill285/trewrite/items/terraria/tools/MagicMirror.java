@@ -3,6 +3,7 @@ package kmerrill285.trewrite.items.terraria.tools;
 import java.util.HashMap;
 
 import kmerrill285.trewrite.blocks.Bed;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.Dimensions;
@@ -34,6 +35,9 @@ public class MagicMirror extends ItemT {
 	}
 	
 	 public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		 if (ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.HORRIFIED).getScorePoints() > 0) {
+			 playerIn.onKillCommand();
+		 }
 		 if (!worldIn.isRemote) {
 		      worldIn.playSound((PlayerEntity)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.PLAYERS, 1.0F, 0.5F);
 		      {

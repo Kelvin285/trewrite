@@ -7,6 +7,7 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -47,7 +48,7 @@ public class CPacketRequestInventoryTerraria {
     	 			public void run() {
     	 				ServerPlayerEntity sender = ctx.get().getSender();
     	 				System.out.println("sender: " + sender);
-    	 				Set<String> players = WorldEvents.getInventories().keySet();
+    	 				Set<String> players = WorldStateHolder.get(sender.world).inventories.keySet();
     	    	 		boolean hasPlayer = false;
     	    	 		for (String player : players) {
     	    	 			if (player.equals(msg.playername)) {
@@ -56,20 +57,19 @@ public class CPacketRequestInventoryTerraria {
     	    	 			}
     	    	 		}
 	            		System.out.println("Loading and sending over an inventory.");
-	    	 			InventoryTerraria inventory = new InventoryTerraria(false);
+	    	 			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(sender);
 	    	 			inventory.player = sender;
-	    	 			inventory.load(msg.playername, msg.worldfile);
 //    	    	 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new SPacketSendInventoryTerraria(msg.playername, inv));
 	    	 			sendInventoryData(msg, ctx, sender, inventory);
 	    	 			inventory.canSave = true;
 	    	 			
 	    	 			System.out.println("UNLOCKING INVENTORIES");
 	    	 			
-	    	 			System.out.println(WorldEvents.getInventories());
+	    	 			System.out.println(WorldStateHolder.get(sender.world).inventories);
 
 	    	 			System.out.println("PUT PLAYER INTO INVENTORY LIST");
 
-	    	 			WorldEvents.getInventories().put(msg.playername, inventory);
+	    	 			WorldStateHolder.get(sender.world).inventories.put(msg.playername, inventory);
 
     	            	
     	 			}

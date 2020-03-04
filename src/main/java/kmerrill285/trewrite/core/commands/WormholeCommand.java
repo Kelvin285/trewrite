@@ -13,6 +13,7 @@ import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.network.NetworkHandler;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.command.CommandSource;
@@ -63,6 +64,9 @@ public class WormholeCommand implements Command<CommandSource>{
 				} catch (CommandSyntaxException e) {
 					e.printStackTrace();
 				}
+				if (ScoreboardEvents.getScore(((ServerPlayerEntity)entity).getWorldScoreboard(), ((ServerPlayerEntity)entity), ScoreboardEvents.HORRIFIED).getScorePoints() > 0) {
+					((ServerPlayerEntity)entity).onKillCommand();
+				 }
 			}
 		}
 		

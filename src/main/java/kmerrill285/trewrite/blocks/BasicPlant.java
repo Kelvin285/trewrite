@@ -41,8 +41,8 @@ public class BasicPlant extends BasicBlock {
 	}
 	
 	public BasicPlant(Properties properties, float hardness, float difficulty, boolean pick, boolean axe,
-			boolean hammer, boolean material, String name, int health, int mana, String drop) {
-		super(properties, hardness, difficulty, pick, axe, hammer, material, name, health, mana, drop);
+			boolean hammer, boolean material, String name, int health, int mana, boolean consumable, String drop) {
+		super(properties, hardness, difficulty, pick, axe, hammer, material, name, health, mana, consumable, drop);
 		this.setDefaultState(this.stateContainer.getBaseState().with(TYPE, Integer.valueOf(0)));
 	}
 	

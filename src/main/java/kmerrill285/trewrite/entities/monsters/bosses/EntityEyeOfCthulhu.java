@@ -530,6 +530,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     	if (amount < 1) amount = 1;
     	this.bosshealth -= amount;
     	super.setHealth(this.bosshealth);
+    	super.attackEntityFrom(source, 0);
     	if (this.bosshealth <= 0) {
     		this.dropLoot(DamageSource.GENERIC, true);
     		this.remove();
@@ -567,14 +568,14 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		System.out.println("read " + compound);
 		super.read(compound);
 		this.bosshealth = compound.getFloat("bosshealth");
-		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
+		if (compound.getBoolean("spawned")) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 //		System.out.println("read additional " + compound);
 		this.bosshealth = compound.getFloat("bosshealth");
-		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
+		if (compound.getBoolean("spawned")) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
 
 	@Override
@@ -596,7 +597,7 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 //		System.out.println("READ SPAWN DATA: " + additionalData);
 
 		this.bosshealth = additionalData.readFloat();
-		if (additionalData.readBoolean()) {REMOVED = true; remove();}
+		if (additionalData.readBoolean()) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
     
 }

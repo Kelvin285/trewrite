@@ -264,13 +264,13 @@ public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnDa
 	public void read(CompoundNBT compound) {
 //		System.out.println("read " + compound);
 		super.read(compound);
-		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
+		if (compound.getBoolean("spawned")) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 //		System.out.println("read additional " + compound);
-		if (compound.getBoolean("spawned")) {REMOVED = true; remove();}
+		if (compound.getBoolean("spawned")) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
 
 	@Override
@@ -289,7 +289,7 @@ public class EntityEowBody extends MobEntity implements IEntityAdditionalSpawnDa
 	public void readSpawnData(PacketBuffer additionalData) {
 //		System.out.println("READ SPAWN DATA: " + additionalData);
 
-		if (additionalData.readBoolean()) {REMOVED = true; remove();}
+		if (additionalData.readBoolean()) {REMOVED = true; if (!world.isRemote()) remove();}
 	}
 	
 	@Override

@@ -11,7 +11,11 @@ import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityArrowT extends ArrowEntity
@@ -68,6 +72,26 @@ public class EntityArrowT extends ArrowEntity
 				}
 			}
 		}
+		
+		if (!world.isRemote()) {
+			   float rd = 1000.0f;
+			      Vec3d vec3d = getPositionVec();
+			      Vec3d vec3d1 = getMotion();
+			      Vec3d vec3d2 = vec3d.add(vec3d1.x, vec3d1.y, vec3d1.z);
+			     //   public static EntityRayTraceResult func_221269_a(World p_221269_0_, Entity p_221269_1_, Vec3d p_221269_2_, Vec3d p_221269_3_, AxisAlignedBB p_221269_4_, Predicate<Entity> p_221269_5_, double p_221269_6_) {
+		
+			      AxisAlignedBB bb = getBoundingBox().expand(vec3d1.scale(rd)).grow(1.0D, 1.0D, 1.0D);
+		          EntityRayTraceResult result = ProjectileHelper.func_221269_a(world, this, vec3d, vec3d2, bb, (p_215312_0_) -> {
+		             return !p_215312_0_.isSpectator() && p_215312_0_.canBeCollidedWith();
+		          }, rd);
+
+		          
+		          if (result != null) {
+		        	  if (result.getEntity() instanceof LivingEntity) {
+		        		  arrowHit((LivingEntity)result.getEntity());
+		        	  }
+		          }
+		   }
 	}
 	
 	public void arrowHit(LivingEntity hit) {

@@ -9,6 +9,7 @@ import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -53,7 +54,7 @@ public class CPacketSyncInventoryChest {
 					stack = null;
 				}
 				String pos = this.pos;
-				InventoryChestTerraria inventory = WorldEvents.chests.get(pos);
+				InventoryChestTerraria inventory = WorldStateHolder.get(sender.world).chests.get(pos);
 				InventoryTerraria inventoryPlayer = WorldEvents.getOrLoadInventory(sender);
 				if (inventory != null && inventoryPlayer != null) {
 					System.out.println("INVENTORY CHEST EXISTS.  SYNCING FROM CLIENT TO SERVER");

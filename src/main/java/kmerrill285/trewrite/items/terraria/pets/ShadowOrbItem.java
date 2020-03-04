@@ -2,6 +2,7 @@ package kmerrill285.trewrite.items.terraria.pets;
 
 
 import kmerrill285.trewrite.entities.EntityShadowOrb;
+import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemT;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -27,8 +28,11 @@ public class ShadowOrbItem extends ItemT {
 	 public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		
 		  playerIn.getCooldownTracker().setCooldown(this, (int) ((this.useTime) * (30.0 / 60.0)));
-		  
-	      EntityShadowOrb.spawnOrb(worldIn, playerIn.getPosition(), playerIn);
+		  if (WorldEvents.light_pets.get(playerIn.getScoreboardName()) != null) {
+			  WorldEvents.light_pets.get(playerIn.getScoreboardName()).remove();
+		  }
+	      
+		  WorldEvents.light_pets.put(playerIn.getScoreboardName(), EntityShadowOrb.spawnOrb(worldIn, playerIn.getPosition(), playerIn));
 
 	      return new ActionResult<>(ActionResultType.SUCCESS, new ItemStack(this));
 	   }

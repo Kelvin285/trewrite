@@ -36,6 +36,7 @@ import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.core.network.client.CPacketHeal;
 import kmerrill285.trewrite.core.network.client.CPacketNegateFall;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
+import kmerrill285.trewrite.core.network.client.CPacketRemoveSummons;
 import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.crafting.Recipes;
@@ -302,6 +303,11 @@ public class EventHandlerClient {
 	        	ContainerTerrariaInventory.inventory.hotbarSelected = 8;
 	        }
         }
+        
+        if (KeyRegistry.clearSummons.isPressed()) {
+        	NetworkHandler.INSTANCE.sendToServer(new CPacketRemoveSummons());
+        }
+        
         if (KeyRegistry.drop.isPressed() && Util.terrariaInventory == true) {
         	InventoryTerraria inventory = ContainerTerrariaInventory.inventory;
 //			EntityItemT item = (EntityItemT) EntitiesT.ITEM.spawn(mc.player.world, null, null, mc.player.getPosition().up(), SpawnReason.EVENT, false, false);

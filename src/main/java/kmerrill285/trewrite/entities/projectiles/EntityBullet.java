@@ -4,13 +4,17 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.items.Bullet;
+import kmerrill285.trewrite.util.Conversions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityBullet extends SnowballEntity
@@ -66,6 +70,24 @@ public class EntityBullet extends SnowballEntity
 			bullet.bulletTick(this);
 			this.setNoGravity(true);
 		}
+		
+		if (!world.isRemote()) {
+			   float rd = 1000.0f;
+			      Vec3d vec3d = getPositionVec();
+			      Vec3d vec3d1 = getMotion();
+			      Vec3d vec3d2 = vec3d.add(vec3d1.x, vec3d1.y, vec3d1.z);
+			     //   public static EntityRayTraceResult func_221269_a(World p_221269_0_, Entity p_221269_1_, Vec3d p_221269_2_, Vec3d p_221269_3_, AxisAlignedBB p_221269_4_, Predicate<Entity> p_221269_5_, double p_221269_6_) {
+		
+			      AxisAlignedBB bb = getBoundingBox().expand(vec3d1.scale(rd)).grow(1.0D, 1.0D, 1.0D);
+		          EntityRayTraceResult result = ProjectileHelper.func_221269_a(world, this, vec3d, vec3d2, bb, (p_215312_0_) -> {
+		             return !p_215312_0_.isSpectator() && p_215312_0_.canBeCollidedWith();
+		          }, rd);
+
+		          
+		          if (result != null) {
+		        	  this.onImpact(result);
+		          }
+		   }
 	}
 	
 	protected void onImpact(RayTraceResult result) {
@@ -76,7 +98,12 @@ public class EntityBullet extends SnowballEntity
 			if (entity instanceof LivingEntity) {
 				bullet.onBulletHit(this, (LivingEntity)entity);
 				entity.attackEntityFrom(DamageSource.GENERIC, (float)damage);
-				((LivingEntity)entity).knockBack(entity, (float)knockback, (float)getMotion().x % 2, (float)getMotion().z % 2);
+				((LivingEntity)entity).knockBack(entity, (float)knockback * 0.01f, -(float)getMotion().normalize().x, -(float)getMotion().normalize().z);
+				if (this.piercing > 0) {
+					this.piercing--;
+				} else {
+					remove();
+				}
 			}
 		}
 	}

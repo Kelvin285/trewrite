@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -33,9 +34,9 @@ public class CPacketSaveChestTerraria {
 			if (sender != null) {
 //				inventories.get(player).save(player, event.getWorld().getWorldInfo().getWorldName());
 				String position = this.pos;
-				InventoryChestTerraria chest = WorldEvents.chests.get(position);
-				System.out.println("SAVING CHEST AT " + position);
-				chest.save(position, sender.getEntityWorld().getWorldInfo().getWorldName());
+				//InventoryChestTerraria chest = WorldStateHolder.get(sender.world).chests.get(position);
+				//System.out.println("SAVING CHEST AT " + position);
+				//chest.save(position, sender.getEntityWorld().getWorldInfo().getWorldName());
 			}
 			
 			
