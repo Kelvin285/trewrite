@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import kmerrill285.featurescript.FeatureScript;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.commands.CommandsT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
@@ -74,6 +75,7 @@ public class Trewrite
    
     
     public Trewrite() {
+    	FeatureScript.load();
     	try {
     		Field f = Chunk.class.getDeclaredField("field_76634_f");
     	} catch (Exception e) {

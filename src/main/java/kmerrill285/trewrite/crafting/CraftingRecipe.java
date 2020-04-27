@@ -1,9 +1,6 @@
 package kmerrill285.trewrite.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import kmerrill285.trewrite.blocks.BlockT;
+import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.items.ItemStackT;
 import net.minecraft.block.Block;
 
@@ -17,6 +14,12 @@ public class CraftingRecipe {
 		this.input = itemStackT;
 		this.output = output;
 		this.block = block;
+	}
+	
+	public CraftingRecipe(ItemStackT output, String block, ItemStackT...itemStackT) {
+		this.input = itemStackT;
+		this.output = output;
+		this.block = BlocksT.BLOCKS.get(block);
 	}
 	
 	public CraftingRecipe(ItemStackT output, boolean usesWater, ItemStackT...itemStackT) {

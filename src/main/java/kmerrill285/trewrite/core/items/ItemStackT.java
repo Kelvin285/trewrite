@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import kmerrill285.trewrite.items.ItemT;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -32,10 +33,24 @@ public class ItemStackT {
 		this.modifier = ItemModifier.getIdForModifier(modifier);
 	}
 	
+	public ItemStackT(String item, ItemModifier modifier) {
+		this.item = ItemsT.getItemFromString(item);
+		this.size = 1;
+		this.itemForRender = new ItemStack(ItemsT.getItemFromString(item));
+		this.modifier = ItemModifier.getIdForModifier(modifier);
+	}
+	
 	public ItemStackT(Item item) {
 		this.item = item;
 		this.size = 1;
 		this.itemForRender = new ItemStack(item);
+		this.modifier = -1;
+	}
+	
+	public ItemStackT(String item) {
+		this.item = ItemsT.getItemFromString(item);
+		this.size = 1;
+		this.itemForRender = new ItemStack(ItemsT.getItemFromString(item));
 		this.modifier = -1;
 	}
 	
@@ -46,15 +61,38 @@ public class ItemStackT {
 		this.modifier = -1;
 	}
 	
+	public ItemStackT(String item, int size) {
+		System.out.println(item);
+		this.item = ItemsT.getItemFromString(item);
+		this.size = size;
+		this.itemForRender = new ItemStack(ItemsT.getItemFromString(item));
+		this.modifier = -1;
+	}
+	
 	public ItemStackT(Item item, int size, ItemModifier modifier) {
 		this.item = item;
 		this.size = size;
 		this.itemForRender = new ItemStack(item);
+		
+		
+			
+		
 		if (modifier != null)
 		{
 			double speed = modifier.speed;
 			if(ItemModifier.getModifier(this.modifier) != null)
 				this.itemForRender.addAttributeModifier(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", (((ItemT)item).useTime * (speed / 100.0f) - (((ItemT)item).useTime * (speed / 100.0f) * 1.1) + 1) * (speed / 100.0f), Operation.ADDITION), EquipmentSlotType.MAINHAND);
+		}
+		this.modifier = ItemModifier.getIdForModifier(modifier);
+	}
+	
+	public ItemStackT(String item, int size, ItemModifier modifier) {
+		this(item, size);
+		if (modifier != null)
+		{
+			double speed = modifier.speed;
+			if(ItemModifier.getModifier(this.modifier) != null)
+				this.itemForRender.addAttributeModifier(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", (((ItemT)this.item).useTime * (speed / 100.0f) - (((ItemT)this.item).useTime * (speed / 100.0f) * 1.1) + 1) * (speed / 100.0f), Operation.ADDITION), EquipmentSlotType.MAINHAND);
 		}
 		this.modifier = ItemModifier.getIdForModifier(modifier);
 	}

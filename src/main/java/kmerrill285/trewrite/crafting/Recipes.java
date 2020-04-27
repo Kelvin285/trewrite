@@ -98,10 +98,10 @@ public class Recipes {
 	
 	public static void addAllRecipes() {
 		recipes.clear();
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.WOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOOD, 1), null, new ItemStackT(ItemsT.WOOD_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WORKBENCH, 1), null, new ItemStackT(ItemsT.WOOD, 10)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.TORCH, 3), null, new ItemStackT(ItemsT.ANY_WOOD, 1), new ItemStackT(ItemsT.GEL, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.WOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOOD, 1), (Block)null, new ItemStackT(ItemsT.WOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WORKBENCH, 1), (Block)null, new ItemStackT(ItemsT.WOOD, 10)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.TORCH, 3), (Block)null, new ItemStackT(ItemsT.ANY_WOOD, 1), new ItemStackT(ItemsT.GEL, 1)));
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CHEST, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.WOOD, 8), new ItemStackT(ItemsT.ANY_IRON, 2)));
 
@@ -154,25 +154,25 @@ public class Recipes {
 
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.LESSER_HEALING_POTION, 2), BlocksT.BOTTLE, new ItemStackT(ItemsT.MUSHROOM, 1), new ItemStackT(ItemsT.GEL, 2), new ItemStackT(ItemsT.BOTTLE, 2)));
 	
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.EBONWOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.EBONWOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.EBONWOOD, 1), null, new ItemStackT(ItemsT.EBONWOOD_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SHADEWOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.SHADEWOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SHADEWOOD, 1), null, new ItemStackT(ItemsT.SHADEWOOD_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.PEARLWOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD, 1), null, new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2), null, new ItemStackT(ItemsT.RICH_MAHOGANY, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY, 1), null, new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.BOREAL_WOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD, 1), null, new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PALM_WOOD_PLATFORM, 2), null, new ItemStackT(ItemsT.PALM_WOOD, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PALM_WOOD, 1), null, new ItemStackT(ItemsT.PALM_WOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.EBONWOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.EBONWOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.EBONWOOD, 1), (Block)null, new ItemStackT(ItemsT.EBONWOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SHADEWOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.SHADEWOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SHADEWOOD, 1), (Block)null, new ItemStackT(ItemsT.SHADEWOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.PEARLWOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PEARLWOOD, 1), (Block)null, new ItemStackT(ItemsT.PEARLWOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.RICH_MAHOGANY, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY, 1), (Block)null, new ItemStackT(ItemsT.RICH_MAHOGANY_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.BOREAL_WOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.BOREAL_WOOD, 1), (Block)null, new ItemStackT(ItemsT.BOREAL_WOOD_PLATFORM, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PALM_WOOD_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.PALM_WOOD, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PALM_WOOD, 1), (Block)null, new ItemStackT(ItemsT.PALM_WOOD_PLATFORM, 2)));
 		
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.MUD, 1), Blocks.WATER, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOODEN_BOW, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.ANY_WOOD, 10)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GOGGLES, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.LENS, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOODEN_ARROW, 25), BlocksT.WORKBENCH, new ItemStackT(ItemsT.ANY_WOOD, 1), new ItemStackT(ItemsT.STONE_BLOCK, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.FLAMING_ARROW, 10), null, new ItemStackT(ItemsT.WOODEN_ARROW, 10), new ItemStackT(ItemsT.TORCH, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.FLAMING_ARROW, 10), (Block)null, new ItemStackT(ItemsT.WOODEN_ARROW, 10), new ItemStackT(ItemsT.TORCH, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SUSPICIOUS_LOOKING_EYE, 1), BlocksT.DEMON_ALTAR, new ItemStackT(ItemsT.LENS, 6)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.DEMONITE_BAR, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.DEMONITE_ORE, 3)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.DEMON_BOW, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.DEMONITE_BAR, 8)));
@@ -182,7 +182,7 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.COPPER_WATCH, 1), BlocksT.TABLE, new ItemStackT(ItemsT.COPPER_BAR, 10), new ItemStackT(ItemsT.CHAIN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_WATCH, 1), BlocksT.TABLE, new ItemStackT(ItemsT.SILVER_BAR, 10), new ItemStackT(ItemsT.CHAIN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.UNHOLY_ARROW, 5), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.WOODEN_ARROW, 5), new ItemStackT(ItemsT.WORM_TOOTH, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.JESTERS_ARROW, 20), null, new ItemStackT(ItemsT.WOODEN_ARROW, 20), new ItemStackT(ItemsT.FALLEN_STAR, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.JESTERS_ARROW, 20), (Block)null, new ItemStackT(ItemsT.WOODEN_ARROW, 20), new ItemStackT(ItemsT.FALLEN_STAR, 1)));
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GLASS, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.ANY_SAND, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.GLASS, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.GLASS_PLATFORM, 2)));
@@ -190,14 +190,14 @@ public class Recipes {
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.IRIDESCENT_BRICK, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.STONE_BLOCK, 1), new ItemStackT(ItemsT.ASH_BLOCK, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BRICKS, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.STONE_BLOCK, 1), new ItemStackT(ItemsT.HELLSTONE, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CORRUPT_TORCH, 3), null, new ItemStackT(ItemsT.TORCH, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.CORRUPT_TORCH, 3), (Block)null, new ItemStackT(ItemsT.TORCH, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_SKULL, 1), BlocksT.FURNACE, new ItemStackT(ItemsT.OBSIDIAN, 20)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_CHEST, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.OBSIDIAN, 6), new ItemStackT(ItemsT.HELLSTONE, 2), new ItemStackT(ItemsT.ANY_IRON, 2)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_PLATFORM, 2), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1), null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 2)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_PLATFORM, 2), (Block)null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.OBSIDIAN_BRICK, 1), (Block)null, new ItemStackT(ItemsT.OBSIDIAN_BRICK, 2)));
 		addRecipe(new CraftingRecipe(new ItemStackT(Items.BUCKET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.ANY_IRON, 3)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.ROPE_COIL), null, new ItemStackT(ItemsT.ROPE, 10)));
-		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.MANA_CRYSTAL), null, new ItemStackT(ItemsT.FALLEN_STAR, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.ROPE_COIL), (Block)null, new ItemStackT(ItemsT.ROPE, 10)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.MANA_CRYSTAL), (Block)null, new ItemStackT(ItemsT.FALLEN_STAR, 3)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.FIERY_GREATSWORD), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 30)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLSTONE_BAR), BlocksT.HELLFORGE, new ItemStackT(ItemsT.HELLSTONE, 3), new ItemStackT(ItemsT.OBSIDIAN, 1)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLFIRE_ARROW, 100), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 1), new ItemStackT(ItemsT.WOODEN_ARROW, 100)));

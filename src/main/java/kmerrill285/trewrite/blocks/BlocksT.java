@@ -1,5 +1,7 @@
 package kmerrill285.trewrite.blocks;
 
+import java.util.HashMap;
+
 import kmerrill285.trewrite.blocks.CrossedBlock.Shape;
 import kmerrill285.trewrite.blocks.corruption_orbs.ShadowOrb;
 import kmerrill285.trewrite.blocks.ores.CopperOre;
@@ -20,6 +22,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class BlocksT {
+	
+	public static HashMap<String, Block> BLOCKS = new HashMap<String, Block>();
 	
 	public static BlockT DIRT_BLOCK;
 	public static BlockT IRON_ORE;

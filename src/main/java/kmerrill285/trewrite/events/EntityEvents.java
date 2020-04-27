@@ -1494,6 +1494,9 @@ public class EntityEvents {
 				}
 			
 			event.getEntity().stepHeight = 1.0f;
+			if (event.getEntity().isSneaking()) {
+				event.getEntity().stepHeight = 0.5f;
+			}
 
 			if (event.getEntityLiving() != null) {
 				if (event.getEntityLiving().hurtTime > 0) {

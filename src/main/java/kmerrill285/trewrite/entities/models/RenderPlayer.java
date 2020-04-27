@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPlayer extends LivingRenderer<PlayerEntity, PlayerModel>
 {
-    private ResourceLocation texture = new ResourceLocation("trewrite:textures/entity/player.png");
+    private ResourceLocation texture = new ResourceLocation("trewrite:textures/entity/player/skin/skin1.png");
     
     public RenderPlayer(EntityRendererManager renderManagerIn)
     {

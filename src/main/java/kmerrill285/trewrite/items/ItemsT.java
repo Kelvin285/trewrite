@@ -2,6 +2,7 @@ package kmerrill285.trewrite.items;
 
 import java.util.HashMap;
 
+import kmerrill285.featurescript.FeatureScript;
 import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.network.NetworkHandler;
@@ -691,6 +692,10 @@ public class ItemsT {
 
 
 				);
+		for (String str : FeatureScript.items.keySet()) {
+			event.getRegistry().register(new FeatureScriptItem(str, FeatureScript.items.get(str)));
+		}
+		
 		Recipes.addAllRecipes();
 		
 	}

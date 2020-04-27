@@ -184,7 +184,7 @@ public class TheHungryEntity extends FlyingEntity implements IHostile {
 				Vec3d gpos = this.owner.getPositionVec().mul(1, 0, 1).add(this.firstPos.mul(1, 0, 1).subtract(this.owner.firstPos.mul(1, 0, 1)));
 				double dist = getPositionVec().mul(1, 0, 1).distanceTo(gpos);
 				
-				if (dist > 100) {
+				if (dist > 300) {
 					this.setPosition(Util.lerp(posX, gpos.x, 0.05), Util.lerp(posY, firstPos.y, 0.05), Util.lerp(posZ, gpos.z, 0.05));
 				}
 			}
