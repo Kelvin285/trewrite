@@ -32,6 +32,7 @@ public class FieryGreatsword extends Broadsword {
 		this.setLocation("fiery_greatsword");
 		this.setTooltip("It's made out of fire!");
 		this.setMaterial();
+		this.scale = 2.0f;
 	}
 	
 	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {

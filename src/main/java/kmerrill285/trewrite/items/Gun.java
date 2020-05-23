@@ -24,7 +24,11 @@ public class Gun extends ItemT {
 		this.ranged = true;
 		MODIFIER_TYPE = EnumModifierType.RANGED;
 		this.setMaxStack(1);
+		rotX = 45;
+		offsY = -scale * -0.05;
+		offsZ = -scale * 0.20;
 		
+		this.animation = ItemT.GUN_ANIMATION;
 	}
 	
 	public int getUseDuration(ItemStack t) {
@@ -151,7 +155,9 @@ public class Gun extends ItemT {
 	    		 }
 	 	         EntityBullet bulletentity = new EntityBullet(worldIn, playerIn);
 	 	         bulletentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
-	 	         
+	 	         bulletentity.posX += playerIn.getForward().x;
+	 	         bulletentity.posY += playerIn.getForward().y;
+	 	         bulletentity.posZ += playerIn.getForward().z;
 
 	 	         double damage = (bullet.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);
 	 	         if (archer > 0) { damage *= 1.25; }

@@ -26,7 +26,10 @@ public class Bow extends ItemT {
 		this.ranged = true;
 		MODIFIER_TYPE = EnumModifierType.RANGED;
 		this.setMaxStack(1);
+		offsY = -scale * 0.25;
 		
+		this.animation = ItemT.BOW_ANIMATION;
+		this.scale = 1.25f;
 	}
 	
 	public int getUseDuration(ItemStack t) {
@@ -157,6 +160,9 @@ public class Bow extends ItemT {
 	    		 }
 	 	         EntityArrowT arrowentity = new EntityArrowT(worldIn, playerIn);
 	 	         arrowentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, (float)vel, 0.0F);
+	 	         arrowentity.posX += playerIn.getForward().x;
+	 	         arrowentity.posY += playerIn.getForward().y;
+	 	         arrowentity.posZ += playerIn.getForward().z;
 	 	         this.onShoot(arrowentity);
 
 	 	         double damage = (arrow.damage + this.damage + this.damage * dmg) * (1.0 + random.nextDouble() * 0.05f);

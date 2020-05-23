@@ -1,6 +1,6 @@
 {
     "parent": "block/cross",
     "textures": {
-        "cross": "trewrite:block/obsidian_lantern"
+        "cross": "trewrite:block/lanterns/obsidian_lantern"
     }
 }

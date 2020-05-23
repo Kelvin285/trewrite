@@ -26,6 +26,8 @@ public class Pickaxe extends ItemT {
 		this.melee = true;
 		this.maxStack = 1;
 		MODIFIER_TYPE = EnumModifierType.MELEE;
+		this.animation = ItemT.PICKAXE_ANIMATION;
+		this.scale = 2.0;
 	}
 
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {

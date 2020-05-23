@@ -18,6 +18,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientProxy {
 
 	public static HashMap<String, ArrayList<ItemStack>> playerAccessories = new HashMap<String, ArrayList<ItemStack>>();
+	public static HashMap<String, ArrayList<ItemStack>> playerArmor = new HashMap<String, ArrayList<ItemStack>>();
+
 	
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent evt) {

@@ -13,6 +13,7 @@ public class AnimationController {
 	}
 	
 	public void update(float animationSpeed) {
+		nextAnimation = currentAnimation;
 		if (time < 1.0) {
 			time += nextSpeed;
 		} else {

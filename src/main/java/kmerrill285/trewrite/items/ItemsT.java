@@ -58,8 +58,10 @@ import kmerrill285.trewrite.items.terraria.hammers.IronHammer;
 import kmerrill285.trewrite.items.terraria.hammers.SilverHammer;
 import kmerrill285.trewrite.items.terraria.hammers.WoodenHammer;
 import kmerrill285.trewrite.items.terraria.loot_bags.Present;
+import kmerrill285.trewrite.items.terraria.magic_weapons.SpaceGun;
 import kmerrill285.trewrite.items.terraria.magic_weapons.Vilethorn;
 import kmerrill285.trewrite.items.terraria.pets.ShadowOrbItem;
+import kmerrill285.trewrite.items.terraria.picks.BonePickaxe;
 import kmerrill285.trewrite.items.terraria.picks.CactusPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.CopperPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.GoldPickaxe;
@@ -335,8 +337,20 @@ public class ItemsT {
 	
 	public static ItemT METEORITE;
 	public static ItemT METEORITE_BAR;
-
 	
+	public static ItemT SPACE_GUN;
+
+	public static ItemT WOODEN_HELMET;
+	public static ItemT WOODEN_CHESTPLATE;
+	public static ItemT WOODEN_GREAVES;
+	
+	public static ItemT RICH_MAHOGANY_HELMET, RICH_MAHOGANY_BREASTPLATE, RICH_MAHOGANY_GREAVES;
+	public static ItemT MINING_HELMET, MINING_SHIRT, MINING_PANTS;
+	
+	public static ItemT HOOK;
+	public static ItemT BONE_PICKAXE;
+
+
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
 	public static ItemT ANY_IRON = new ItemT().setItemName("ANY_IRON");
 	public static ItemT ANY_SAND = new ItemT().setItemName("ANY_SAND");
@@ -465,7 +479,7 @@ public class ItemsT {
 				COPPER_HAMMER = (CopperHammer) new CopperHammer().setBuySell(80),
 				COPPER_BROADSWORD = (CopperBroadsword) new CopperBroadsword().setBuySell(90),
 				COPPER_SHORTSWORD = (CopperShortsword) new CopperShortsword().setBuySell(70),
-				GOGGLES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "goggles", Armor.ArmorType.HEAD, 1).setMaxStack(1).setBuySell(200),
+				GOGGLES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "goggles", Armor.ArmorType.HEAD, Armor.RenderType.EYES, 1, 128, 64, false).setMaxStack(1).setBuySell(200),
 				LENS = new ItemT(new Properties().group(ItemGroup.MATERIALS), "lens").setMaterial().setBuySell(100).setMaxStack(99),
 				WOODEN_BOW = new WoodenBow(),
 				WOODEN_ARROW = new WoodenArrow().setMaxStack(999).setMaterial(),
@@ -660,13 +674,13 @@ public class ItemsT {
 				BALL_O_HURT = new BallOHurt(),
 				BAND_OF_STARPOWER = new BandOfStarpower(),
 				TEKHAIRA = new Tekhaira(),
-				FIERY_GREATSWORD = new FieryGreatsword(),
+				FIERY_GREATSWORD = new FieryGreatsword().setLightValue(5),
 				HELLSTONE_BAR = new MetalBar(4000, "hellstone_bar"),
 				MOLTEN_FURY = new MoltenFury(),
 				PHOENIX_BLASTER = new PhoenixBlaster(),
 				HANDGUN = new Handgun(),
-				MOLTEN_HAMAXE = new MoltenHamaxe(),
-				MOLTEN_PICKAXE = new MoltenPickaxe(),
+				MOLTEN_HAMAXE = new MoltenHamaxe().setLightValue(5),
+				MOLTEN_PICKAXE = new MoltenPickaxe().setLightValue(5),
 				ENCHANTED_BOOMERANG = new EnchantedBoomerang(),
 				IMP_STAFF = new ImpStaff(),
 				COPPER_BOW = new CopperBow(),
@@ -688,7 +702,22 @@ public class ItemsT {
 				SILVER_BULLET = new SilverBullet(),
 				WOODEN_HAMMER = new WoodenHammer(),
 				METEORITE = new ItemBlockT(BlocksT.METEORITE, "meteorite").setBuySell(200),
-				METEORITE_BAR = new MetalBar(1400, "meteorite_bar")
+				METEORITE_BAR = new MetalBar(1400, "meteorite_bar"),
+				SPACE_GUN = new SpaceGun(),
+				WOODEN_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "wooden_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 1, 128, 64, false).setTooltip("Set bonus: +1 defense"),
+				WOODEN_CHESTPLATE = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "wooden_chestplate", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 1, 128, 64, false).setTooltip("Set bonus: +1 defense"),
+				WOODEN_GREAVES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "wooden_greaves", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 0, 64, 32, true).setTooltip("Set bonus: +1 defense"),
+				RICH_MAHOGANY_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "rich_mahogany_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 1, 128, 64, false).setTooltip("Set bonus: +1 defense"),
+				RICH_MAHOGANY_BREASTPLATE = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "rich_mahogany_breastplate", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 1, 128, 64, false).setTooltip("Set bonus: +1 defense"),
+				RICH_MAHOGANY_GREAVES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "rich_mahogany_greaves", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 1, 64, 32, true).setTooltip("Set bonus: +1 defense"),
+				MINING_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "mining_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 1, 128, 64, false).setTooltip("Provides light when worn.\nSet bonus: +30% mining speed"),
+				MINING_SHIRT = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "mining_shirt", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 1, 128, 64, false).setTooltip("Set bonus: +30% mining speed"),
+				MINING_PANTS = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "mining_pants", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 1, 64, 32, true).setTooltip("Set bonus: +30% mining speed"),
+				HOOK = new ItemT(new Properties().group(ItemGroup.MATERIALS), "hook").setMaterial().setTooltip("Sometimes dropped by Skeletons and Piranha").setBuySell(200).setMaxStack(99),
+				BONE_PICKAXE = new BonePickaxe()
+
+
+
 
 
 				);

@@ -100,10 +100,12 @@ public class OverlayEvents {
 //		Sounds.playMusic(Sounds.MUSIC_TITLE);
 	}
 	
+	public static boolean STACK = false;
+	
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleWorldRenderEvent(RenderWorldLastEvent event) {
-		
+		if (STACK == false) return;
 		
 		if (Util.refreshDimensionRenderer) {
 			Util.chunksend.clear();
@@ -827,7 +829,7 @@ public class OverlayEvents {
 						if (inventory.armor[i].stack != null) {
 							if (inventory.armor[i].stack.item instanceof Armor) {
 								Armor a = (Armor)inventory.armor[i].stack.item;
-								armor += a.defense;
+								armor += a.getDefense(inventory.armor);
 							}
 						}
 					}

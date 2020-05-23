@@ -3,13 +3,10 @@ package kmerrill285.trewrite.items;
 import com.google.common.collect.Multimap;
 
 import kmerrill285.featurescript.scripts.objects.Script;
-import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
 import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
-import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.crafting.CraftingRecipe;
-import kmerrill285.trewrite.crafting.Recipes;
+import kmerrill285.trewrite.entities.projectiles.Projectiles;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.modifiers.EnumModifierType;
@@ -40,24 +37,29 @@ public class FeatureScriptItem extends ItemT {
 	
 	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
 		player.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
-		script.executeFunction("left_click");
+		script.executeFunction("left_click", entity, pos, player, worldIn, handIn);
 	}
 	
 	public boolean onAttack(Entity target, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn, double attackMod) {
 		player.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
-		script.executeFunction("attack");
+		script.executeFunction("attack", target, pos, player, worldIn, handIn, attackMod);
 		return super.onAttack(target, pos, player, worldIn, handIn, attackMod);
 	}
 	
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {
 		player.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
 		super.onUse(entity, pos, player, worldIn, handIn);
-		script.executeFunction("use");
+		script.executeFunction("use", entity, pos, player, worldIn, handIn);
 	}
 	
 	 public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-			
+		
 	      ItemStack itemstack = playerIn.getHeldItem(handIn);
+		 
+		  script.executeFunction("right_click", worldIn, playerIn, handIn);
+		  if ((Boolean)script.getVariable("right_click_return") == false) {
+		  	  return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+		  }
 	      
 	      InventoryTerraria inventory = null;
 	      if (!worldIn.isRemote) {
@@ -102,7 +104,7 @@ public class FeatureScriptItem extends ItemT {
 		script.setVariable("chestplate", chestplate);
 		script.setVariable("leggings", leggings);
 		
-		script.executeFunction("right_click");
+		
 		
 		int mana_use = this.mana;
 		if (script.getVariable("mana_use") != null) {
@@ -118,10 +120,15 @@ public class FeatureScriptItem extends ItemT {
 			return super.onItemRightClick(worldIn, playerIn, handIn);
 		}
 		
+		if (!this.shoot.contentEquals("")) {
+			Projectiles.shootProjectile(this.shoot, playerIn, this);
+		}
+		
 		return super.onItemRightClick(worldIn, playerIn, handIn);
 	}
 	
 	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+		script.executeFunction("getAtributeModifiers", equipmentSlot);
 		return super.getAttributeModifiers(equipmentSlot);
 	}
 	public static ItemGroup getItemGroup(Script script) {
@@ -145,23 +152,6 @@ public class FeatureScriptItem extends ItemT {
 	
 	public void setCraftingRecipes() {
 		script.executeFunction("set_recipes");
-//		String input = (String)script.getVariable("crafting_input");
-//		String crafting_block = (String) script.getVariable("crafting_block");
-//		
-//		String output = (String) script.getVariable("crafting_output");
-//		Integer output_stack = (Integer) script.getVariable("crafting_output_stack");
-//		
-//		String[] craftData = input.replace(" ", "").split(",");
-//		ItemStackT[] stacks = new ItemStackT[craftData.length];
-//		for (int i = 0; i < craftData.length; i++) {
-//			if (craftData[i].split(":").length > 0) {
-//				stacks[i] = new ItemStackT(ItemsT.getItemFromString(craftData[i].split(":")[0]), Integer.parseInt(craftData[i].split(":")[1]));
-//			} else {
-//				stacks[i] = new ItemStackT(ItemsT.getItemFromString(craftData[i]), 1);
-//			}
-//		}
-//		System.out.println("ADD RECIPES");
-//		Recipes.addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.getItemFromString(output), output_stack), BlocksT.BLOCKS.get(crafting_block), stacks));
 	}
 	
 }

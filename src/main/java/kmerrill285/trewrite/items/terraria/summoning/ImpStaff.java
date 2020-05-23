@@ -41,6 +41,7 @@ public class ImpStaff extends SummoningItem {
 		this.useTime = 36;
 		this.velocity = 10;
 		this.setTooltip("Summons an imp to fight for you");
+		this.scale = 2.0f;
 	}
 	
 	public void onLeftClick(Entity entity, BlockPos pos, PlayerEntity playerIn, World worldIn, Hand handIn) {

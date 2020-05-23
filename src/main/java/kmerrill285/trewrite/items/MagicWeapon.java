@@ -14,6 +14,7 @@ public abstract class MagicWeapon extends ItemT {
 		this.magic = true;
 		MODIFIER_TYPE = EnumModifierType.MAGIC;
 		this.setMaxStack(1);
+		this.animation = ItemT.STAFF_ANIMATION;
 	}
 	
 	public int getUseDuration(ItemStack t) {

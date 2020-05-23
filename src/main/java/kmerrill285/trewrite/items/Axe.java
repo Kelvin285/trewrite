@@ -15,6 +15,9 @@ public class Axe extends ItemT {
 		this.melee = true;
 		this.maxStack = 1;
 		MODIFIER_TYPE = EnumModifierType.MELEE;
+		
+		this.animation = ItemT.AXE_ANIMATION;
+		this.scale = 2.0;
 	}
 
 	public void onUse(Entity entity, BlockPos pos, PlayerEntity player, World worldIn, Hand handIn) {

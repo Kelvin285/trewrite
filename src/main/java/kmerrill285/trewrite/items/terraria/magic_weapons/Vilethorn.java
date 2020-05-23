@@ -32,6 +32,7 @@ public class Vilethorn extends MagicWeapon {
 		this.damage = 10;
 		this.velocity = 32;
 		this.useTime = 28;
+		this.setBuySell(2000);
 	}
 
 	
@@ -67,7 +68,7 @@ public class Vilethorn extends MagicWeapon {
 		if (projectile.world.isRemote) return;
 		projectile.setNoGravity(true);
 		projectile.noClip = true;
-		projectile.setMotion(projectile.getMotion().mul(0.7f, 0.7f, 0.7f).add(0, 0.04f, 0));
+		projectile.setMotion(projectile.getMotion().mul(0.7f, 0.7f, 0.7f));
 	}
 
 	@Override

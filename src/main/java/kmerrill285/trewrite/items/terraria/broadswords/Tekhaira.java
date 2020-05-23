@@ -33,6 +33,7 @@ public class Tekhaira extends Broadsword {
 		this.sellPrice = 62700;
 		this.buyPrice = Conversions.sellToBuy(sellPrice);
 		this.setLocation("tekhaira");
+		this.scale = 2.0f;
 	}
 
 	
@@ -63,7 +64,6 @@ public class Tekhaira extends Broadsword {
 	
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 	    ItemStack itemstack = playerIn.getHeldItem(handIn);
-		System.out.println(playerIn.getCooldownTracker().getCooldown(this, 0));
 
 		if (playerIn.getCooldownTracker().getCooldown(this, 0) > 0) {
 			return new ActionResult<>(ActionResultType.FAIL, itemstack);

@@ -17,6 +17,8 @@ public class SPacketSendAccessories {
 	public String player;
 	public PlayerEntity p;
 	public ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+	public ArrayList<ItemStack> items2 = new ArrayList<ItemStack>();
+
 	public SPacketSendAccessories(PlayerEntity player) {
 		this.player = player.getScoreboardName();
 		this.p = player;
@@ -29,10 +31,24 @@ public class SPacketSendAccessories {
         	for (int i = 0; i < inventory.accessory.length; i++) {
         		if (inventory.accessoryVanity[i].stack != null) 
         		{
+        			buf.writeBoolean(true);
         			buf.writeItemStack(inventory.accessoryVanity[i].stack.itemForRender);
         		} else {
         			if (inventory.accessory[i].stack != null) {
+        				buf.writeBoolean(true);
         				buf.writeItemStack(inventory.accessory[i].stack.itemForRender);
+        			}
+        		}
+        	}
+        	for (int i = 0; i < inventory.armor.length; i++) {
+        		if (inventory.armorVanity[i].stack != null) 
+        		{
+        			buf.writeBoolean(false);
+        			buf.writeItemStack(inventory.armorVanity[i].stack.itemForRender);
+        		} else {
+        			if (inventory.armor[i].stack != null) {
+        				buf.writeBoolean(false);
+        				buf.writeItemStack(inventory.armor[i].stack.itemForRender);
         			}
         		}
         	}
@@ -41,14 +57,21 @@ public class SPacketSendAccessories {
 	
 	public SPacketSendAccessories(PacketBuffer buf) {
 		player = buf.readString(100).trim();
+		int i = 0;
 		while (buf.isReadable()) {
-			items.add(buf.readItemStack());
+			if (buf.readBoolean()) {
+				items.add(buf.readItemStack());
+			} else {
+				items2.add(buf.readItemStack());
+			}
+			i++;
 		}
 	}
 	
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			ClientProxy.playerAccessories.put(player, items);
+			ClientProxy.playerArmor.put(player, items2);
         });
         ctx.get().setPacketHandled(true);
 	}

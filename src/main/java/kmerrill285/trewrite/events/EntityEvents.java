@@ -20,6 +20,7 @@ import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
+import kmerrill285.trewrite.entities.projectiles.EntityMagicProjectile;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Axe;
 import kmerrill285.trewrite.items.Broadsword;
@@ -545,7 +546,7 @@ public class EntityEvents {
 					if (inventory.armor[i].stack != null) {
 						if (inventory.armor[i].stack.item instanceof Armor) {
 							Armor a = (Armor)inventory.armor[i].stack.item;
-							armor += a.defense;
+							armor += a.getDefense(inventory.armor);
 						}
 					}
 				}
@@ -1108,6 +1109,31 @@ public class EntityEvents {
 				
 			}
 		}
+		if (event.getNewSpeed() > 0) {
+			InventoryTerraria inventory = null;
+			PlayerEntity player = event.getEntityPlayer();
+			if (!player.world.isRemote) {
+				inventory = WorldEvents.getOrLoadInventory(player);
+			}
+			else {
+				inventory = ContainerTerrariaInventory.inventory;
+			}
+			
+			boolean mining = true;
+			for (int i = 0; i < inventory.armor.length; i++) {
+				if (inventory.armor[i].stack != null) {
+					if (inventory.armor[i].stack.item != ItemsT.MINING_HELMET ||
+							inventory.armor[i].stack.item != ItemsT.MINING_SHIRT ||
+							inventory.armor[i].stack.item != ItemsT.MINING_PANTS) {
+						mining = false;
+					}
+				}
+			}
+			
+			if (mining) {
+				event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * 0.3f);
+			}
+		}
 	}
 	
 	
@@ -1233,7 +1259,8 @@ public class EntityEvents {
 			if (event.getEntityLiving() instanceof PlayerEntity) {
 				
 				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-
+				
+				
 				if (player.isSwingInProgress)
 				if (player.swingProgressInt == 0) {
 					ItemStack stack = player.getHeldItemMainhand();
@@ -1352,6 +1379,20 @@ public class EntityEvents {
 					inventory = ContainerTerrariaInventory.inventory;
 				}
 				if (inventory != null) {
+					for (int i = 0; i < inventory.armor.length; i++) {
+						if (inventory.armor[i].stack != null) {
+							if (inventory.armor[i].stack.item == ItemsT.MINING_HELMET) {
+								WorldStateHolder.get(player.world).setLight(player.getPosition(), 15, player.world.dimension.getType());
+							}
+						}
+					}
+					for (int i = 0; i < inventory.armorVanity.length; i++) {
+						if (inventory.armorVanity[i].stack != null) {
+							if (inventory.armorVanity[i].stack.item == ItemsT.MINING_HELMET) {
+								WorldStateHolder.get(player.world).setLight(player.getPosition(), 15, player.world.dimension.getType());
+							}
+						}
+					}
 					InventorySlot selected = inventory.hotbar[inventory.hotbarSelected];
 					if (selected != null) {
 						if (selected.stack != null) {
@@ -1408,6 +1449,12 @@ public class EntityEvents {
 			boolean falling = true;
 
 			float G = 9.82f;
+			
+			if (entity instanceof EntityMagicProjectile) {
+				G = 0;
+				return;
+			}
+			
 			if (entity.world.isRemote) {
 				if (event.getEntity() instanceof PlayerEntity) {
 					PlayerEntity player = (PlayerEntity)event.getEntity();

@@ -32,6 +32,8 @@ public class MagicMirror extends ItemT {
 		this.useTime = 90;
 		this.speed = 90;
 		this.maxStack = 1;
+		
+		this.animation = ItemT.STAFF_ANIMATION;
 	}
 	
 	 public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {

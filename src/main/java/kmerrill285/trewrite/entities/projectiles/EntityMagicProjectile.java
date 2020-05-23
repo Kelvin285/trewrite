@@ -4,7 +4,6 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.items.MagicWeapon;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -15,7 +14,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -112,11 +111,23 @@ public class EntityMagicProjectile extends MobEntity
 			     //   public static EntityRayTraceResult func_221269_a(World p_221269_0_, Entity p_221269_1_, Vec3d p_221269_2_, Vec3d p_221269_3_, AxisAlignedBB p_221269_4_, Predicate<Entity> p_221269_5_, double p_221269_6_) {
 		
 			      AxisAlignedBB bb = getBoundingBox().expand(vec3d1.scale(rd)).grow(1.0D, 1.0D, 1.0D);
-		          EntityRayTraceResult result = ProjectileHelper.func_221269_a(world, this, vec3d, vec3d2, bb, (p_215312_0_) -> {
+		          RayTraceResult result = ProjectileHelper.func_221269_a(world, this, vec3d, vec3d2, bb, (p_215312_0_) -> {
 		             return !p_215312_0_.isSpectator() && p_215312_0_.canBeCollidedWith();
 		          }, rd);
-
 		          
+		          boolean blockHit = false;
+		          if (result == null) {
+		        	  blockHit = true;
+		          } else {
+		        	  if (result.getType() == RayTraceResult.Type.MISS) {
+		        		  blockHit = true;
+		        	  }
+		          }
+		          
+		          if (blockHit) {
+		        	  AxisAlignedBB box = new AxisAlignedBB(posX - getWidth() * 0.1f + getMotion().getX(), posY - getHeight() * 0.1f + getMotion().getY(), posZ - getWidth() * 0.1f + getMotion().getZ(), posX + getWidth() * 1.1f + getMotion().getX(), posY + getHeight() * 1.1f + getMotion().getY(), posZ + getWidth() + 1.1f + getMotion().getZ());
+		        	  result = ProjectileHelper.func_221267_a(this, box, (e) -> {return false;}, BlockMode.COLLIDER, true);
+		          }
 		          if (result != null) {
 		        	  onImpact(result);
 		          }
@@ -137,12 +148,18 @@ public class EntityMagicProjectile extends MobEntity
 				
 				weapon.hit(this, (LivingEntity)entity);
 				entity.attackEntityFrom(DamageSource.GENERIC, (float)damage);
-				((LivingEntity)entity).knockBack(entity, (float)knockback, (float)getMotion().x % 2, (float)getMotion().z % 2);
+				((LivingEntity)entity).knockBack(entity, (float)knockback, -(float)getMotion().x / 2.0f, -(float)getMotion().z / 2.0f);
 				
 				piercing--;
 				if (piercing < 0) {
 					remove();
 				}
+			}
+		}
+		if (result.getType() == RayTraceResult.Type.BLOCK) {
+			if (world.getBlockState(((BlockRayTraceResult)result).getPos()).getMaterial().blocksMovement())
+			if (this.noClip == false) {
+				remove();
 			}
 		}
 	}

@@ -30,7 +30,7 @@ public class ThrowableItem extends ItemT {
 		this.damage = damage;
 		this.throwing = true;
 
-		
+		this.animation = ItemT.THROWING_ANIMATION;
 	}
 	
 	public int getUseDuration(ItemStack t) {

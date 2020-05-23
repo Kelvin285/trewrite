@@ -108,10 +108,10 @@
                           "children": [
                             {
                               "name": "Left_Thumb",
-                              "position": [ -0.6241541, 1, 2 ],
+                              "position": [ -0.9576619, 0.4180285, 2 ],
                               "offsetFromPivot": [ 0, 0, 0 ],
                               "size": [ 2, 1, 1 ],
-                              "rotation": [ 0, 0, 0 ],
+                              "rotation": [ 0, 0, -89.99999 ],
                               "texOffset": [ 56, 56 ],
                               "children": []
                             }
@@ -167,10 +167,10 @@
                           "children": [
                             {
                               "name": "Right_Thumb",
-                              "position": [ 0.6241541, 1, 2 ],
+                              "position": [ 0.9185755, 0.4810317, 2 ],
                               "offsetFromPivot": [ 0, 0, 0 ],
                               "size": [ 2, 1, 1 ],
-                              "rotation": [ 0, 0, 0 ],
+                              "rotation": [ 0, 0, -89.99999 ],
                               "texOffset": [ 39, 56 ],
                               "children": []
                             }

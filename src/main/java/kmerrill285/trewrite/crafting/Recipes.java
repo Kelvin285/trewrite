@@ -203,6 +203,14 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.HELLFIRE_ARROW, 100), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.HELLSTONE_BAR, 1), new ItemStackT(ItemsT.WOODEN_ARROW, 100)));
 		
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.METEORITE_BAR, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.METEORITE, 3)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOODEN_HELMET, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.WOOD, 20)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOODEN_GREAVES, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.WOOD, 25)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.WOODEN_CHESTPLATE, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.WOOD, 30)));
+		
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_HELMET, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 20)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_GREAVES, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 25)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_BREASTPLATE, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 30)));
 //		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 
 		for (String str : ItemsT.items.keySet()) {

@@ -25,6 +25,8 @@ public class SuspiciousLookingEye extends ItemT {
 	public SuspiciousLookingEye(Properties properties, String name) {
 		super(properties, name);
 		this.tooltip = "Summons the Eye of Cthulhu";
+		
+		this.animation = ItemT.STAFF_ANIMATION;
 	}
 	
 	@Override

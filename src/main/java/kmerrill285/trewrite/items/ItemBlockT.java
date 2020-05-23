@@ -52,6 +52,8 @@ public class ItemBlockT extends ItemT {
 		ItemsT.items.put(name, this);
 		this.itemName = name;
 		this.MODIFIER_TYPE = EnumModifierType.NONE;
+		
+		this.animation = ItemT.BUILDING_ANIMATION;
 	}
 
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {

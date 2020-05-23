@@ -28,7 +28,7 @@ public class RopeCoil extends ItemT {
 	public RopeCoil() {
 		super(new Properties().group(ItemGroup.BUILDING_BLOCKS), "rope_coil");
 		this.velocity = 10;
-		
+		this.animation = ItemT.THROWING_ANIMATION;
 	}
 	
 	public int getUseDuration(ItemStack t) {

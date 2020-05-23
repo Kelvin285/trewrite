@@ -25,6 +25,7 @@ script:space_gun {
 		item.velocity = 10
 		item.setBuySell(4000)
 		item.maxStack = 1
+		item.shoot = "space_gun_projectile"
 	}
 	
 	setvar helmet:""
@@ -38,7 +39,12 @@ script:space_gun {
 	setvar crafting_output:""
 	setvar crafting_output_stack:1
 	
-	function right_click {
+	function getAttributeModifiers equipmentSlotType {
+	
+	}
+	
+	setvar right_click_return:true
+	function right_click worldIn playerIn handIn{
 		if (helmet == 'meteor_helmet' && chestplate == 'meteor_chestplate' && leggings == 'meteor_leggings')
 		{
 			mana_use = 0

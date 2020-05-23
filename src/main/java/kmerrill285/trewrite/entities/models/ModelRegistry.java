@@ -10,6 +10,9 @@ import kmerrill285.trewrite.entities.EntityStar;
 import kmerrill285.trewrite.entities.models.boomerangs.RenderBoomerang;
 import kmerrill285.trewrite.entities.models.flails.RenderBallOHurt;
 import kmerrill285.trewrite.entities.models.projectiles.RenderEyeLaser;
+import kmerrill285.trewrite.entities.models.projectiles.RenderSpaceGunProjectile;
+import kmerrill285.trewrite.entities.models.scripted.RenderScriptedProjectile;
+import kmerrill285.trewrite.entities.models.skeleton.RenderUndeadMiner;
 import kmerrill285.trewrite.entities.models.summoning.RenderSummoningImp;
 import kmerrill285.trewrite.entities.models.wall_of_flesh.RenderTheHungry;
 import kmerrill285.trewrite.entities.models.wall_of_flesh.RenderWallOfFlesh;
@@ -26,6 +29,7 @@ import kmerrill285.trewrite.entities.models.worms.RenderWormHead;
 import kmerrill285.trewrite.entities.models.worms.RenderWormTail;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
+import kmerrill285.trewrite.entities.monsters.EntityUndeadMiner;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowTail;
@@ -43,13 +47,14 @@ import kmerrill285.trewrite.entities.monsters.worms.EntityWormTail;
 import kmerrill285.trewrite.entities.npc.EntityGuide;
 import kmerrill285.trewrite.entities.passive.EntityBunnyT;
 import kmerrill285.trewrite.entities.projectiles.EntityTekhairaProjectile;
+import kmerrill285.trewrite.entities.projectiles.ScriptedProjectile;
 import kmerrill285.trewrite.entities.projectiles.boomerangs.EntityEnchantedBoomerang;
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
 import kmerrill285.trewrite.entities.projectiles.hostile.EntityEyeLaser;
+import kmerrill285.trewrite.entities.projectiles.magic_projectiles.SpaceGunProjectile;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
 import kmerrill285.trewrite.entities.summoning.EntitySummoningImp;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -99,10 +104,12 @@ public class ModelRegistry
     	RenderingRegistry.registerEntityRenderingHandler(EntityLeechTail.class, manager -> new RenderLeechTail(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityEyeLaser.class, manager -> new RenderEyeLaser(manager));
     	RenderingRegistry.registerEntityRenderingHandler(TheHungryEntity.class, manager -> new RenderTheHungry(manager));
-
-
+    	RenderingRegistry.registerEntityRenderingHandler(SpaceGunProjectile.class, manager -> new RenderSpaceGunProjectile(manager));
+    	RenderingRegistry.registerEntityRenderingHandler(EntityUndeadMiner.class, manager -> new RenderUndeadMiner(manager));
+    	
+    	RenderingRegistry.registerEntityRenderingHandler(ScriptedProjectile.class, manager -> new RenderScriptedProjectile(manager));
     	RenderingRegistry.registerEntityRenderingHandler(PlayerEntity.class, manager -> renderPlayer = new RenderPlayer(manager));
-
+    	
     }
 
 }

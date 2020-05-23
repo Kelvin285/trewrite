@@ -18,6 +18,7 @@ public class Animation {
 	public void update(float speed) {
 		currentFrame += speed;
 		if (currentFrame > duration) currentFrame -= duration;
+		if (currentFrame < 0) currentFrame += duration;
 	}
 	
 	public void setFrame(int frame) {

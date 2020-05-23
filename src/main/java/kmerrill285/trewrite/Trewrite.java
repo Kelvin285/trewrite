@@ -75,7 +75,7 @@ public class Trewrite
    
     
     public Trewrite() {
-    	FeatureScript.load();
+//    	FeatureScript.load();
     	try {
     		Field f = Chunk.class.getDeclaredField("field_76634_f");
     	} catch (Exception e) {
@@ -223,7 +223,7 @@ public class Trewrite
 					if (slot.stack != null) {
 						if (slot.stack.item instanceof Armor) {
 							Armor armor = (Armor)slot.stack.item;
-							defense += armor.defense;
+							defense += armor.getDefense(inventory.armor);
 						}
 					}
 				}

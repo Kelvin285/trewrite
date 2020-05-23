@@ -30,6 +30,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -72,6 +73,9 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 
 	public boolean ALREADY_SPAWNED = false;
 	public boolean REMOVED = false;
+	
+	private int mode = 0;
+	private final int NORMAL = 0, EXPERT = 1, REVENGANCE = 2, DEATH = 3;
     
 	 public EntityEyeOfCthulhu(EntityType<? extends EntityEyeOfCthulhu> type, World worldIn) {
 		super(type, worldIn);
@@ -106,11 +110,50 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
     	 this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(2800 + (500 * (worldIn.getPlayers().size() - 1)));
     	 this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1000);
 
-    	 this.maxHealth = 2800 + (500 * (worldIn.getPlayers().size() - 1));
+    	
+    	 switch (mode) {
+	    	 case (NORMAL):
+	    		 this.maxHealth = 2800;
+	    	 	this.damage = 15;
+	    	 break;
+	    	 case (EXPERT):
+	    	 	this.damage = 30;
+	    	 	doExpertModeScaling(3640);
+	    	 break;
+	    	 case (REVENGANCE):
+	    		 this.damage = 30;
+	    	 	 doExpertModeScaling(4550);
+	    	 break;
+	    	 case (DEATH):
+	    		 this.damage = 30;
+	    	 	 doExpertModeScaling(4550);
+	    	 break;
+    	 }
  	     this.bosshealth = maxHealth;
  	    this.setHealth(maxHealth);
          return spawnDataIn;
          
+    }
+    
+    private void doExpertModeScaling(double maxHealth) {
+    	 if (world.getPlayers().size() > 1) {
+ 	    	double[] healthAdded = new double[world.getPlayers().size()];
+	    	 	
+ 	    	healthAdded[0] = 0.35;
+ 	    	
+ 	    	for (int i = 1; i < world.getPlayers().size(); i++) {
+ 	    		healthAdded[i] = healthAdded[i - 1] + (1 - healthAdded[i- 1]) / 3.0;
+ 	    	}
+ 	    	
+ 	    	double multiplayerFactor = 1;
+ 	    	for (int i = 0; i < healthAdded.length; i++) {
+ 	    		multiplayerFactor += healthAdded[i];
+ 	    	}
+ 	    	if (multiplayerFactor > 1000) multiplayerFactor = 1000;
+ 	    	this.maxHealth = (int)(maxHealth * multiplayerFactor);
+ 	    } else {
+ 	    	this.maxHealth = (int)maxHealth;
+ 	    }
     }
     
     
@@ -140,6 +183,9 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
 		for (int i = 0; i < 4; i++) {
 			EntityHeart.spawnHeart(this.getEntityWorld(), this.getPosition().add(rand.nextInt(2) - 1, 0, rand.nextInt(2) - 1));
 		}
+		
+		
+		
     }
     
     
@@ -199,321 +245,229 @@ public class EntityEyeOfCthulhu extends FlyingEntity implements IEntityAdditiona
    	 	
     	
    	 	this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(9999);
-
-   	 
-    	this.setNoGravity(true);
-    	this.noClip = true;
-    	
-    	
-    	double motionY = this.getMotion().y;
-    	double motionX = this.getMotion().x;
-    	double motionZ = this.getMotion().z;
-    	
-    	if (phase == 1) {
-			defense = 12;
-		} else {
-			defense = 0;
-		}
-
-		
-		if (!world.isRemote) { 
-			motionY = 0;
-			this.rotationPitch = 0;
-			this.rotationYaw = 0;
-			this.rotationYawHead = 0;
-			PlayerEntity target = null;
-			double distance = 1000;
-			for (int i = 0; i < world.getPlayers().size(); i++) {
-				double dist = world.getPlayers().get(i).getPositionVector().distanceTo(this.getPositionVector());
-//				this.tryDamagePlayer(world.getPlayers().get(i));
-				if (dist < distance) {
-					distance = dist;
-					target = world.getPlayers().get(i);
+   	 	
+   	 	if (this.getAttackTarget() == null) {
+   	 		targetClosest();
+   	 	}
+   	 	if (this.getAttackTarget() == null) {
+   	 		REMOVED = true; remove();
+   	 		return;
+   	 	}
+	 	
+	 	if (!world.isRemote) {
+	 		this.setHealth(this.bosshealth);
+	 	}
+	 	this.maxHurtTime = 0;
+	 	this.hurtResistantTime = 0;
+   	 	
+	   	 boolean night = world.getDayTime() % 24000L > 15000 && world.getDayTime() % 24000L < 22000;
+	   	 if (!world.isRemote()) {
+	   		if (!night) {
+				velY = 2;
+			} else {
+				switch(mode) {
+				case NORMAL:
+					doNormalModeAI();
+					break;
+				case EXPERT:
+					doExpertModeAI();
+				case REVENGANCE:
+					doRevenganceAI();
+				case DEATH:
+					doDeathModeAI();
 				}
 			}
-			
-			
-			if (world.getDayTime() % 24000 < 15000 || world.getDayTime() % 24000 > 22500) {
-				this.velY = 10;
-			}
-			if (phase == 0) {
-				phase = 1;
-			}
-			if (phase == 1 || phase == 2) {
-				
-				if (spawnEyes == true) {
-					if (eyesNeeded == 0) {
-						
-						eyesNeeded = rand.nextInt(2) + 2;
-						if (getHealth() <= maxHealth * 0.25f)
-							eyesNeeded = 1;
+	   		this.setMotion(velX, velY, velZ);
+	   	 }
+	   	 if (this.dataManager.get(phase_data).intValue() > 0) {
+	   		 if (transformedRotation == 0) transformedRotation = 1;
+	   	 }
+	   	 if (transformedRotation > 0 && transformedRotation < (360 * 5) - 1) {
+	   		 transformedRotation = MathHelper.lerp(0.05f, transformedRotation, 360 * 5);
+	   		 this.lookAt(Type.EYES, this.getPositionVec().add(Math.cos(transformedRotation), this.getPositionVec().y, Math.sin(transformedRotation)));
+	   	 } else {
+	   		 if (transformedRotation > 360 * 5 - 1) transformedRotation = 360 * 5;
+	   		 this.lookAt(Type.EYES, this.getAttackTarget().getEyePosition(0));
+	   	 }
+	   	 
+	   	
+	 }
+	 
+    int lastTick = 0;
+	 private void doNormalModeAI() {
+		 
+	 	if (this.bosshealth > this.maxHealth / 2) {
+	 		this.dataManager.set(phase_data, 0);
+	 		if (this.spawnEyes) {
+	 			this.hoverOverTarget();
+	 			if (this.ticksExisted > lastTick + 20) {
+	 				this.lastTick = ticksExisted;
+	 				EntityDemonEye eye = EntitiesT.DEMON_EYE.create(world, null, null, null, this.getPosition(), SpawnReason.EVENT, false, false);
+					eye.setPosition(posX, posY, posZ);
+					eye.setHealth(8);
+					eye.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(12);
+					world.addEntity(eye);
+					eye.money = 0;
+					eye.noClip = true;
+					eye.getDataManager().set(EntityDemonEye.type_data, 0);
+					eye.setCustomName(new StringTextComponent("Servant of Cthulhu"));
+					eyes++;
+					if (eyes > rand.nextInt(2) + 3) {
+						spawnEyes = false;
+						eyes = 0;
 					}
-					else {
-						
-						if (this.ticksExisted % (35) == 0 && rand.nextBoolean() == true) {
-							if (eyes < eyesNeeded) {
-								eyes++;
-								if (phase == 1) {
-									if (world.getEntitiesWithinAABB(EntityDemonEye.class, this.getBoundingBox().expand(15, 15, 15)).size() <= 8) {
-										EntityDemonEye eye = EntitiesT.DEMON_EYE.create(world, null, null, null, this.getPosition(), SpawnReason.EVENT, false, false);
-										eye.setPosition(posX, posY, posZ);
-										eye.setHealth(8);
-										eye.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(12);
-										world.addEntity(eye);
-										eye.money = 0;
-										eye.noClip = true;
-										eye.getDataManager().set(EntityDemonEye.type_data, 0);
-										eye.setCustomName(new StringTextComponent("Servant of Cthulhu"));
-									}
-									
-								}
-							} else {
-								
-								spawnEyes = false;
-								dashed = 0;
-							}
-						}
-					}
-					if (target != null) {
-						if (velX > -4 && this.posX > target.posX + target.getWidth()) {
-							velX -= 0.08;
-							if (velX > 4) {
-								velX -= 0.04;
-							}
-							else if (velX > 0) {
-								velX -= 0.2;
-							}
-							if (velX < -4) {
-								velX = -4;
-							}
-						} else if (velX < 4 && posX + 1 < target.posX) {
-							velX += 0.08;
-							if (velX < -4) {
-								velX += 0.04;
-							}
-							else if (velX < 0) {
-								velX += 0.2;
-							}
-							if (velX > 4) {
-								velX = 4;
-							}
-						}
-						
-						if (velZ > -4 && this.posZ > target.posZ + target.getWidth()) {
-							velZ -= 0.08;
-							if (velZ > 4) {
-								velZ -= 0.04;
-							}
-							else if (velZ > 0f) {
-								velZ -= 0.2;
-							}
-							if (velZ < -4) {
-								velZ = -4;
-							}
-						} else if (velZ < 4f && posZ + 1 < target.posZ) {
-							velZ += 0.08f;
-							if (velZ < -4) {
-								velZ += 0.04;
-							}
-							else if (velZ < 0f) {
-								velZ += 0.2;
-							}
-							if (velZ > 4) {
-								velZ = 4;
-							}
-						}
-						
-						if (velY > -2.5 && posY > target.posY + target.getHeight() + 5) {
-							velY -= 0.3f;
-							if (velY > 2.5) {
-								velY -= 0.05;
-							} else if (velY > 0f) {
-								velY -= 0.15;
-							}
-							if (velY < -2.5) {
-								velY = -2.5;
-							}
-						} else if (velY < 2.5 && posY + 1 < target.posY + 5) {
-							velY += 0.3f;
-							if (velY < -2.5) {
-								velY += 0.05;
-							}
-							else if (velY < 0) {
-								velY += 0.15;
-							}
-							if (velY > 2.5) {
-								velY = 2.5;
-							}
-						}
-						
-						
-					}
+	 			}
+	 		} else {
+	 			if (this.dashed == -1) {
+	 				if (!hoverOverTarget()) {
+	 					dashed = 0;
+	 					lastTick = this.ticksExisted;
+	 				}
+	 			} else {
+	 				
+	 				if (this.ticksExisted > lastTick + 40) {
 
-				} else {
-					velX *= 0.95f;
-					velY *= 0.95f;
-					velZ *= 0.95f;
-					float speed = 2.0f;
-					if (phase == 2)
-						speed = 2.0f;
-					if (getHealth() <= maxHealth * 0.4f)
-						speed = 2.0f;
-					boolean fast = false;
-					
-					
-					Vec3d motion = new Vec3d(velX, velY, velZ);
-					if (target != null)
-					if (motion.length() <= 1 || getHealth() <= maxHealth * 0.4f && getHealth() >= maxHealth * 0.25f && dashed >= 3 && motion.length() <= 2.5 || getHealth() <= maxHealth * 0.25f && motion.length() < 2.5) {
-						
-						if (getHealth() > maxHealth * 0.4f) {
-//							if (Minecraft.getMinecraft() != null) {
-//				            	MakeSound sound = new MakeSound();
-//				    			sound.playSound("sounds/boss/Roar_0.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
-//				    		}
-							if (dashed < 3) {
-								dashed += 1;
-							} else {
-								this.eyesNeeded = 0;
-								this.spawnEyes = true;
-								this.eyes = 0;
-							}
-						} else {
-							if (getHealth() < maxHealth * 0.25f) {
-								speed = 4.0f;
-//								if (Minecraft.getMinecraft() != null) {
-//					            	MakeSound sound = new MakeSound();
-//					    			sound.playSound("sounds/boss/Roar_2.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
-//					    		}
-								fast = true;
-								
-								if (this.lastTarget == null) {
-									this.lastTarget = target.getPosition();
-								}
-								
-								if (dashed < 5) {
-									dashed += 1;
-								} else {
-									dashed = 0;
-									speed = 1;
-									this.lastTarget = null;
-								}
-								
-							} else {
-								if (this.lastTarget == null) {
-									this.lastTarget = target.getPosition();
-								}
-								if (dashed < 6) {
-									dashed += 1;
-								} else {
-									dashed = 0;
-									this.lastTarget = null;
-								}
-								if (dashed < 3) {
-//									if (Minecraft.getMinecraft() != null) {
-//						            	MakeSound sound = new MakeSound();
-//						    			sound.playSound("sounds/boss/Roar_0.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
-//						    		}
-									speed = 2.0f;
-								} else {
-									speed = 4.0f;
-//									if (Minecraft.getMinecraft() != null) {
-//						            	MakeSound sound = new MakeSound();
-//						    			sound.playSound("sounds/boss/Roar_2.wav", (Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MOBS) * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER)));
-//						    		}
-									fast = true;
-								}
-							}
-						}
-						if (target != null) {
-							
-							
-								Vec3d direction = new Vec3d((target.lastTickPosX - target.getMotion().x) - posX, (target.lastTickPosY - target.getMotion().y) - posY, (target.lastTickPosZ - target.getMotion().z) - posZ);
-								direction = new Vec3d(direction.x * 100, direction.y * 100, direction.z * 100).normalize();
-								direction = new Vec3d(direction.x * speed, direction.y * speed, direction.z * speed);
-								velX = direction.x * 2;
-								velY = direction.y * 2;
-								velZ = direction.z * 2;							
-							
-							
-						}
-						
-						
-						
-					}
-					
+	 					double dashSpeed = 0.5;
+	 					dash(dashSpeed);
+	 					
+	 					dashed++;
+	 					lastTick = this.ticksExisted;
+	 				} else {
+	 					this.velX *= 0.98f;
+	 					this.velY *= 0.98f;
+	 					this.velZ *= 0.98f;
+	 				}
+	 				if (dashed == 4) {
+	 					this.spawnEyes = true;
+	 					dashed = -1;
+	 				}
+	 			}
+	 			
+	 		}
+	 	} else {
+	 		this.dataManager.set(phase_data, 1);
+	 		if (transformedRotation == 0) transformedRotation = 1;
+	 		this.defense = 0;
+	 		this.damage = 20; // just doing 5 more damage because I don't know the actual damage value
+	 		
+	 		if (this.spawnEyes) {
+	 			this.hoverOverTarget();
+	 			if (this.ticksExisted > lastTick + 20 * 3) { // instead of spawning eyes now, the Eye of Cthulhu will just hover over the player
+	 				spawnEyes = false;
+	 			}
+	 		} else {
+	 			if (this.dashed == -1) {
+	 				if (!hoverOverTarget()) {
+	 					dashed = 0;
+	 					lastTick = this.ticksExisted;
+	 				}
+	 			} else {
+	 				
+	 				if (this.ticksExisted > lastTick + 40) {
+
+	 					double dashSpeed = 0.75; // slightly faster dash speed, but not that much faster
+	 					dash(dashSpeed);
+	 					
+	 					dashed++;
+	 					lastTick = this.ticksExisted;
+	 				} else {
+	 					this.velX *= 0.98f;
+	 					this.velY *= 0.98f;
+	 					this.velZ *= 0.98f;
+	 				}
+	 				if (dashed == 4) {
+	 					this.spawnEyes = true;
+	 					dashed = -1;
+	 				}
+	 			}
+	 			
+	 		}
+	 	}
+	 	
+	 }
+	 
+	 
+	 private void doExpertModeAI() {
+	 	
+	 }
+	 
+	 private void doRevenganceAI() {
+	 	
+	 }
+	 
+	 private void doDeathModeAI() {
+	 	
+	 }
+	 
+	 private void dash(double dashSpeed) {
+		 LivingEntity target = this.getAttackTarget();
+		 Vec3d tPos = new Vec3d(target.lastTickPosX, target.lastTickPosY, target.lastTickPosZ);
+		 Vec3d vec = new Vec3d(tPos.x, tPos.y, tPos.z).subtract(getPositionVec());
+		 double length = vec.length();
+		 
+		 if (length > 0) {
+		 	 Vec3d normal = new Vec3d(vec.x / length, vec.y / length, vec.z / length);
+		 	 velX = normal.x * dashSpeed;
+		 	 velY = normal.y * dashSpeed;
+		 	 velZ = normal.z * dashSpeed;
+		 }
+	 }
+	 
+	 private boolean hoverOverTarget() {
+		 if (this.ticksExisted < lastTick + 20 * 4) {
+			Vec3d targetPos = this.getAttackTarget().getPositionVec();
+			Vec3d up = targetPos.add(0, this.getHeight() * 3, 0);
+			
+			double accel = 0.05f;
+			double maxVel = 0.2f;
+			
+			if (velX < -maxVel) {
+				velX += accel * 0.25;
+			}
+			else if (velX > maxVel) {
+				velX -= accel * 0.25;
+			} else {
+				if (posX < up.x) {
+					velX += accel;
+				}
+				else if (posX > up.x) { 
+					velX -= accel;
 				}
 			}
-			
-			
-			
-			
-			if (getHealth() <= maxHealth * 0.65f) {
-				phase = 2;
+			if (velY < -maxVel) {
+				velY += accel * 0.25;
 			}
-			
-			bounce = false;
-			oldVelX = velX + 0;
-			oldVelY = velY + 0;
-			oldVelZ = velZ + 0;
-			motionX = velX * 0.25f;
-			motionY = velY * 0.25f;
-			motionZ = velZ * 0.25f;
-			
-			
-			
-			
-			
-			if (target!= null)
-			this.lookAt(Type.EYES, target.getPositionVec());
-			if (target != null) {
-				this.rx = (float)Math.toDegrees(Math.atan2(posY - target.posY, posX - target.posX));
-				this.rz = (float)Math.toDegrees(Math.atan2(posY - target.posY, posZ - target.posZ));
-			}
-			
-		}
-		
-    	this.setMotion(motionX, motionY, motionZ);
-    	this.dataManager.set(phase_data, phase);
-    	
-    	if (!world.isRemote) {
-    		this.setHealth(this.bosshealth);
-    	}
-    	this.maxHurtTime = 0;
-    	this.hurtResistantTime = 0;
-    	
-    	if (this.getDataManager().get(EntityEyeOfCthulhu.phase_data).intValue() != 1) {
-			if (this.transformedRotation < 360 * 5 - 10) {
-				
-				if (this.ticksExisted % 10 == 0) {
-					if (world.getEntitiesWithinAABB(EntityDemonEye.class, this.getBoundingBox().expand(15, 15, 15)).size() <= 8) {
-						EntityDemonEye eye = EntitiesT.DEMON_EYE.create(world, null, null, null, this.getPosition(), SpawnReason.EVENT, false, false);
-						eye.setPosition(posX, posY, posZ);
-						eye.setHealth(8);
-						eye.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(12);
-						world.addEntity(eye);
-						eye.money = 0;
-						eye.noClip = true;
-						eye.getDataManager().set(EntityDemonEye.type_data, 0);
-						eye.setCustomName(new StringTextComponent("Servant of Cthulhu"));
-					}
+			else if (velY > maxVel) {
+				velY -= accel * 0.25;
+			} else {
+				if (posY < up.y) { 
+					velY += accel * 4.0f;
 				}
-				
-				this.transformedRotation += (360 * 5 - transformedRotation) * 0.08f;
-				this.ry = (float) this.transformedRotation;
-				this.rx = 0;
-				this.rz = 0;
-				this.velX = 0;
-				this.velY = 0;
-				this.velZ = 0;
-				motionX = 0;
-				motionY = 0;
-				motionZ = 0;
-				this.rotationYaw = ry;
+				else if (posY > up.y) {
+					velY -= accel * 4.0f;
+				}
 			}
+			if (velZ < -maxVel) {
+				velZ += accel * 0.25;
+			}
+			else if (velZ > maxVel) {
+				velZ -= accel * 0.25;
+			} else {
+				if (posZ < up.z) { 
+					velZ += accel;
+				}
+				else if (posZ > up.z) { 
+					velZ -= accel;
+				}
+			}
+			return true;
 		}
-    	
-    }
+		 return false;
+	 }
     
+    public void targetClosest() {
+    	this.setAttackTarget(world.getClosestPlayer(posX + getWidth() / 2, posY + getHeight() / 2, posZ + getWidth() / 2));
+    }
     
     
     public void remove() {

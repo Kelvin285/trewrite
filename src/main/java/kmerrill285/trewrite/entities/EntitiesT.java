@@ -1,9 +1,13 @@
 package kmerrill285.trewrite.entities;
 
+import java.util.HashMap;
+
+import kmerrill285.featurescript.FeatureScript;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.EntityDrownedT;
+import kmerrill285.trewrite.entities.monsters.EntityUndeadMiner;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
@@ -28,15 +32,18 @@ import kmerrill285.trewrite.entities.projectiles.EntitySummoningImpFireball;
 import kmerrill285.trewrite.entities.projectiles.EntityTekhairaProjectile;
 import kmerrill285.trewrite.entities.projectiles.EntityThrowingT;
 import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
+import kmerrill285.trewrite.entities.projectiles.ScriptedProjectile;
 import kmerrill285.trewrite.entities.projectiles.boomerangs.EntityEnchantedBoomerang;
 import kmerrill285.trewrite.entities.projectiles.flails.EntityBallOHurt;
 import kmerrill285.trewrite.entities.projectiles.hostile.EntityEyeLaser;
+import kmerrill285.trewrite.entities.projectiles.magic_projectiles.SpaceGunProjectile;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
 import kmerrill285.trewrite.entities.summoning.EntitySummoningImp;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -90,6 +97,12 @@ public class EntitiesT {
 
 	   public static EntityType<EntityEyeLaser> EYE_LASER;
 	   public static EntityType<TheHungryEntity> THE_HUNGRY;
+	   
+	   public static EntityType<SpaceGunProjectile> SPACE_GUN;
+	   
+	   public static EntityType<EntityUndeadMiner> UNDEAD_MINER;
+	   
+	   public static HashMap<String, EntityType<? extends MobEntity>> SCRIPTED_PROJECTILES = new HashMap<String, EntityType<? extends MobEntity>>();
 
 	   
 	   @SubscribeEvent
@@ -145,7 +158,15 @@ public class EntitiesT {
 
 		 EntitiesT.EYE_LASER = register("trewrite" + ":eye_laser", EntityType.Builder.<EntityEyeLaser>create(EntityEyeLaser::new, EntityClassification.MONSTER).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new EntityEyeLaser(world)));
 		 EntitiesT.THE_HUNGRY = register("trewrite" + ":the_hungry", EntityType.Builder.<TheHungryEntity>create(TheHungryEntity::new, EntityClassification.MONSTER).size(2.0f, 2.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new TheHungryEntity(world)));
+		 
+		 EntitiesT.SPACE_GUN = register("trewrite" + ":space_gun", EntityType.Builder.<SpaceGunProjectile>create(SpaceGunProjectile::new, EntityClassification.MISC).size(0.5f, 0.5f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new SpaceGunProjectile(world)));
 
+		 EntitiesT.UNDEAD_MINER = register("trewrite" + ":undead_miner", EntityType.Builder.<EntityUndeadMiner>create(EntityUndeadMiner::new, EntityClassification.MONSTER).setCustomClientFactory((spawnEntity, world) -> new EntityUndeadMiner(world)));
+
+		 for (String str : FeatureScript.projectiles.keySet()) {
+			 SCRIPTED_PROJECTILES.put(str, register("trewrite:"+str, EntityType.Builder.<ScriptedProjectile>create(ScriptedProjectile::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new ScriptedProjectile(world))));
+		 }
+		 
 		 
 		 SpawnCondition.spawnConditions.put(EntitiesT.BLUE_SLIME, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.PODZOL));
 		 SpawnCondition.spawnConditions.put(EntitiesT.DEMON_EYE, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));

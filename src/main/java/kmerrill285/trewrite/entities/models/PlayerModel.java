@@ -4,17 +4,33 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import kmerrill285.modelloader.BlankModel;
 import kmerrill285.modelloader.CustomModel;
 import kmerrill285.modelloader.ModelLoader;
 import kmerrill285.modelloader.animation.Animation;
+import kmerrill285.trewrite.core.client.ClientProxy;
+import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.ItemBlockT;
+import kmerrill285.trewrite.items.ItemT;
+import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -28,6 +44,8 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 	public HashMap<String, ResourceLocation> TEXTURES;
 	
 	public CustomModel body;
+	public CustomModel legs;
+
 	public CustomModel eyes;
 	
 	public String hair;
@@ -39,7 +57,12 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 	
 	public Animation IDLE;
 	public Animation WALKING;
-
+	public Animation RUNNING;
+	public Animation MINING;
+	public Animation STABBING;
+	public Animation JUMPING;
+	public Animation SNEAK_IDLE;
+	public Animation SNEAK_WALK;
 	
 	public PlayerModel() {
 		HAIR = new HashMap<String, CustomModel>();
@@ -48,9 +71,20 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		PANTS = new HashMap<String, CustomModel>();
 		TEXTURES = new HashMap<String, ResourceLocation>();
 		body = new CustomModel(ModelLoader.loadModelFromFile("player/PlayerModel"), 128, 64);
+		legs = new CustomModel(ModelLoader.loadModelFromFile("player/PlayerModel"), 128, 64);
+		body.blacklist.add("Left_Leg_Top");
+		body.blacklist.add("Right_Leg_Top");
+		legs.blacklist.add("Body_Lower");
 		eyes = new CustomModel(ModelLoader.loadModelFromFile("player/eyes"), 64, 32);
 		IDLE = ModelLoader.loadAnimationFromFile("player/Idle");
 		WALKING = ModelLoader.loadAnimationFromFile("player/Walking");
+		RUNNING = ModelLoader.loadAnimationFromFile("player/Running");
+		MINING = ModelLoader.loadAnimationFromFile("player/Mining");
+		STABBING = ModelLoader.loadAnimationFromFile("player/Stabbing");
+		JUMPING = ModelLoader.loadAnimationFromFile("player/Jump");
+		SNEAK_IDLE = ModelLoader.loadAnimationFromFile("player/Sneak_Idle");
+		SNEAK_WALK = ModelLoader.loadAnimationFromFile("player/Sneak_Walk");
+
 
 		body.animationController.setNextAnimation(IDLE, 1.0f);
 		
@@ -173,9 +207,87 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		pants = "pants1";
 		skin_texture = "skin1";
 		eyes_texture = "eyes1";
-	}
+		
+		BlankModel toolModel = new BlankModel() {
+			@Override
+			public void render(Entity e) {
+				if (e instanceof PlayerEntity) {
+					PlayerEntity entity = (PlayerEntity)e;
+					if (entity.getPrimaryHand() == HandSide.RIGHT) { 
+						GlStateManager.pushMatrix();
+						GlStateManager.translated(-0.68, -0.7, -0.5);
+						
+						if (entity.getHeldItemMainhand() != null) {
+							Item item = entity.getHeldItemMainhand().getItem();
+							if (item != null) {
+								GlStateManager.pushMatrix();
+						        
+								
+						         GlStateManager.translated(0.75, 0.7, 0.4);
+						         // Forge: moved this call down, fixes incorrect offset while sneaking.
+						         GlStateManager.rotatef(-70.0F, 1.0F, 0.0F, 0.0F);
+						         GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+						         
+						         if (item instanceof ItemT) {
+						        	 InventoryTerraria inventory = null;
+						        	 if (e.world.isRemote()) {
+						        		 inventory = ContainerTerrariaInventory.inventory;
+						        	 } else {
+						        		 inventory = WorldEvents.getOrLoadInventory(entity);
+						        	 }
+						        	 ItemStackT holding = null;
+						        	 if (inventory != null) {
+						        		 if (inventory.hotbar[inventory.hotbarSelected] != null) {
+						        			 if (inventory.hotbar[inventory.hotbarSelected].stack != null) {
+						        				 ItemModifier modifier = ItemModifier.getModifier(inventory.hotbar[inventory.hotbarSelected].stack.modifier);
+						        				 double scale = 0;
+						        				 if (modifier != null) {
+						        					 scale = modifier.size / 100.0;
+						        				 }
+						        				 scale += ((ItemT)item).scale;
+						        				 
+						        				 
+						        				 
+						        				 GlStateManager.pushMatrix();
+						        				 GlStateManager.rotated(((ItemT)item).rotX, 1, 0, 0);
+						        				 GlStateManager.rotated(((ItemT)item).rotY, 0, 1, 0);
+						        				 GlStateManager.rotated(((ItemT)item).rotZ, 0, 0, 1);
+						        				 GlStateManager.translated(((ItemT)item).offsX, ((ItemT)item).offsY, ((ItemT)item).offsZ);
+						        				 GlStateManager.scaled(scale, scale, scale);
+						        				 GlStateManager.translated(-scale*0.025, 0, 0);
+										         Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, entity.getHeldItemMainhand(), TransformType.FIRST_PERSON_RIGHT_HAND, false);
+						        				 GlStateManager.popMatrix();
+						        			 }
+						        		 }
+						        	 }
+						         } else {
+							         Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, entity.getHeldItemMainhand(), TransformType.FIRST_PERSON_RIGHT_HAND, false);
+						         }
+						         
+						         GlStateManager.popMatrix();
+						         
+						         GlStateManager.popMatrix();
+						 		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(TEXTURES.get(skin_texture));
 
-	
+							}
+						}
+					}
+				}
+			}
+		};
+		this.body.addExtraRenderer("Right_Hand", toolModel);
+	}
+	public CustomModel armorHead = null;
+	public CustomModel armorEyes = null;
+	public CustomModel armorPants = null;
+	public CustomModel armorShoes = null;
+	public CustomModel armorShirt = null;
+	public ResourceLocation armorTexHead = null;
+	public ResourceLocation armorTexEyes = null;
+	public ResourceLocation armorTexPants = null;
+	public ResourceLocation armorTexShoes = null;
+	public ResourceLocation armorTexShirt = null;
+	public boolean noShoes;
 	@Override
 	public void render(PlayerEntity entity, float x, float y, float z, float f3, float f4, float f5) {
 		
@@ -184,6 +296,8 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		CustomModel shirtModel = SHIRT.get(shirt);
 		CustomModel pantsModel = PANTS.get(pants);
 		CustomModel shoesModel = SHOES.get(shoes);
+		CustomModel eyes = this.eyes;
+		
 		
 		ResourceLocation hairTexture = TEXTURES.get(hair);
 		ResourceLocation shirtTexture = TEXTURES.get(shirt);
@@ -191,6 +305,43 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		ResourceLocation shoesTexture = TEXTURES.get(shoes);
 		ResourceLocation skinTexture = TEXTURES.get(skin_texture);
 		ResourceLocation eyesTexture = TEXTURES.get(eyes_texture);
+		
+		ArrayList<ItemStack> armor = ClientProxy.playerArmor.get(entity.getScoreboardName());
+		
+		noShoes = false;
+		
+		armorHead = null;
+		armorShirt = null;
+		armorPants = null;
+		armorShoes = null;
+		armorEyes = null;
+		armorTexHead = null;
+		armorTexShirt = null;
+		armorTexPants = null;
+		armorTexShoes = null;
+		armorTexEyes = null;
+		
+		for (ItemStack stack : armor) {
+			if (stack != null) {
+				if (stack.getItem() instanceof Armor) {
+					((Armor)stack.getItem()).renderArmor(this);
+				}
+			}
+		}
+		
+		if (armorHead != null) hairModel = armorHead;
+		if (armorShirt != null) shirtModel = armorShirt;
+		if (armorPants != null) pantsModel = armorPants;
+		if (armorShoes != null) shoesModel = armorShoes;
+		if (armorEyes != null) eyes = armorEyes;
+		
+		if (armorTexHead != null) hairTexture = armorTexHead;
+		if (armorTexShirt != null) shirtTexture = armorTexShirt;
+		if (armorTexPants != null) pantsTexture = armorTexPants;
+		if (armorTexShoes != null) shoesTexture = armorTexShoes;
+		if (armorTexEyes != null) eyesTexture = armorTexEyes;
+				
+		if (noShoes) shoesModel = null;
 		
 		double ry = entity.rotationYawHead - entity.renderYawOffset;
 		double pitch = entity.rotationPitch;
@@ -213,267 +364,399 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		
 		double rx = -pitch - pitch * Math.abs(Math.sin(Math.toRadians(ry)));
 		double rz = pitch * Math.sin(Math.toRadians(ry)) * 2;
-		body.extraRotation.put("Neck", new Vec3d(rx, ry, rz));
-		eyes.extraRotation.put("Neck", new Vec3d(rx, ry, rz));
+		body.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
+		eyes.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
 		
 		if (hairModel != null) {
-			hairModel.extraRotation.put("Neck", new Vec3d(rx, ry, rz));
+			hairModel.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
 		}
 		
 		double motion = Math.sqrt(Math.pow(entity.getMotion().x, 2) + Math.pow(entity.getMotion().z, 2)) / 2.0;
 		
-//		GlStateManager.rotated(motion * 100, 1, 0, 0);
 		
 		float animation_speed = 1f;
+		float leg_animation_speed = 1f;
+		float leanMul = 1.0f;
 		if (motion > 0) {
 			if (body.animationController.nextAnimation != WALKING) {
-				body.animationController.setNextAnimation(WALKING, 1.0f);
-				
+				body.animationController.currentAnimation = WALKING;
 			}
-			animation_speed = 1.0f;
-			if (Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown()) {
-				animation_speed = 2.0f;
+			legs.animationController.currentAnimation = WALKING;
+			animation_speed = 2f;
+			if (entity.isSneaking()) {
+				animation_speed = 1f;
+				body.animationController.currentAnimation = SNEAK_WALK;
+				legs.animationController.currentAnimation = SNEAK_WALK;
 			}
+			else
+			if (entity.isSprinting()) {
+				animation_speed = 3f;
+				body.animationController.currentAnimation = RUNNING;
+				legs.animationController.currentAnimation = RUNNING;
+				leanMul = 2.0f;
+			}
+			
+			
 		} else {
 			animation_speed = 0.1f;
 			if (body.animationController.nextAnimation != IDLE) {
-				body.animationController.setNextAnimation(IDLE, 1.0f);
+				body.animationController.currentAnimation = IDLE;
+			}
+			legs.animationController.currentAnimation = IDLE;
+			if (entity.isSneaking()) {
+				body.animationController.currentAnimation = SNEAK_IDLE;
+				legs.animationController.currentAnimation = SNEAK_IDLE;
 			}
 		}
-		
-		animation_speed *= 0.25f;
-		
-		if (eyes.animationController.nextAnimation != body.animationController.nextAnimation) {
-			eyes.animationController.setNextAnimation(body.animationController.nextAnimation, 1.0f);
-			if (eyes.animationController.currentAnimation != null) {
-				if (body.animationController.currentAnimation != null) {
-					eyes.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
-				}
-			}
+		if (entity.isAirBorne && entity.isSwimming() == false && entity.isInWater() == false && entity.isInLava() == false &&
+				entity.world.getBlockState(entity.getPosition().down(2)).getMaterial().blocksMovement() == false) {
+			body.animationController.currentAnimation = JUMPING;
+			legs.animationController.currentAnimation = JUMPING;
+			
 		}
-		
-		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(skinTexture);
-		body.render(entity, x, y, z, f3, f4, f5);
-		
-		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(eyesTexture);
-		eyes.render(entity, x, y, z, f3, f4, f5);
-		
-		if (hairModel != null) {
-			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(hairTexture);
-			if (hairModel.animationController.nextAnimation != body.animationController.nextAnimation) {
-				hairModel.animationController.setNextAnimation(body.animationController.nextAnimation, 1.0f);
-			}
-			hairModel.animationController.update(animation_speed);
-			hairModel.animationController.currentAnimation = body.animationController.currentAnimation;
-			hairModel.animationController.nextAnimation = body.animationController.nextAnimation;
-			hairModel.animationController.time = body.animationController.time;
-			if (hairModel.animationController.currentAnimation != null) {
-				if (body.animationController.currentAnimation != null) {
-					hairModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
-				}
-			}
-			hairModel.render(entity, x, y, z, f3, f4, f5);
+		if (body.animationController.currentAnimation == null) {
+			body.animationController.currentAnimation = WALKING;
 		}
+		if (legs.animationController.currentAnimation == null) {
+			legs.animationController.currentAnimation = WALKING;
+		}
+		leg_animation_speed = animation_speed;
+		
+		GlStateManager.rotated(motion * 100 * leanMul, 1, 0, 0);
+		
+		body.extraRotation.remove("Right_Arm_Top");
+		body.extraRotation.remove("Left_Arm_Top");
+		body.extraRotation.remove("Left_Arm_Bottom");
+		body.extraRotation.remove("Right_Arm_Bottom");
+
+		body.extraRotation.remove("Right_Hand");
+		body.extraRotation.remove("Left_Hand");
+		body.extraRotation.remove("Body_Upper");
+		eyes.extraRotation.remove("Body_Upper");
 		
 		if (shirtModel != null) {
-			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(shirtTexture);
-			if (shirtModel.animationController.nextAnimation != body.animationController.nextAnimation) {
-				shirtModel.animationController.setNextAnimation(body.animationController.nextAnimation, 1.0f);
+			shirtModel.extraRotation.remove("Body_Upper");
+			shirtModel.extraRotation.remove("Right_Arm_Top");
+			shirtModel.extraRotation.remove("Left_Arm_Top");
+			shirtModel.extraRotation.remove("Left_Arm_Bottom");
+			shirtModel.extraRotation.remove("Right_Arm_Bottom");
+
+			shirtModel.extraRotation.remove("Right_Hand");
+			shirtModel.extraRotation.remove("Left_Hand");
+		}
+		if (hairModel != null) {
+			hairModel.extraRotation.remove("Body_Upper");
+		}
+		
+		if (body.animationController.currentAnimation == JUMPING) {
+			double m = entity.getMotion().y * 25;
+			if (m < -75) m = -75;
+			if (m > 25) m = 25;
+			body.extraRotation.put("Right_Arm_Top", new Vec3d(motion * 100, 0, -m + 45));
+			body.extraRotation.put("Left_Arm_Top", new Vec3d(motion * 100, 0, m - 45));
+			
+			if (shirtModel != null) {
+				shirtModel.extraRotation.put("Right_Arm_Top", new Vec3d(0, 0, -m + 45));
+				shirtModel.extraRotation.put("Left_Arm_Top", new Vec3d(0, 0, m - 45));
 			}
-			shirtModel.animationController.update(animation_speed);
-			shirtModel.animationController.currentAnimation = body.animationController.currentAnimation;
-			shirtModel.animationController.nextAnimation = body.animationController.nextAnimation;
-			shirtModel.animationController.time = body.animationController.time;
-			if (shirtModel.animationController.currentAnimation != null) {
-				if (body.animationController.currentAnimation != null) {
-					shirtModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
+		}
+		
+		
+		
+		if (body.animationController.currentAnimation == RUNNING) {
+			body.extraRotation.put("Right_Hand", new Vec3d(-25, 0, 0));
+		}
+		
+		if (entity.getHeldItemMainhand() != null) {
+			Item item = entity.getHeldItemMainhand().getItem();
+			
+			if (item != null) {
+				if (item instanceof ItemT) {
+					double reload = entity.getCooldownTracker().getCooldown(item, f5);
+
+					if (((ItemT)item).animation.equals(ItemT.PICKAXE_ANIMATION) ||
+							((ItemT)item).animation.equals(ItemT.HAMMER_ANIMATION) ||
+							((ItemT)item).animation.equals(ItemT.THROWING_ANIMATION) ||
+							((ItemT)item) instanceof ItemBlockT) {
+						if (entity.isSwingInProgress) {
+							if (item instanceof ItemBlockT)
+								((ItemT)item).useTime = 5;
+							if (entity.getCooldownTracker().getCooldown(item, f5) == 0) {
+								entity.getCooldownTracker().setCooldown(item, ((ItemT)item).useTime / 3);
+							}
+						}
+						if (entity.getCooldownTracker().getCooldown(item, f5) > 0) {
+							
+							body.animationController.currentAnimation = MINING;
+							if (legs.animationController.currentAnimation == IDLE) {
+								legs.animationController.currentAnimation = MINING;
+							}
+							body.animationController.currentAnimation.currentFrame = (1.0f - entity.getCooldownTracker().getCooldown(item, f5)) * 60.0f;
+							body.extraRotation.put("Right_Arm_Top", new Vec3d(rx, -45, 45));
+							
+							if (hairModel != null) {
+								hairModel.animationController.currentAnimation = MINING;
+								hairModel.animationController.nextAnimation = MINING;
+								
+							}
+						}
+						
+					}
+					
+					if (((ItemT)item).animation.equals(ItemT.AXE_ANIMATION) ||
+							((ItemT)item).animation.equals(ItemT.BROADSWORD_ANIMATION) ||
+							((ItemT)item).animation.equals(ItemT.SHORTSWORD_ANIMATION)) {
+						
+						if (entity.swingProgressInt == 1) {
+							if (entity.getCooldownTracker().getCooldown(item, f5) == 0) {
+								entity.getCooldownTracker().setCooldown(item, ((ItemT)item).useTime / 3);
+							}
+						}
+
+						if (entity.getCooldownTracker().getCooldown(item, f5) > 0) {
+
+							body.animationController.currentAnimation = MINING;
+							if (legs.animationController.currentAnimation == IDLE) {
+								legs.animationController.currentAnimation = MINING;
+							}
+							body.animationController.currentAnimation.currentFrame = (1.0f - entity.getCooldownTracker().getCooldown(item, f5)) * 60;
+							body.extraRotation.put("Right_Arm_Top", new Vec3d(rx, 0, 0));
+							body.animationController.nextAnimation = MINING;
+							if (hairModel != null) {
+								hairModel.animationController.currentAnimation = MINING;
+								hairModel.animationController.nextAnimation = MINING;
+							}
+						}
+						
+					}
+					
+					if (((ItemT)item).animation.equals(ItemT.BOW_ANIMATION))
+						
+						if (reload > 0) {
+							body.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 90, 0, -20));
+							body.extraRotation.put("Left_Arm_Top", new Vec3d(rx + 90, 0, 30 + Math.sin(reload)));
+							body.extraRotation.put("Right_Hand", new Vec3d(0, 0, 20));
+
+							body.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+							body.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							
+							if (shirtModel != null) {
+								shirtModel.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								shirtModel.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 90, 0, -20));
+								shirtModel.extraRotation.put("Left_Arm_Top", new Vec3d(rx + 90, 0, 30 + Math.sin(reload)));
+								shirtModel.extraRotation.put("Right_Hand", new Vec3d(0, 0, 20));
+
+							}
+							if (hairModel != null) {
+								hairModel.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								hairModel.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							if (eyes != null) {
+								eyes.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								eyes.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							body.animationController.currentAnimation = IDLE;
+						} else {
+							body.extraRotation.remove("Body_Upper");
+							
+							if (shirtModel != null) {
+								shirtModel.extraRotation.remove("Body_Upper");
+							}
+							if (hairModel != null) {
+								hairModel.extraRotation.remove("Body_Upper");
+							}
+							if (eyes != null) {
+								eyes.extraRotation.remove("Body_Upper");
+							}
+						}
+					if (((ItemT)item).animation.equals(ItemT.GUN_ANIMATION))
+						{
+							body.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 75, 0, -20));
+							body.extraRotation.put("Left_Arm_Top", new Vec3d(rx + 75, 0, 30));
+							
+							body.extraRotation.put("Right_Hand", new Vec3d(-30, 0, 40));
+							
+							int recoil = 0;
+							if ((int)(reload * 10) == 1) {
+								body.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 75 + 5, 0, -20));
+								body.extraRotation.put("Left_Arm_Top", new Vec3d(rx + 75 + 5, 0, 30));
+								recoil = 2;
+							}
+							body.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							body.extraRotation.put("Body_Upper", new Vec3d(recoil, -ry, 0));
+
+							if (shirtModel != null) {
+								shirtModel.extraRotation.put("Body_Upper", new Vec3d(recoil, -ry, 0));
+								shirtModel.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 75, 0, -20));
+								shirtModel.extraRotation.put("Left_Arm_Top", new Vec3d(rx + 75, 0, 30));
+								
+								shirtModel.extraRotation.put("Right_Hand", new Vec3d(-30, 0, 40));
+								
+							}
+							if (hairModel != null) {
+								hairModel.extraRotation.put("Body_Upper", new Vec3d(recoil, -ry, 0));
+								hairModel.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							if (eyes != null) {
+								eyes.extraRotation.put("Body_Upper", new Vec3d(recoil, -ry, 0));
+								eyes.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							body.animationController.currentAnimation = IDLE;
+						}
+					if (((ItemT)item).animation.equals(ItemT.STAFF_ANIMATION))
+						if (reload > 0) {
+							body.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 90, 0, -20));
+							body.extraRotation.put("Right_Hand", new Vec3d(0, 0, 20));
+							
+							
+							body.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+							body.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							
+							if (shirtModel != null) {
+								shirtModel.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								shirtModel.extraRotation.put("Right_Arm_Top", new Vec3d(rx + 90, 0, -20));
+								shirtModel.extraRotation.put("Right_Hand", new Vec3d(0, 0, 20));
+								
+							}
+							if (hairModel != null) {
+								hairModel.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								hairModel.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							if (eyes != null) {
+								eyes.extraRotation.put("Body_Upper", new Vec3d(0, -ry, 0));
+								eyes.extraRotation.put("Neck", new Vec3d(rx, 0, -0));
+							}
+							body.animationController.currentAnimation = IDLE;
+							
+						} else {
+							body.extraRotation.remove("Body_Upper");
+							
+							if (shirtModel != null) {
+								shirtModel.extraRotation.remove("Body_Upper");
+							}
+							if (hairModel != null) {
+								hairModel.extraRotation.remove("Body_Upper");
+							}
+							if (eyes != null) {
+								eyes.extraRotation.remove("Body_Upper");
+							}
+						}
 				}
+				
 			}
-			shirtModel.render(entity, x, y, z, f3, f4, f5);
+		}
+		animation_speed *= 0.25f;
+		double sneakTranslate = 0.1;
+
+		if (eyes.animationController.nextAnimation != body.animationController.nextAnimation) {
+			eyes.animationController.nextAnimation = body.animationController.nextAnimation;
+			eyes.animationController.currentAnimation = body.animationController.currentAnimation;
+			eyes.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
+		}
+		
+		if (hairModel != null) {
+			hairModel.animationController.nextAnimation = body.animationController.nextAnimation;
+			hairModel.animationController.currentAnimation = body.animationController.currentAnimation;
+			hairModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
+
+			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(hairTexture);
+			
+			if (entity.isSneaking() && legs.animationController.currentAnimation == SNEAK_IDLE || legs.animationController.currentAnimation == SNEAK_WALK) {
+				if (hairModel.animationController.currentAnimation == SNEAK_IDLE || hairModel.animationController.currentAnimation == SNEAK_WALK) {
+					hairModel.render(entity, x, y, z, f3, f4, f5);
+				} else {
+					GlStateManager.translated(0, sneakTranslate, 0);
+					hairModel.render(entity, x, y, z, f3, f4, f5);
+					GlStateManager.translated(0, -sneakTranslate, 0);
+				}
+			} else {
+				hairModel.render(entity, x, y, z, f3, f4, f5);
+			}
+		}
+				
+		if (shirtModel != null) {
+			shirtModel.animationController.nextAnimation = body.animationController.nextAnimation;
+			shirtModel.animationController.currentAnimation = body.animationController.currentAnimation;
+			shirtModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
+
+			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(shirtTexture);
+			if (entity.isSneaking() && legs.animationController.currentAnimation == SNEAK_IDLE || legs.animationController.currentAnimation == SNEAK_WALK) {
+				if (shirtModel.animationController.currentAnimation == SNEAK_IDLE || shirtModel.animationController.currentAnimation == SNEAK_WALK) {
+					shirtModel.render(entity, x, y, z, f3, f4, f5);
+				} else {
+					GlStateManager.translated(0, sneakTranslate, 0);
+					shirtModel.render(entity, x, y, z, f3, f4, f5);
+					GlStateManager.translated(0, -sneakTranslate, 0);
+				}
+			} else {
+				shirtModel.render(entity, x, y, z, f3, f4, f5);
+			}
 		}
 		if (pantsModel != null) {
+			pantsModel.animationController.nextAnimation = legs.animationController.nextAnimation;
+			pantsModel.animationController.currentAnimation = legs.animationController.currentAnimation;
+			pantsModel.animationController.currentAnimation.currentFrame = legs.animationController.currentAnimation.currentFrame;
 			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(pantsTexture);
-			if (pantsModel.animationController.nextAnimation != body.animationController.nextAnimation) {
-				pantsModel.animationController.setNextAnimation(body.animationController.nextAnimation, 1.0f);
-			}
-			pantsModel.animationController.update(animation_speed);
-			pantsModel.animationController.currentAnimation = body.animationController.currentAnimation;
-			pantsModel.animationController.nextAnimation = body.animationController.nextAnimation;
-			pantsModel.animationController.time = body.animationController.time;
-			if (pantsModel.animationController.currentAnimation != null) {
-				if (body.animationController.currentAnimation != null) {
-					pantsModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
-				}
-			}
 			pantsModel.render(entity, x, y, z, f3, f4, f5);
 		}
 		
 		if (shoesModel != null) {
+			shoesModel.animationController.nextAnimation = legs.animationController.nextAnimation;
+			shoesModel.animationController.currentAnimation = legs.animationController.currentAnimation;
+			shoesModel.animationController.currentAnimation.currentFrame = legs.animationController.currentAnimation.currentFrame;
+			
 			Minecraft.getInstance().getRenderManager().textureManager.bindTexture(shoesTexture);
-			if (shoesModel.animationController.nextAnimation != body.animationController.nextAnimation) {
-				shoesModel.animationController.setNextAnimation(body.animationController.nextAnimation, 1.0f);
-			}
-			shoesModel.animationController.update(animation_speed);
-			shoesModel.animationController.currentAnimation = body.animationController.currentAnimation;
-			shoesModel.animationController.nextAnimation = body.animationController.nextAnimation;
-			shoesModel.animationController.time = body.animationController.time;
-			if (shoesModel.animationController.currentAnimation != null) {
-				if (body.animationController.currentAnimation != null) {
-					shoesModel.animationController.currentAnimation.currentFrame = body.animationController.currentAnimation.currentFrame;
-				}
-			}
-			GlStateManager.pushMatrix();
+			
 			shoesModel.render(entity, x, y, z, f3, f4, f5);
-			GlStateManager.popMatrix();
+		}
+		body.animationController.nextAnimation = body.animationController.currentAnimation;
+		eyes.animationController.nextAnimation = eyes.animationController.currentAnimation;
+		legs.animationController.nextAnimation = legs.animationController.currentAnimation;
+
+		if (body.animationController.currentAnimation != legs.animationController.currentAnimation) {
+			body.animationController.update(animation_speed);
+			eyes.animationController.update(animation_speed);
+			legs.animationController.update(leg_animation_speed * 0.3f);
+		} else {
+			legs.animationController.update(leg_animation_speed * 0.3f);
 		}
 		
-		body.animationController.update(animation_speed);
-		eyes.animationController.update(animation_speed);
+		eyes.animationController.currentAnimation = body.animationController.currentAnimation;
+		eyes.animationController.nextAnimation = eyes.animationController.currentAnimation;
+		
+		body.animationController.nextAnimation = body.animationController.currentAnimation;
+		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(skinTexture);
+		if (entity.isSneaking() && legs.animationController.currentAnimation == SNEAK_IDLE || legs.animationController.currentAnimation == SNEAK_WALK) {
+			if (body.animationController.currentAnimation == SNEAK_IDLE || body.animationController.currentAnimation == SNEAK_WALK) {
+				body.render(entity, x, y, z, f3, f4, f5);
+			} else {
+				GlStateManager.translated(0, sneakTranslate, 0);
+				body.render(entity, x, y, z, f3, f4, f5);
+				GlStateManager.translated(0, -sneakTranslate, 0);
+			}
+		} else {
+			body.render(entity, x, y, z, f3, f4, f5);
+		}
 		
 		
-
-//		AnimatedModel idle = Models.GUIDE.get("idle");
-//		AnimatedModel walking = Models.GUIDE.get("walking");
-//		AnimatedModel jumping = Models.GUIDE.get("jumping");
-//		AnimatedModel running = Models.GUIDE.get("running");
-//		AnimatedModel idle_hurt = Models.GUIDE.get("idle_hurt");
-//		
-//		
-//		AnimatedModel current_animation = walking;
-//		
-//		
-//		double animation_speed = 1.0f;
-//		
-//		
-//		double motion = Math.sqrt(Math.pow(entity.getMotion().x, 2) + Math.pow(entity.getMotion().z, 2)) / 2.0;
-//		double walked = Math.abs(entity.prevDistanceWalkedModified - entity.distanceWalkedOnStepModified);
-//
-//		if (motion > 0) {
-//			current_animation = walking;
-//			animation_speed *= 2;
-//			if (walked > 0.134) {
-//				if (entity.isSprinting())
-//				current_animation = running;
-//				animation_speed *= 1.5;
-//				if (Minecraft.getInstance().gameSettings.keyBindForward.isKeyDown() == false ||
-//						Minecraft.getInstance().gameSettings.keyBindBack.isKeyDown()) {
-//					current_animation = walking;
-//				}
-//			}
-//		} else {
-//			current_animation = idle;
-//			if (entity.getHealth() <= 30) {
-//				current_animation = idle_hurt;
-//			}
-//		}
-//		if (entity.onGround == false && entity.world.getBlockState(entity.getPosition().down()) != null && entity.world.getBlockState(entity.getPosition().down()).getMaterial().blocksMovement() == false) {
-//			current_animation = jumping;
-//		}
-//		double animation_time = ((Utilities.worldTime() * animation_speed) % 30) / 30.0f;
-//
-//		double realtime = animation_time;
-//
-//		
-//		if (current_animation != null) {
-//			GlStateManager.pushMatrix();
-//			GlStateManager.rotated(180, 0, 0, 1);
-//			GlStateManager.rotated(180, 0, 1, 0);
-//			
-////			GlStateManager.rotated(Math.cos(Math.toRadians(entity.getYaw(f5))) * entity.getMotion().z * 100, 1, 0, 0);
-////			GlStateManager.rotated(-Math.sin(Math.toRadians(entity.getYaw(f5))) * entity.getMotion().x * 100, 1, 0, 0);
-//			double cosine = Math.cos(Math.toRadians(entity.getYaw(f5)));
-//			double sine = Math.sin(Math.toRadians(entity.getYaw(f5)));
-//			
-//			
-//			
-//			boolean backwards = false;
-//			double mul = 1.0;
-//			if (Minecraft.getInstance().gameSettings.keyBindBack.isKeyDown()) {
-//				mul = 0.25;
-//			} else {
-//				if (Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown()) {
-//					mul = 1.25;
-//				}
-//				if (current_animation == running) mul = 2.0;
-//				if (current_animation == jumping) mul = 0.5;
-//			}
-////			GlStateManager.rotated(motion * 360 * entity.getForward().getX(), 1, 0, 0);
-//			GlStateManager.rotated(motion * 50 * mul * animation_speed, 1, 0, 0);
-//
-//			GlStateManager.translated(-0.5, -1.5, -0.5);
-//			if (current_animation == running)
-//				GlStateManager.translated(0, 0, 0.5);
-////			GlStateManager.translated(entity.posX, entity.posY, entity.posZ);
-//			
-//			
-//			current_animation.render(realtime);
-//			
-//			
-//			if (entity.getPrimaryHand() == HandSide.LEFT) { 
-//				AnimatedNode left_hand = current_animation.getRootNodes().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(1).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0);
-//				
-//				TRSTransformation transformation = current_animation.getNodeTransform(left_hand.getIndex(), (float)(realtime - (int)realtime));
-//				
-//				GlStateManager.pushMatrix();
-//				transformation.glMultiply();
-//				GlStateManager.translated(-0.88, -0.7, -0.5);
-//				
-//				if (entity.getHeldItemMainhand() != null) {
-//					Item item = entity.getHeldItemMainhand().getItem();
-//					if (item != null) {
-//						GlStateManager.pushMatrix();
-//				        
-//
-//				         GlStateManager.translated(0.88, 0.6, 0.6);
-//				         // Forge: moved this call down, fixes incorrect offset while sneaking.
-//				         GlStateManager.rotatef(100.0F, 1.0F, 0.0F, 0.0F);
-//				         GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-//				         
-//				         Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, entity.getHeldItemMainhand(), TransformType.FIRST_PERSON_RIGHT_HAND, false);
-//				         GlStateManager.popMatrix();
-//				         
-//				         GlStateManager.popMatrix();
-//					}
-//				}
-//			}
-//			
-//			if (entity.getPrimaryHand() == HandSide.RIGHT) { 
-//				AnimatedNode right_hand = current_animation.getRootNodes().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(2).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0);
-//				
-//
-//				
-//				TRSTransformation transformation = current_animation.getNodeTransform(right_hand.getIndex(), (float)realtime);
-//				
-//				GlStateManager.pushMatrix();
-//				transformation.glMultiply();
-//				GlStateManager.translated(-0.68, -0.7, -0.5);
-//				
-//				if (entity.getHeldItemMainhand() != null) {
-//					Item item = entity.getHeldItemMainhand().getItem();
-//					if (item != null) {
-//						GlStateManager.pushMatrix();
-//				        
-//
-//				         GlStateManager.translated(0.88, 0.6, 0.6);
-//				         // Forge: moved this call down, fixes incorrect offset while sneaking.
-//				         GlStateManager.rotatef(100.0F, 1.0F, 0.0F, 0.0F);
-//				         GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-//				         
-//				         Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, entity.getHeldItemMainhand(), TransformType.FIRST_PERSON_RIGHT_HAND, false);
-//				         GlStateManager.popMatrix();
-//				         
-//				         GlStateManager.popMatrix();
-//					}
-//				}
-//			}
-//			
-//			GlStateManager.popMatrix();
-//
-//				
-//			
-//			
-//
-//		}
+		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(skinTexture);
+		legs.render(entity, x, y, z, f3, f4, f5);
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.translatef(0.0f, 0.0f, 0.015f);
+		Minecraft.getInstance().getRenderManager().textureManager.bindTexture(eyesTexture);
+		if (entity.isSneaking() && legs.animationController.currentAnimation == SNEAK_IDLE || legs.animationController.currentAnimation == SNEAK_WALK) {
+			if (eyes.animationController.currentAnimation == SNEAK_IDLE || eyes.animationController.currentAnimation == SNEAK_WALK) {
+				eyes.render(entity, x, y, z, f3, f4, f5);
+			} else {
+				GlStateManager.translated(0, sneakTranslate, 0);
+				eyes.render(entity, x, y, z, f3, f4, f5);
+				GlStateManager.translated(0, -sneakTranslate, 0);
+			}
+		} else {
+			eyes.render(entity, x, y, z, f3, f4, f5);
+		}
+		GlStateManager.popMatrix();
 	}
 	public void setRotationAngle(RendererModel modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;

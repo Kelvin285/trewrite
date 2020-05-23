@@ -1,0 +1,147 @@
+{
+  "title": "Jump",
+  "duration": 60,
+  "holdLastKeyframe": false,
+  "nodeAnimations": {
+    "Right_Arm_Top": {
+      "position": {
+        "0": [ 0, 1, 0 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ 0.003009017, 0.004429152, -15.00311 ]
+      },
+      "stretch": {
+      }
+    },
+    "Left_Arm_Top": {
+      "position": {
+        "0": [ 0, 1, 0 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ -1.917066E-08, 5.162927E-08, 15.00001 ]
+      },
+      "stretch": {
+      }
+    },
+    "Right_Leg_Top": {
+      "position": {
+        "0": [ 0, 2.5, 2 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ -39.01364, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Right_Leg_Bottom": {
+      "position": {
+        "0": [ 0, 1, 0 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ -306.3735, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Right_Foot": {
+      "position": {
+        "0": [ 0, 0.3, -0.5 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ 23.67115, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Left_Foot": {
+      "position": {
+        "0": [ 0, 0.3, -0.5 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ 14.02849, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Body_Lower": {
+      "position": {
+        "0": [ 0, 0, 1 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ 15, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Body_Upper": {
+      "position": {
+        "0": [ 0, -1, 0 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ -15, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Left_Leg_Top": {
+      "position": {
+        "0": [ 0, 1.5, 1 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ -15, 0, 0 ]
+      },
+      "stretch": {
+      }
+    },
+    "Left_Leg_Bottom": {
+      "position": {
+        "0": [ 0, 1, 0 ]
+      },
+      "offsetFromPivot": {
+      },
+      "size": {
+      },
+      "rotation": {
+        "0": [ 45, 0, 0 ]
+      },
+      "stretch": {
+      }
+    }
+  }
+}

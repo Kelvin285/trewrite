@@ -22,6 +22,9 @@ public class Hammer extends ItemT {
 		this.melee = true;
 		this.maxStack = 1;
 		MODIFIER_TYPE = EnumModifierType.MELEE;
+		
+		this.animation = ItemT.HAMMER_ANIMATION;
+		this.scale = 2.0;
 	}
 	
 	public void onMineBlock(BlockState state, PlayerEntity player) {

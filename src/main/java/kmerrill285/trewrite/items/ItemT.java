@@ -56,6 +56,14 @@ public class ItemT extends Item {
 	public boolean accessory;
 	public float velocity;
 	public int defense;
+	public String shoot = "";
+	public double scale = 1.0f;
+	public double rotX, rotY, rotZ;
+	public double offsX, offsY, offsZ;
+	public String animation = "";
+	public static String BOW_ANIMATION = "bow", STAFF_ANIMATION = "staff", BROADSWORD_ANIMATION = "broadsword", SHORTSWORD_ANIMATION = "shortsword",
+			PICKAXE_ANIMATION = "pickaxe", AXE_ANIMATION = "axe", HAMMER_ANIMATION = "hammer", THROWING_ANIMATION = "throwing", BUILDING_ANIMATION = "building",
+			GUN_ANIMATION = "gun";
 	
 	public EnumModifierType MODIFIER_TYPE = EnumModifierType.NONE;
 	
