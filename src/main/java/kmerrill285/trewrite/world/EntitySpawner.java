@@ -28,7 +28,7 @@ public class EntitySpawner {
 	public static EntityType[] groundWaterNighttime = {EntitiesT.DROWNED};
 	public static EntityType[] skyEntities = {};
 	public static EntityType[] skyWaterEntities = {};
-	public static EntityType[] caveEntities = {EntitiesT.WORM_HEAD};
+	public static EntityType[] caveEntities = {EntitiesT.WORM_HEAD, EntitiesT.UNDEAD_MINER};
 	public static EntityType[] caveWaterEntities = {EntitiesT.DROWNED};
 	public static EntityType[] underworldEntities = {};
 	

@@ -1,12 +1,15 @@
 package kmerrill285.trewrite.entities.models;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.common.io.Resources;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import kmerrill285.modelloader.BlankModel;
@@ -88,118 +91,98 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 
 		body.animationController.setNextAnimation(IDLE, 1.0f);
 		
-		for (int i = 0; true; i++) {
-			File file = null;
+			
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/hair/", (e) -> {return e.endsWith(".png");}).size(); i++) {
 			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/player/hair/hair"+(i+1)+".json");
+				URL url = Resources.getResource("assets/trewrite/models/entity/player/hair/hair"+(i+1)+".json");
+				
 				if (url == null) break;
 				URI uri = url.toURI();
 				if (uri == null) break;
-				file = new File(uri.getPath());
+				HAIR.put("hair"+(i+1), new CustomModel(ModelLoader.loadModelFromFile("player/hair/hair"+(i+1)), 64, 64));
+				TEXTURES.put("hair"+(i+1), new ResourceLocation("trewrite:textures/entity/player/hair/hair"+(i+1)+".png"));
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 				break;
 			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
-				HAIR.put("hair"+(i+1), new CustomModel(ModelLoader.loadModelFromFile("player/hair/hair"+(i+1)), 64, 64));
-				TEXTURES.put("hair"+(i+1), new ResourceLocation("trewrite:textures/entity/player/hair/hair"+(i+1)+".png"));
-			}
 		}
-		
-		for (int i = 0; true; i++) {
-			File file = null;
+
+	
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/shirt/", (e) -> {return e.endsWith(".png");}).size(); i++) {
 			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/player/shirt/shirt"+(i+1)+".json");
+				URL url = Resources.getResource("assets/trewrite/models/entity/player/shirt/shirt"+(i+1)+".json");
 				if (url == null) break;
 				URI uri = url.toURI();
 				if (uri == null) break;
-				file = new File(uri.getPath());} catch (URISyntaxException e1) {
-				e1.printStackTrace();
-				break;
-			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
 				SHIRT.put("shirt"+(i+1), new CustomModel(ModelLoader.loadModelFromFile("player/shirt/shirt"+(i+1)), 128, 64));
 				TEXTURES.put("shirt"+(i+1), new ResourceLocation("trewrite:textures/entity/player/shirt/shirt"+(i+1)+".png"));
-			}
-		}
-		
-		for (int i = 0; true; i++) {
-			File file = null;
-			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/player/shoes/shoes"+(i+1)+".json");
-				if (url == null) break;
-				URI uri = url.toURI();
-				if (uri == null) break;
-				file = new File(uri.getPath());} catch (URISyntaxException e1) {
+			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 				break;
 			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
+		}
+		
+		
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/shoes/", (e) -> {return e.endsWith(".png");}).size(); i++) {
+			try {
+				URL url = Resources.getResource("assets/trewrite/models/entity/player/shoes/shoes"+(i+1)+".json");
+				if (url == null) break;
+				URI uri = url.toURI();
+				if (uri == null) break;
 				SHOES.put("shoes"+(i+1), new CustomModel(ModelLoader.loadModelFromFile("player/shoes/shoes"+(i+1)), 32, 32));
 				TEXTURES.put("shoes"+(i+1), new ResourceLocation("trewrite:textures/entity/player/shoes/shoes"+(i+1)+".png"));
-			}
-		}
-		
-		for (int i = 0; true; i++) {
-			File file = null;
-			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/player/pants/pants"+(i+1)+".json");
-				if (url == null) break;
-				URI uri = url.toURI();
-				if (uri == null) break;
-				file = new File(uri.getPath());} catch (URISyntaxException e1) {
+			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 				break;
 			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
+		}
+		
+		
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/pants/", (e) -> {return e.endsWith(".png");}).size(); i++) {
+			try {
+				URL url = Resources.getResource("assets/trewrite/models/entity/player/pants/pants"+(i+1)+".json");
+				if (url == null) break;
+				URI uri = url.toURI();
+				if (uri == null) break;
 				PANTS.put("pants"+(i+1), new CustomModel(ModelLoader.loadModelFromFile("player/pants/pants"+(i+1)), 64, 32));
 				TEXTURES.put("pants"+(i+1), new ResourceLocation("trewrite:textures/entity/player/pants/pants"+(i+1)+".png"));
-			}
-		}
-		
-		for (int i = 0; true; i++) {
-			File file = null;
-			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/textures/entity/player/skin/skin"+(i+1)+".png");
-				if (url == null) break;
-				URI uri = url.toURI();
-				if (uri == null) break;
-				file = new File(uri.getPath());} catch (URISyntaxException e1) {
+			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 				break;
 			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
+		}
+		
+		
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/skin/", (e) -> {return e.endsWith(".png");}).size(); i++) {
+			try {
+				URL url = Resources.getResource("assets/trewrite/textures/entity/player/skin/skin"+(i+1)+".png");
+				if (url == null) break;
+				URI uri = url.toURI();
+				if (uri == null) break;
 				TEXTURES.put("skin"+(i+1), new ResourceLocation("trewrite:textures/entity/player/skin/skin"+(i+1)+".png"));
-			}
-		}
-		
-		for (int i = 0; true; i++) {
-			File file = null;
-			try {
-				URL url = ModelLoader.class.getClassLoader().getResource("assets/trewrite/textures/entity/player/eyes/eyes"+(i+1)+".png");
-				if (url == null) break;
-				URI uri = url.toURI();
-				if (uri == null) break;
-				file = new File(uri.getPath());} catch (URISyntaxException e1) {
+				} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 				break;
 			}
-			if (file == null) break;
-			if (file != null) {
-				if (!file.exists()) break;
-				TEXTURES.put("eyes"+(i+1), new ResourceLocation("trewrite:textures/entity/player/eyes/eyes"+(i+1)+".png"));
-			}
 		}
+		
+		
+		
+		for (int i = 0; i < Minecraft.getInstance().getResourceManager().getAllResourceLocations("textures/entity/player/eyes/", (e) -> {return e.endsWith(".png");}).size(); i++) {
+			try {
+				URL url = Resources.getResource("assets/trewrite/textures/entity/player/eyes/eyes"+(i+1)+".png");
+				if (url == null) break;
+				URI uri = url.toURI();
+				if (uri == null) break;
+				TEXTURES.put("eyes"+(i+1), new ResourceLocation("trewrite:textures/entity/player/eyes/eyes"+(i+1)+".png"));
+				
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+				break;
+			}
+			
+		}
+		
 		
 		shirt = "shirt1";
 		hair = "hair1";
@@ -306,6 +289,20 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		ResourceLocation skinTexture = TEXTURES.get(skin_texture);
 		ResourceLocation eyesTexture = TEXTURES.get(eyes_texture);
 		
+		if (hairTexture == null ||
+				shirtTexture == null ||
+				pantsTexture == null ||
+				shoesTexture == null ||
+				skinTexture == null ||
+				eyesTexture == null) {
+			System.out.println(hairTexture);
+			System.out.println(shirtTexture);
+			System.out.println(pantsTexture);
+			System.out.println(shoesTexture);
+			System.out.println(skinTexture);
+			System.out.println(eyesTexture);
+		}
+		
 		ArrayList<ItemStack> armor = ClientProxy.playerArmor.get(entity.getScoreboardName());
 		
 		noShoes = false;
@@ -362,13 +359,13 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 		if (ry > 45 - i) ry = 45 - i;
 		if (ry < -45 + i) ry = -45 + i;
 		
-		double rx = -pitch - pitch * Math.abs(Math.sin(Math.toRadians(ry)));
+		double rx = -pitch * 2;
 		double rz = pitch * Math.sin(Math.toRadians(ry)) * 2;
-		body.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
-		eyes.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
+		body.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry, -0));
+		eyes.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry, -0));
 		
 		if (hairModel != null) {
-			hairModel.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry * 0.5f, -0));
+			hairModel.extraRotation.put("Neck", new Vec3d(rx * 0.5f, -ry, -0));
 		}
 		
 		double motion = Math.sqrt(Math.pow(entity.getMotion().x, 2) + Math.pow(entity.getMotion().z, 2)) / 2.0;
@@ -408,8 +405,8 @@ public class PlayerModel extends EntityModel<PlayerEntity> {
 				legs.animationController.currentAnimation = SNEAK_IDLE;
 			}
 		}
-		if (entity.isAirBorne && entity.isSwimming() == false && entity.isInWater() == false && entity.isInLava() == false &&
-				entity.world.getBlockState(entity.getPosition().down(2)).getMaterial().blocksMovement() == false) {
+		if (entity.isAirBorne && entity.isSwimming() == false && entity.isInWater() == false && entity.isInLava() == false && 
+				!entity.onGround && !entity.isOnLadder()) {
 			body.animationController.currentAnimation = JUMPING;
 			legs.animationController.currentAnimation = JUMPING;
 			

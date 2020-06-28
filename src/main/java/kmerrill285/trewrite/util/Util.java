@@ -4,10 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Random;
 
-import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import net.minecraft.util.math.RayTraceResult;
 
 public class Util {
@@ -34,7 +32,6 @@ public class Util {
 	public static double starChance = (3.0/1600.0) * 3.0;
 
 	public static boolean refreshDimensionRenderer;
-	public static ArrayList<SPacketSendChunk> chunksend = new ArrayList<SPacketSendChunk>();
 
 	public static RayTraceResult blockHit;
 

@@ -346,6 +346,7 @@ public class ItemsT {
 	
 	public static ItemT RICH_MAHOGANY_HELMET, RICH_MAHOGANY_BREASTPLATE, RICH_MAHOGANY_GREAVES;
 	public static ItemT MINING_HELMET, MINING_SHIRT, MINING_PANTS;
+	public static ItemT SILVER_HELMET, SILVER_CHESTPLATE, SILVER_GREAVES;
 	
 	public static ItemT HOOK;
 	public static ItemT BONE_PICKAXE;
@@ -714,7 +715,11 @@ public class ItemsT {
 				MINING_SHIRT = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "mining_shirt", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 1, 128, 64, false).setTooltip("Set bonus: +30% mining speed"),
 				MINING_PANTS = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "mining_pants", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 1, 64, 32, true).setTooltip("Set bonus: +30% mining speed"),
 				HOOK = new ItemT(new Properties().group(ItemGroup.MATERIALS), "hook").setMaterial().setTooltip("Sometimes dropped by Skeletons and Piranha").setBuySell(200).setMaxStack(99),
-				BONE_PICKAXE = new BonePickaxe()
+				BONE_PICKAXE = new BonePickaxe(),
+				SILVER_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 3, 128, 64, false).setTooltip("Set bonus: +3 defense").setBuySell(1500),
+				SILVER_CHESTPLATE = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_chestplate", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 4, 128, 64, false).setTooltip("Set bonus: +3 defense").setBuySell(2500),
+				SILVER_GREAVES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_greaves", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 3, 64, 32, true).setTooltip("Set bonus: +3 defense").setBuySell(2000)
+				
 
 
 

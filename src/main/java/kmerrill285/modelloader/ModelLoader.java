@@ -2,10 +2,15 @@ package kmerrill285.modelloader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
+
+import com.google.common.io.Resources;
 
 import kmerrill285.modelloader.animation.Animation;
 import kmerrill285.modelloader.animation.AnimationFrame;
@@ -15,44 +20,47 @@ public class ModelLoader {
 	public static boolean DEBUG_LOADING = false;
 	public static Model loadModelFromFile(String modelname) {
 		
-		File file = null;
-		try {
-			file = new File(ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/"+modelname+".json").toURI().getPath());
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
-		}
+//		File file = null;
+//		
+//		try {
+//		} catch (URISyntaxException e1) {
+//			
+//			e1.printStackTrace();
+//		}
+//		String str = "";
+//		try {
+//			Scanner scanner = new Scanner(file);
+//			while (scanner.hasNext()) {
+//				str += scanner.nextLine()+"\n";
+//			}
+//			scanner.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			System.exit(0);
+//		}
 		String str = "";
 		try {
-			Scanner scanner = new Scanner(file);
-			while (scanner.hasNext()) {
-				str += scanner.nextLine()+"\n";
+			List<String> s = Resources.readLines(ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/"+modelname+".json"), Charset.defaultCharset());
+			for (String S : s) {
+				str += S + "\n";
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(0);
 		}
+		
 		return loadModel(str);
 	}
 	
 	public static Animation loadAnimationFromFile(String animname) {
 		
-		File file = null;
-		try {
-			file = new File(ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/"+animname+".json").toURI().getPath());
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
-		}
 		String str = "";
 		try {
-			Scanner scanner = new Scanner(file);
-			while (scanner.hasNext()) {
-				str += scanner.nextLine()+"\n";
+			List<String> s = Resources.readLines(ModelLoader.class.getClassLoader().getResource("assets/trewrite/models/entity/"+animname+".json"), Charset.defaultCharset());
+			for (String S : s) {
+				str += S + "\n";
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(0);
 		}
 		return loadAnimation(str);
 	}

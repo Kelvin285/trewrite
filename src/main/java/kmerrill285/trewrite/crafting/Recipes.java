@@ -211,7 +211,13 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_HELMET, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 20)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_GREAVES, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 25)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.RICH_MAHOGANY_BREASTPLATE, 1), BlocksT.WORKBENCH, new ItemStackT(ItemsT.RICH_MAHOGANY, 30)));
-//		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
+
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_HELMET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 20)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_CHESTPLATE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 30)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_GREAVES, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 25)));
+
+		
+		//		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));
 
 		for (String str : ItemsT.items.keySet()) {
 			ItemsT.items.get(str).setCraftingRecipes();

@@ -9,9 +9,7 @@ import kmerrill285.trewrite.core.inventory.InventoryTerraria;
 import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
 import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.entities.models.ModelRegistry;
-import kmerrill285.trewrite.entities.models.PlayerModel;
 import kmerrill285.trewrite.entities.models.RenderPlayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
@@ -29,17 +27,12 @@ import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Sounds;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
-import kmerrill285.trewrite.world.client.ChunkEncoder;
-import kmerrill285.trewrite.world.client.TChunkProvider;
-import kmerrill285.trewrite.world.client.TerrariaChunkRenderer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.RayTraceResult;
@@ -51,10 +44,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.sound.PlayStreamingSourceEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 
@@ -100,95 +91,6 @@ public class OverlayEvents {
 //		Sounds.playMusic(Sounds.MUSIC_TITLE);
 	}
 	
-	public static boolean STACK = false;
-	
-	@SubscribeEvent
-	@OnlyIn(value=Dist.CLIENT)
-	public static void handleWorldRenderEvent(RenderWorldLastEvent event) {
-		if (STACK == false) return;
-		
-		if (Util.refreshDimensionRenderer) {
-			Util.chunksend.clear();
-			OverlayEvents.renderWorld = null;
-			OverlayEvents.loadRenderers = true;
-			Util.refreshDimensionRenderer = false;
-		}
-		for (int i = 0; i < Util.chunksend.size(); i++) {
-			SPacketSendChunk packet = Util.chunksend.get(i);
-			if (OverlayEvents.renderWorld != null) {
-				try {
-					((TChunkProvider)OverlayEvents.renderWorld.getChunkProvider()).func_217250_a(OverlayEvents.renderWorld, packet.x, packet.z, packet.buf, new CompoundNBT(), 0, true);
-					
-				}catch (Exception e) {
-					
-				}
-				
-				ChunkEncoder.readIntoChunk(OverlayEvents.renderWorld.getChunk(packet.x, packet.z), packet.buf);
-				if (packet.markDirty) {
-					OverlayEvents.loadRenderers = true;
-					OverlayEvents.renderWorld.getChunk(packet.x, packet.z).markDirty();
-				}
-			}
-			Util.chunksend.remove(i);
-		}
-//		OverlayEvents.loadRenderers = true;
-		Entity entity = Minecraft.getInstance().renderViewEntity;
-		if (entity.posY >= 255 || entity.posY <= 0) return;
-		
-		if (entity != null) {
-			if (Minecraft.getInstance().world.dimension.getType().getId() == 0) {
-				try {
-					if (entity.posY > 225)
-					TerrariaChunkRenderer.update(event, 2, 256, true);
-					else if (entity.posY < 25) {
-						TerrariaChunkRenderer.update(event, 3, -256, false);
-					}
-				}catch (Exception e) {
-					e.printStackTrace();
-					TerrariaChunkRenderer.rendering = false;
-					OverlayEvents.worldRenderer = null;
-				}
-			}
-			
-			if (Minecraft.getInstance().world.dimension.getType().getId() == 3) {
-				try {
-					if (entity.posY > 225)
-					TerrariaChunkRenderer.update(event, 0, 256, true);
-					else if (entity.posY < 25)
-					TerrariaChunkRenderer.update(event, 4, -256, false);
-				}catch (Exception e) {
-					e.printStackTrace();
-					TerrariaChunkRenderer.rendering = false;
-					OverlayEvents.worldRenderer = null;
-				}
-			}
-			
-			if (Minecraft.getInstance().world.dimension.getType().getId() == 4) {
-				try {
-					if (entity.posY > 225)
-					TerrariaChunkRenderer.update(event, 3, 256, true);
-				}catch (Exception e) {
-					e.printStackTrace();
-					TerrariaChunkRenderer.rendering = false;
-					OverlayEvents.worldRenderer = null;
-				}
-			}
-			
-			if (Minecraft.getInstance().world.dimension.getType().getId() == 2) {
-				try {
-					if (entity.posY < 100)
-					TerrariaChunkRenderer.update(event, 0, -256, false);
-				}catch (Exception e) {
-					e.printStackTrace();
-					TerrariaChunkRenderer.rendering = false;
-					OverlayEvents.worldRenderer = null;
-				}
-			}
-		}
-		
-		
-		Util.blockHit = OverlayEvents.blockHit;
-	}
 	
 	@SubscribeEvent
 	public static void handleLivingRender(RenderLivingEvent<?, ?> event) {
@@ -202,7 +104,11 @@ public class OverlayEvents {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			
+			if (ModelRegistry.renderPlayer == null) {
+				ModelRegistry.renderPlayer = new RenderPlayer(Minecraft.getInstance().getRenderManager());
+			}
 			ModelRegistry.renderPlayer.doRender(player, event.getX(), event.getY(), event.getZ(), player.getYaw(event.getPartialRenderTick()), event.getPartialRenderTick());
+			
 			if (event.isCancelable())
 			event.setCanceled(true);
 		}

@@ -175,7 +175,7 @@ public class EntitiesT {
 		 SpawnCondition.spawnConditions.put(EntitiesT.ZOMBIE, new SpawnCondition(0, 255, SpawnCondition.VERY_COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL));
 		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL, Blocks.WATER));
 		 SpawnCondition.spawnConditions.put(EntitiesT.WORM_HEAD, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
-
+		 SpawnCondition.spawnConditions.put(EntitiesT.UNDEAD_MINER, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
 	   }
 	   
 	   private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {

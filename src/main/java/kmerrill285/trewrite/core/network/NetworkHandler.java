@@ -5,7 +5,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import kmerrill285.trewrite.core.network.client.CPacketAddScore;
-import kmerrill285.trewrite.core.network.client.CPacketChangeBlock;
 import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
@@ -15,7 +14,6 @@ import kmerrill285.trewrite.core.network.client.CPacketOpenChestTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketOpenInventoryVanilla;
 import kmerrill285.trewrite.core.network.client.CPacketRemoveSummons;
-import kmerrill285.trewrite.core.network.client.CPacketRequestChunks;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryChest;
 import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
 import kmerrill285.trewrite.core.network.client.CPacketSaveChestTerraria;
@@ -25,7 +23,6 @@ import kmerrill285.trewrite.core.network.client.CPacketThrowItemTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
 import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
 import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
-import kmerrill285.trewrite.core.network.server.SPacketSendChunk;
 import kmerrill285.trewrite.core.network.server.SPacketSendInventoryTerraria;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryChest;
 import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
@@ -59,8 +56,6 @@ public class NetworkHandler {
         registerMessage(CPacketOpenChestTerraria.class, CPacketOpenChestTerraria::encode, CPacketOpenChestTerraria::new, CPacketOpenChestTerraria::handle);
         registerMessage(CPacketSaveChestTerraria.class, CPacketSaveChestTerraria::encode, CPacketSaveChestTerraria::new, CPacketSaveChestTerraria::handle);
         registerMessage(CPacketNegateFall.class, CPacketNegateFall::encode, CPacketNegateFall::new, CPacketNegateFall::handle);
-        registerMessage(CPacketRequestChunks.class, CPacketRequestChunks::encode, CPacketRequestChunks::new, CPacketRequestChunks::handle);
-        registerMessage(CPacketChangeBlock.class, CPacketChangeBlock::encode, CPacketChangeBlock::new, CPacketChangeBlock::handle);
         registerMessage(CPacketAddScore.class, CPacketAddScore::encode, CPacketAddScore::new, CPacketAddScore::handle);
         registerMessage(CPacketChangeScore.class, CPacketChangeScore::encode, CPacketChangeScore::new, CPacketChangeScore::handle);
         registerMessage(CPacketHeal.class, CPacketHeal::encode, CPacketHeal::new, CPacketHeal::handle);
@@ -71,7 +66,6 @@ public class NetworkHandler {
 //        registerMessage(SPacketSpawnItemTerraria.class, SPacketSpawnItemTerraria::encode, SPacketSpawnItemTerraria::decode, SPacketSpawnItemTerraria::handle);
         registerMessage(SPacketSyncInventoryChest.class, SPacketSyncInventoryChest::encode, SPacketSyncInventoryChest::new, SPacketSyncInventoryChest::handle);
         registerMessage(SPacketSendAccessories.class, SPacketSendAccessories::encode, SPacketSendAccessories::new, SPacketSendAccessories::handle);
-        registerMessage(SPacketSendChunk.class, SPacketSendChunk::encode, SPacketSendChunk::new, SPacketSendChunk::handle);
         registerMessage(SPacketForceMovement.class, SPacketForceMovement::encode, SPacketForceMovement::new, SPacketForceMovement::handle);
         registerMessage(SPacketRefreshDimensionRenderer.class, SPacketRefreshDimensionRenderer::encode, SPacketRefreshDimensionRenderer::new, SPacketRefreshDimensionRenderer::handle);
 

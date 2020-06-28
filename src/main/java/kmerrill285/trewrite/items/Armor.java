@@ -70,6 +70,18 @@ public class Armor extends ItemT {
 				return defense + 1;
 			}
 		}
+		if (this == ItemsT.RICH_MAHOGANY_HELMET) {
+			if (armor[1].stack != null && armor[2].stack != null)
+				if (armor[1].stack.item == ItemsT.RICH_MAHOGANY_BREASTPLATE && armor[2].stack.item == ItemsT.RICH_MAHOGANY_GREAVES) {
+					return defense + 1;
+				}
+		}
+		if (this == ItemsT.SILVER_HELMET) {
+			if (armor[1].stack != null && armor[2].stack != null)
+				if (armor[1].stack.item == ItemsT.SILVER_CHESTPLATE && armor[2].stack.item == ItemsT.SILVER_GREAVES) {
+					return defense + 3;
+				}
+		}
 		return defense;
 	}
 }

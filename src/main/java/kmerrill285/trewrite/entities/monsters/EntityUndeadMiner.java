@@ -78,11 +78,10 @@ public class EntityUndeadMiner extends ZombieEntity implements IHostile {
 	protected void registerAttributes() {
 	      super.registerAttributes();
 	      
-	      this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(rand.nextInt(10) + 35);
-	      this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(rand.nextInt(3) + 4);
-	      this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(rand.nextDouble() * 0.1 + 0.5);
+	      this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(70);
+	      this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(9);
+	      this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(0.5);
 	      this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(22);
-	      
 	      money = 250;
 	}
 }

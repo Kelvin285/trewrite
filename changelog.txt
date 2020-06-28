@@ -1,3 +1,35 @@
+Build: 1.14.4-28.2.0 - Mon Feb 03 21:41:57 GMT 2020
+	lex:
+		Update binpatcher version to decrease installer download size.
+
+=========
+Build: 1.14.4-28.1.118 - Mon Feb 03 20:44:30 GMT 2020
+	fenixfyrex:
+		[1.14.4] Fix NPE on java 8u242 backport of PR #6473 (#6495)
+
+=========
+Build: 1.14.4-28.1.117 - Wed Jan 29 17:16:35 GMT 2020
+	DaemonUmbra:
+		Fixed Brown Mooshrooms dropping Red Mushrooms when sheared (#6476)
+		
+		Backports 1.15.x code to 1.14.x
+
+=========
+Build: 1.14.4-28.1.116 - Wed Jan 22 19:38:32 GMT 2020
+	wynprice999:
+		Fixed rounding issue with entity navigation fix (#6455)
+
+=========
+Build: 1.14.4-28.1.115 - Thu Jan 16 00:23:08 GMT 2020
+	knightminer4:
+		[1.14] Add support for custom nether portal frame blocks (#6417)
+
+=========
+Build: 1.14.4-28.1.114 - Sat Jan 11 00:10:35 GMT 2020
+	tterrag:
+		Add constructor for FishBucketItem that accepts suppliers
+
+=========
 Build: 1.14.4-28.1.113 - Tue Jan 07 20:02:19 GMT 2020
 	Choonster.2010:
 		Deprecate ElementBuilder#rotation(BlockPartRotation) and add zero-parameter overload (fixes #6321) (#6338)
