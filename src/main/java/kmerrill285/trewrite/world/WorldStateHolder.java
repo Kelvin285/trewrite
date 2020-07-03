@@ -1,5 +1,6 @@
 package kmerrill285.trewrite.world;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import kmerrill285.trewrite.blocks.BlockAirT;
@@ -55,6 +56,8 @@ public class WorldStateHolder extends WorldSavedData {
 	public HashMap<BlockPos, Integer> lights_sky = new HashMap<BlockPos, Integer>();
 	public HashMap<BlockPos, Integer> lights_underground = new HashMap<BlockPos, Integer>();
 	public HashMap<BlockPos, Integer> lights_underworld = new HashMap<BlockPos, Integer>();
+	
+	public ArrayList<BlockPos> meteoritePositions = new ArrayList<BlockPos>();
 	
 	public HashMap<String, InventoryChestTerraria> chests = new HashMap<String, InventoryChestTerraria>();
 
@@ -196,6 +199,15 @@ public class WorldStateHolder extends WorldSavedData {
 			int l = Integer.parseInt(data[3]);
 			lights_underworld.put(new BlockPos(x, y, z), l);
 		}
+		size = nbt.getInt("meteoriteAmount");
+		for (int i = 0; i < size; i++) {
+			String s = nbt.getString("meteorites["+i+"]".trim());
+			String[] data = s.split(",");
+			int x = Integer.parseInt(data[0]);
+			int y = Integer.parseInt(data[1]);
+			int z = Integer.parseInt(data[2]);
+			meteoritePositions.add(new BlockPos(x, y, z));
+		}
 	}
 
 	@Override
@@ -284,6 +296,13 @@ public class WorldStateHolder extends WorldSavedData {
 			compound.putString("lights4["+i+"]", p.getX()+","+p.getY()+","+p.getZ()+","+l);
 			i++;
 		}
+		
+		compound.putInt("meteoriteAmount", meteoritePositions.size());
+		for (i = 0; i < meteoritePositions.size(); i++) {
+			BlockPos pos = meteoritePositions.get(i);
+			compound.putString("meteorites["+i+"]", pos.getX()+","+pos.getY()+","+pos.getZ());	
+		}
+		
 		return compound;
 	}
 

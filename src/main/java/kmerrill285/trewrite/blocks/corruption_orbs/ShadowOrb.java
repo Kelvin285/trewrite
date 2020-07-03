@@ -60,7 +60,7 @@ public class ShadowOrb extends CrossedBlock implements IWaterLoggable  {
 		    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("Screams echo around you...").applyTextStyles(TextFormatting.BLUE, TextFormatting.BOLD));
 			}
 			if (orbs % 3 == 2) {
-				world.addEntity(EntitiesT.EOW_HEAD.create(world, null, null, null, pos.down(20).add(80 * (world.rand.nextInt(2) * 2 - 1), 0, 80 * (world.rand.nextInt(2) * 2 - 1)), SpawnReason.EVENT, false, false));
+//				world.addEntity(EntitiesT.EOW_HEAD.create(world, null, null, null, pos.down(20).add(80 * (world.rand.nextInt(2) * 2 - 1), 0, 80 * (world.rand.nextInt(2) * 2 - 1)), SpawnReason.EVENT, false, false));
 			}
 	    }
 		

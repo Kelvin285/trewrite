@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import kmerrill285.featurescript.FeatureScript;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.core.commands.CommandsT;
 import kmerrill285.trewrite.core.inventory.InventorySlot;
@@ -31,6 +30,7 @@ import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,6 +47,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -151,6 +152,7 @@ public class Trewrite
     public static int ticks = 0;
     public static boolean spawningEye = false;
     public static boolean oncePerDay = false;
+    public static boolean meteoriteAttempt = false;
     
 	public static void onWorldTick(WorldTickEvent event)
 	{
@@ -164,6 +166,22 @@ public class Trewrite
 		WorldStateHolder holder = WorldStateHolder.get(world);
 		holder.update(world, world.getDimension().getType());
 		
+		if (world.getDayTime() % 24000 >= 18000) {
+			if (!meteoriteAttempt) {
+				meteoriteAttempt = true;
+				int x = (world.getRandom().nextInt(2) * 2 - 1) * (world.getRandom().nextInt(3000) + 1000);
+				int z = (world.getRandom().nextInt(2) * 2 - 1) * (world.getRandom().nextInt(3000) + 1000);
+				
+		    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("A meteorite has landed around [" + (x + world.getRandom().nextInt(200) - 100) + ", " + (z + world.getRandom().nextInt(200) - 100) + "]!").applyTextStyles(TextFormatting.GREEN, TextFormatting.BOLD));
+		    	
+		    	holder.meteoritePositions.add(new BlockPos(x, 0, z));
+			}
+		} else {
+			meteoriteAttempt = false;
+		}
+		
+		
+		
 		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
 		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
 		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
@@ -171,6 +189,40 @@ public class Trewrite
 		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
 
 		for (PlayerEntity player : world.getPlayers()) {
+			
+			for (BlockPos pos : holder.meteoritePositions) {
+				System.out.println(pos.getX() + ", " + pos.getZ());
+				if (player.getPositionVec().distanceTo(new Vec3d(pos.getX(), player.getPositionVec().y, pos.getZ())) <= 100) {
+					BlockPos p = world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos);
+					BlockPos.MutableBlockPos mp = new BlockPos.MutableBlockPos(p);
+					if (p != null) {
+						if (world.isAreaLoaded(p, 40)) {
+							for (int x = -20; x < 20; x++) {
+								for (int y = -20; y < 20; y++) {
+									for (int z = -20; z < 20; z++) {
+										mp.setPos(p.getX() + x, p.getY() + y, p.getZ() + z);
+										if (world.getBlockState(mp).isSolid() && world.getBlockState(mp) != Blocks.BEDROCK.getDefaultState()) {
+											Block b = null;
+											if (mp.withinDistance(p, 15)) {
+												b = BlocksT.METEORITE;
+											}
+											if (mp.withinDistance(p, 10)) {
+												b = Blocks.AIR;
+											}
+											if (b != null) {
+												world.setBlockState(mp, b.getDefaultState());
+											}
+										}
+									}
+								}
+							}
+							holder.meteoritePositions.remove(pos);
+						}
+					}
+					break;
+				}
+			}
+			
 			if (event.phase == TickEvent.Phase.END)
 			if (event.type == TickEvent.Type.WORLD)
 			if (!player.world.isRemote) {
