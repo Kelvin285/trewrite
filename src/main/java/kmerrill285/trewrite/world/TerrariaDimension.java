@@ -30,7 +30,6 @@ public class TerrariaDimension extends OverworldDimension {
 	
 	
 	public Vec3d getFogColor(float celestialAngle, float partialTicks) {
-		
 		if (Minecraft.getInstance().player != null) {
 			if (Minecraft.getInstance().player.posY < Util.caveLevel) {
 				return currentColor.mul(1.5f, 1.5f, 1.5f);

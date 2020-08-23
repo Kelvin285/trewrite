@@ -2,9 +2,8 @@ package kmerrill285.trewrite.entities;
 
 import java.util.List;
 
+import kmerrill285.trewrite.client.sounds.TAudio;
 import kmerrill285.trewrite.events.ScoreboardEvents;
-import kmerrill285.trewrite.items.ItemT;
-import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -17,6 +16,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -181,6 +182,11 @@ public class EntityCoin extends MobEntity implements IEntityAdditionalSpawnData 
 				            	grabbed = true;
 				            	this.remove();
 				            }
+						} else {
+							if (grabbed == false) {
+								final PlayerEntity player = closest;
+				            	world.playSound(player, player.getPosition(), TAudio.SoundEvents.COINS.getSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
+							}
 						}
 					}
 					

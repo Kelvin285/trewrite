@@ -1,10 +1,10 @@
 package kmerrill285.trewrite.items.terraria.clickable;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.client.CPacketAddScore;
-import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
 import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketAddScore;
+import kmerrill285.trewrite.network.client.CPacketSyncInventoryTerraria;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 

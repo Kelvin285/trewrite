@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import kmerrill285.trewrite.core.client.ClientProxy;
+import kmerrill285.trewrite.client.ClientProxy;
 import kmerrill285.trewrite.items.Armor.ArmorType;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.accessories.Accessory.WearSlot;

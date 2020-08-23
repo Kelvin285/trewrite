@@ -6,7 +6,7 @@ import java.util.List;
 
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
@@ -215,6 +215,10 @@ public class Recipes {
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_HELMET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 20)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_CHESTPLATE, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 30)));
 		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.SILVER_GREAVES, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.SILVER_BAR, 25)));
+		
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.METEOR_HELMET, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.METEORITE_BAR, 10)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.METEOR_SUIT, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.METEORITE_BAR, 20)));
+		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.METEOR_LEGGINGS, 1), BlocksT.IRON_ANVIL, new ItemStackT(ItemsT.METEORITE_BAR, 15)));
 
 		
 		//		addRecipe(new CraftingRecipe(new ItemStackT(ItemsT.PRESENT, 1), null, new ItemStackT(ItemsT.DIRT_BLOCK, 1)));

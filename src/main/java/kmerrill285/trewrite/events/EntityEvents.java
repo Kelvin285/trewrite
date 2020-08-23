@@ -1,22 +1,15 @@
 package kmerrill285.trewrite.events;
 
+import kmerrill285.stackeddimensions.blocks.BlockRegistry;
 import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.Chest;
 import kmerrill285.trewrite.blocks.Tree;
-import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
-import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.client.CPacketCloseInventoryTerraria;
-import kmerrill285.trewrite.core.network.client.CPacketEquipItemTerraria;
-import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryTerraria;
-import kmerrill285.trewrite.core.network.client.CPacketSyncInventoryTerraria;
-import kmerrill285.trewrite.core.network.server.SPacketForceMovement;
-import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventoryChestTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
@@ -26,6 +19,7 @@ import kmerrill285.trewrite.items.Axe;
 import kmerrill285.trewrite.items.Broadsword;
 import kmerrill285.trewrite.items.Hammer;
 import kmerrill285.trewrite.items.ItemBlockT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.Pickaxe;
@@ -33,6 +27,13 @@ import kmerrill285.trewrite.items.Shortsword;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import kmerrill285.trewrite.items.terraria.accessories.HermesBoots;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketCloseInventoryTerraria;
+import kmerrill285.trewrite.network.client.CPacketEquipItemTerraria;
+import kmerrill285.trewrite.network.client.CPacketRequestInventoryTerraria;
+import kmerrill285.trewrite.network.client.CPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.network.server.SPacketForceMovement;
+import kmerrill285.trewrite.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.util.Conversions;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.WorldStateHolder;
@@ -1793,7 +1794,7 @@ public class EntityEvents {
 				inventory = WorldEvents.getOrLoadInventory(player);
 				for (int i = 0; i < 3; i++) {
 					BlockPos pos = new BlockPos(player.getPosition().down(i));
-					if (player.world.getBlockState(pos).getBlock() == BlocksT.DIMENSION_BLOCK) {
+					if (player.world.getBlockState(pos).getBlock() == BlockRegistry.DIMENSION_BLOCK) {
 						player.world.setBlockState(pos, BlocksT.AIR_BLOCK.getDefaultState());
 						break;
 					}

@@ -3,13 +3,13 @@ package kmerrill285.trewrite.blocks.pots;
 import java.util.Random;
 
 import kmerrill285.trewrite.blocks.CrossedBlock;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityCoinPortal;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.EntityStar;
 import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.world.WorldStateHolder;

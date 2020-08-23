@@ -1,14 +1,54 @@
 {
-
-  "trewrite_menu": {
-  
+  "menu_music": {
     "category": "music",
     "sounds": [
-      {
-        "name": "trewrite:music/title",
-        "stream": true
-      }
+        {
+			"name": "trewrite:music/title",
+			"stream": true
+		}
     ]
+  },
+  "coins": {
+	"category": "players",
+	"sounds": [
+		"trewrite:coins/coins1",
+		"trewrite:coins/coins2"
+	]
+  },
+  "corruption_ambient": {
+	"category": "music",
+	"sounds": [
+		{
+			"name": "trewrite:ambient/corruption",
+			"stream": true
+		}
+	]
+  },
+  "purity_ambient": {
+	"category": "music",
+	"sounds": [
+		{
+			"name": "trewrite:ambient/purity",
+			"stream": true
+		}
+	]
+  },
+  "night_ambient": {
+	"category": "music",
+	"sounds": [
+		{
+			"name": "trewrite:ambient/night",
+			"stream": true
+		}
+	]
+  },
+  "wind_ambient": {
+	"category": "music",
+	"sounds": [
+		{
+			"name": "trewrite:ambient/wind",
+			"stream": true
+		}
+	]
   }
-
 }

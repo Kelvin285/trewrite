@@ -2,9 +2,9 @@ package kmerrill285.trewrite.entities.projectiles;
 
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.pots.Pot;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ThrowableItem;
 import kmerrill285.trewrite.world.WorldStateHolder;

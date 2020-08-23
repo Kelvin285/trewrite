@@ -10,8 +10,8 @@ import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.Armor.ArmorType;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.client.Minecraft;

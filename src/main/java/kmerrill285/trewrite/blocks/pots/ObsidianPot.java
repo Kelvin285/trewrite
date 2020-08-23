@@ -1,8 +1,8 @@
 package kmerrill285.trewrite.blocks.pots;
 
 import kmerrill285.trewrite.blocks.CrossedBlock;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

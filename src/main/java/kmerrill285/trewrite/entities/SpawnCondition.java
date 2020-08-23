@@ -40,7 +40,7 @@ public class SpawnCondition {
 		this.spawnChance = spawnChance;
 	}
 	
-	public static boolean canSpawn(EntityType entity, BlockPos pos, World world, Random rand) {
+	public static boolean canSpawn(EntityType<?> entity, BlockPos pos, World world, Random rand) {
 		SpawnCondition condition = spawnConditions.get(entity);
 		BlockPos pos2 = new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ());
 		if (condition == null) return false;

@@ -7,6 +7,7 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
 import kmerrill285.trewrite.entities.monsters.EntityDrownedT;
+import kmerrill285.trewrite.entities.monsters.EntityMeteorHead;
 import kmerrill285.trewrite.entities.monsters.EntityUndeadMiner;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
@@ -101,6 +102,7 @@ public class EntitiesT {
 	   public static EntityType<SpaceGunProjectile> SPACE_GUN;
 	   
 	   public static EntityType<EntityUndeadMiner> UNDEAD_MINER;
+	   public static EntityType<EntityMeteorHead> METEOR_HEAD;
 	   
 	   public static HashMap<String, EntityType<? extends MobEntity>> SCRIPTED_PROJECTILES = new HashMap<String, EntityType<? extends MobEntity>>();
 
@@ -162,7 +164,9 @@ public class EntitiesT {
 		 EntitiesT.SPACE_GUN = register("trewrite" + ":space_gun", EntityType.Builder.<SpaceGunProjectile>create(SpaceGunProjectile::new, EntityClassification.MISC).size(0.5f, 0.5f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new SpaceGunProjectile(world)));
 
 		 EntitiesT.UNDEAD_MINER = register("trewrite" + ":undead_miner", EntityType.Builder.<EntityUndeadMiner>create(EntityUndeadMiner::new, EntityClassification.MONSTER).setCustomClientFactory((spawnEntity, world) -> new EntityUndeadMiner(world)));
+		 EntitiesT.METEOR_HEAD = register("trewrite" + ":meteor_head", EntityType.Builder.<EntityMeteorHead>create(EntityMeteorHead::new, EntityClassification.MONSTER).size(0.5f, 0.5f).setCustomClientFactory((spawnEntity, world) -> new EntityMeteorHead(world)));
 
+		 
 		 for (String str : FeatureScript.projectiles.keySet()) {
 			 SCRIPTED_PROJECTILES.put(str, register("trewrite:"+str, EntityType.Builder.<ScriptedProjectile>create(ScriptedProjectile::new, EntityClassification.MISC).size(1.0f, 1.0f).immuneToFire().setCustomClientFactory((spawnEntity, world) -> new ScriptedProjectile(world))));
 		 }
@@ -176,6 +180,7 @@ public class EntitiesT {
 		 SpawnCondition.spawnConditions.put(EntitiesT.DROWNED, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.DIRT_BLOCK, BlocksT.GRASS_BLOCK, BlocksT.HIGHLANDS_GRASS, BlocksT.BOG_GRASS, BlocksT.JUNGLE_GRASS, BlocksT.MUD, BlocksT.SAND, BlocksT.RED_SAND, BlocksT.PODZOL, Blocks.WATER));
 		 SpawnCondition.spawnConditions.put(EntitiesT.WORM_HEAD, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
 		 SpawnCondition.spawnConditions.put(EntitiesT.UNDEAD_MINER, new SpawnCondition(0, 255, SpawnCondition.RARE, BlocksT.STONE_BLOCK));
+		 SpawnCondition.spawnConditions.put(EntitiesT.METEOR_HEAD, new SpawnCondition(0, 255, SpawnCondition.COMMON, BlocksT.METEORITE));
 	   }
 	   
 	   private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {

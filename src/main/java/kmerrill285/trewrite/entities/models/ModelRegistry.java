@@ -9,10 +9,12 @@ import kmerrill285.trewrite.entities.EntityShadowOrb;
 import kmerrill285.trewrite.entities.EntityStar;
 import kmerrill285.trewrite.entities.models.boomerangs.RenderBoomerang;
 import kmerrill285.trewrite.entities.models.flails.RenderBallOHurt;
+import kmerrill285.trewrite.entities.models.npc.guide.RenderGuide;
+import kmerrill285.trewrite.entities.models.player.RenderPlayer;
 import kmerrill285.trewrite.entities.models.projectiles.RenderEyeLaser;
 import kmerrill285.trewrite.entities.models.projectiles.RenderSpaceGunProjectile;
 import kmerrill285.trewrite.entities.models.scripted.RenderScriptedProjectile;
-import kmerrill285.trewrite.entities.models.skeleton.RenderUndeadMiner;
+import kmerrill285.trewrite.entities.models.skeleton.undead_miner.RenderUndeadMiner;
 import kmerrill285.trewrite.entities.models.summoning.RenderSummoningImp;
 import kmerrill285.trewrite.entities.models.wall_of_flesh.RenderTheHungry;
 import kmerrill285.trewrite.entities.models.wall_of_flesh.RenderWallOfFlesh;
@@ -29,6 +31,7 @@ import kmerrill285.trewrite.entities.models.worms.RenderWormHead;
 import kmerrill285.trewrite.entities.models.worms.RenderWormTail;
 import kmerrill285.trewrite.entities.monsters.EntityBlueSlime;
 import kmerrill285.trewrite.entities.monsters.EntityDemonEye;
+import kmerrill285.trewrite.entities.monsters.EntityMeteorHead;
 import kmerrill285.trewrite.entities.monsters.EntityUndeadMiner;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowBody;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEowHead;
@@ -106,7 +109,8 @@ public class ModelRegistry
     	RenderingRegistry.registerEntityRenderingHandler(TheHungryEntity.class, manager -> new RenderTheHungry(manager));
     	RenderingRegistry.registerEntityRenderingHandler(SpaceGunProjectile.class, manager -> new RenderSpaceGunProjectile(manager));
     	RenderingRegistry.registerEntityRenderingHandler(EntityUndeadMiner.class, manager -> new RenderUndeadMiner(manager));
-    	
+    	RenderingRegistry.registerEntityRenderingHandler(EntityMeteorHead.class, manager -> new RenderMeteorHead(manager));
+
     	RenderingRegistry.registerEntityRenderingHandler(ScriptedProjectile.class, manager -> new RenderScriptedProjectile(manager));
     	RenderingRegistry.registerEntityRenderingHandler(PlayerEntity.class, manager -> renderPlayer = new RenderPlayer(manager));
     	

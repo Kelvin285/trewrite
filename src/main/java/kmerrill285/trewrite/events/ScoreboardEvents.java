@@ -1,7 +1,7 @@
 package kmerrill285.trewrite.events;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;

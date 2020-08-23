@@ -2,17 +2,17 @@ package kmerrill285.trewrite.entities;
 
 import java.util.List;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
-import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.server.SPacketSyncInventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.server.SPacketSyncInventoryTerraria;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;

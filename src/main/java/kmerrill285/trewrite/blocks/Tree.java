@@ -1,7 +1,7 @@
 package kmerrill285.trewrite.blocks;
 
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

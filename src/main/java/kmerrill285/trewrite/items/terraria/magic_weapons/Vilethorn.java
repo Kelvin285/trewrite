@@ -1,13 +1,14 @@
 package kmerrill285.trewrite.items.terraria.magic_weapons;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.projectiles.EntityMagicProjectile;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.VilethornProjectile;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.MagicWeapon;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
 import net.minecraft.entity.Entity;
@@ -99,6 +100,7 @@ public class Vilethorn extends MagicWeapon {
 	      }
 	      
 	      
+	      
 	      InventorySlot bowSlot = inventory.hotbar[inventory.hotbarSelected];
 	      float velocity = this.velocity;
 	      float kb = 1.0f;
@@ -140,7 +142,18 @@ public class Vilethorn extends MagicWeapon {
 			  dmg += 0.2;
 		  }
 
-		  
+		  if (inventory != null) {
+	    	  for (InventorySlot slot : inventory.armor) { 
+	    		  if (slot != null) {
+	    			  if (slot.stack != null) {
+	    				  if (slot.stack.item == ItemsT.METEOR_HELMET || slot.stack.item == ItemsT.METEOR_SUIT || slot.stack.item == ItemsT.METEOR_LEGGINGS) {
+	    					  dmg *= 1.07f;
+	    				  }
+	    				  
+	    			  }
+	    		  }
+	    	  }
+	      }
 	      
 	      if (mana.getScorePoints() - manaUse < 0) return new ActionResult<>(ActionResultType.FAIL, itemstack);
 		  mana.setScorePoints(mana.getScorePoints() - (int)manaUse);

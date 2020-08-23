@@ -1,11 +1,11 @@
 package kmerrill285.trewrite.items.terraria.bows;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
 import kmerrill285.trewrite.items.Bow;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import net.minecraft.item.ItemGroup;

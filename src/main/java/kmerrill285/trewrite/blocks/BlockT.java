@@ -3,8 +3,8 @@ package kmerrill285.trewrite.blocks;
 import java.util.ArrayList;
 import java.util.Random;
 
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import kmerrill285.trewrite.core.inventory.InventoryChestTerraria;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
+import kmerrill285.trewrite.client.gui.inventory.InventoryChestTerraria;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.server.SPacketRefreshDimensionRenderer;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.Entity;

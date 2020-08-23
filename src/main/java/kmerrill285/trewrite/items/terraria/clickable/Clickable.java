@@ -1,6 +1,6 @@
 package kmerrill285.trewrite.items.terraria.clickable;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
 import kmerrill285.trewrite.items.ItemT;
 import net.minecraft.entity.player.PlayerEntity;
 

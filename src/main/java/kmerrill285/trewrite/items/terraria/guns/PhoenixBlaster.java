@@ -1,10 +1,10 @@
 package kmerrill285.trewrite.items.terraria.guns;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.items.Gun;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.item.ItemGroup;
 

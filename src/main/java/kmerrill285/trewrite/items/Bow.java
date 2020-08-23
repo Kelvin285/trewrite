@@ -1,9 +1,9 @@
 package kmerrill285.trewrite.items;
 
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.projectiles.EntityArrowT;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;

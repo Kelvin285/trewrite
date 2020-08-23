@@ -5,8 +5,6 @@ import java.util.HashMap;
 import kmerrill285.featurescript.FeatureScript;
 import kmerrill285.trewrite.blocks.Bed;
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.items.accessories.Accessory;
@@ -25,6 +23,7 @@ import kmerrill285.trewrite.items.terraria.arrows.WoodenArrow;
 import kmerrill285.trewrite.items.terraria.axes.CopperAxe;
 import kmerrill285.trewrite.items.terraria.axes.GoldAxe;
 import kmerrill285.trewrite.items.terraria.axes.IronAxe;
+import kmerrill285.trewrite.items.terraria.axes.MeteorHamaxe;
 import kmerrill285.trewrite.items.terraria.axes.MoltenHamaxe;
 import kmerrill285.trewrite.items.terraria.axes.SilverAxe;
 import kmerrill285.trewrite.items.terraria.axes.WarAxeOfTheNight;
@@ -45,6 +44,7 @@ import kmerrill285.trewrite.items.terraria.broadswords.IronBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.LightsBane;
 import kmerrill285.trewrite.items.terraria.broadswords.SilverBroadsword;
 import kmerrill285.trewrite.items.terraria.broadswords.Tekhaira;
+import kmerrill285.trewrite.items.terraria.bullet.MeteorShot;
 import kmerrill285.trewrite.items.terraria.bullet.MusketBall;
 import kmerrill285.trewrite.items.terraria.bullet.SilverBullet;
 import kmerrill285.trewrite.items.terraria.clickable.Coin;
@@ -68,6 +68,7 @@ import kmerrill285.trewrite.items.terraria.picks.GoldPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.IronPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.MoltenPickaxe;
 import kmerrill285.trewrite.items.terraria.picks.SilverPickaxe;
+import kmerrill285.trewrite.items.terraria.picks.Starbreaker;
 import kmerrill285.trewrite.items.terraria.potions.DefaultPotion;
 import kmerrill285.trewrite.items.terraria.potions.PotionTest;
 import kmerrill285.trewrite.items.terraria.shortswords.CopperShortsword;
@@ -80,6 +81,8 @@ import kmerrill285.trewrite.items.terraria.throwable.Glowstick;
 import kmerrill285.trewrite.items.terraria.throwable.Grenade;
 import kmerrill285.trewrite.items.terraria.throwable.Shuriken;
 import kmerrill285.trewrite.items.terraria.tools.MagicMirror;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.entity.player.PlayerEntity;
@@ -350,6 +353,12 @@ public class ItemsT {
 	
 	public static ItemT HOOK;
 	public static ItemT BONE_PICKAXE;
+	
+	public static ItemT STARBREAKER;
+	
+	public static ItemT METEOR_HELMET, METEOR_SUIT, METEOR_LEGGINGS;
+	public static ItemT METEOR_HAMAXE;
+	public static ItemT METEOR_SHOT;
 
 
 	public static ItemT ANY_WOOD = new ItemT().setItemName("ANY_WOOD");
@@ -718,9 +727,13 @@ public class ItemsT {
 				BONE_PICKAXE = new BonePickaxe(),
 				SILVER_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 3, 128, 64, false).setTooltip("Set bonus: +3 defense").setBuySell(1500),
 				SILVER_CHESTPLATE = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_chestplate", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 4, 128, 64, false).setTooltip("Set bonus: +3 defense").setBuySell(2500),
-				SILVER_GREAVES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_greaves", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 3, 64, 32, true).setTooltip("Set bonus: +3 defense").setBuySell(2000)
-				
-
+				SILVER_GREAVES = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "silver_greaves", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 3, 64, 32, true).setTooltip("Set bonus: +3 defense").setBuySell(2000),
+				STARBREAKER = new Starbreaker(),
+				METEOR_HELMET = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "meteor_helmet", Armor.ArmorType.HEAD, Armor.RenderType.HEAD, 5, 128, 64, false).setTooltip("7% increased magic damage\nSet bonus: Space Gun uses zero mana").setBuySell(9000),
+				METEOR_SUIT = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "meteor_suit", Armor.ArmorType.CHEST, Armor.RenderType.SHIRT, 6, 128, 64, false).setTooltip("7% increased magic damage\nSet bonus: Space Gun uses zero mana").setBuySell(6000),
+				METEOR_LEGGINGS = (Armor) new Armor(new Properties().group(ItemGroup.COMBAT), "meteor_leggings", Armor.ArmorType.LEGS, Armor.RenderType.PANTS, 5, 64, 32, true).setTooltip("7% increased magic damage\nSet bonus: Space Gun uses zero mana").setBuySell(6000),
+				METEOR_HAMAXE = new MeteorHamaxe(),
+				METEOR_SHOT = new MeteorShot()
 
 
 

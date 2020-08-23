@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntityItemT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.block.Block;

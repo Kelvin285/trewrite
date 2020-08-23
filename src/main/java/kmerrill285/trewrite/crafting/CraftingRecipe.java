@@ -1,7 +1,7 @@
 package kmerrill285.trewrite.crafting;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.items.ItemStackT;
 import net.minecraft.block.Block;
 
 public class CraftingRecipe {

@@ -2,13 +2,13 @@ package kmerrill285.trewrite.entities.monsters.bosses;
 
 import javax.annotation.Nullable;
 
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityCoin;
 import kmerrill285.trewrite.entities.EntityHeart;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.IHostile;
 import kmerrill285.trewrite.entities.projectiles.EntityVileSpit;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Util;
 import net.minecraft.entity.EntityType;

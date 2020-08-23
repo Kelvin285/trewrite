@@ -1,7 +1,10 @@
 package kmerrill285.trewrite.blocks;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
+import java.util.Random;
+
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.entities.monsters.EntityMeteorHead;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.Block;
@@ -14,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -24,6 +28,32 @@ public class MeteoriteBlock extends BlockT {
 	public MeteoriteBlock() {
 		super(Properties.create(Material.EARTH).sound(SoundType.METAL), BlocksT.STONE_HARDNESS, 50, "meteorite");
 		this.pick = true;
+	}
+	
+	public boolean ticksRandomly(BlockState state) {
+		return true;
+	}
+	
+	public void tick (BlockState state, World worldIn, BlockPos pos, Random random) {
+		if (random.nextInt(100) <= 5) {
+			MutableBlockPos p = new BlockPos.MutableBlockPos(pos);
+			int meteor = 0;
+			for (int xx = -10; xx < 10; xx++) {
+				for (int yy = -10; yy < 10; yy++) {
+					for (int zz = -10; zz < 10; zz++) {
+						p.setPos(pos.getX() + xx, pos.getY() + yy, pos.getZ() + zz);
+						if (worldIn.getBlockState(p).getBlock() == BlocksT.METEORITE) {
+							meteor++;
+							if (meteor >= 25) {
+								EntityMeteorHead.spawnInWorld(worldIn, pos);
+								return;
+							}
+						}
+					}
+				}
+			}
+			
+		}
 	}
 
 	public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
@@ -43,12 +73,12 @@ public class MeteoriteBlock extends BlockT {
 						}
 					}
 					if (!hasSkull) {
-						entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+						entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 25);
 					}
 				}
 			}
 		} else {
-			entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 5);
+			entityIn.attackEntityFrom(DamageSource.HOT_FLOOR, 25);
 		}
 	}
    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {

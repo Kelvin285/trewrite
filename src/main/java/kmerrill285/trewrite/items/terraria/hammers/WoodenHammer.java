@@ -3,10 +3,10 @@ package kmerrill285.trewrite.items.terraria.hammers;
 import java.util.List;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.items.Hammer;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.util.Conversions;
 import net.minecraft.client.util.ITooltipFlag;

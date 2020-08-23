@@ -3,9 +3,9 @@ package kmerrill285.trewrite.items;
 import com.google.common.collect.Multimap;
 
 import kmerrill285.featurescript.scripts.objects.Script;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.entities.projectiles.Projectiles;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;

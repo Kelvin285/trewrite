@@ -2,8 +2,8 @@ package kmerrill285.trewrite.items;
 
 import kmerrill285.modelloader.CustomModel;
 import kmerrill285.modelloader.ModelLoader;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.entities.models.PlayerModel;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.entities.models.player.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 

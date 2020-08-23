@@ -3,7 +3,7 @@ package kmerrill285.trewrite.entities;
 import java.util.ArrayList;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

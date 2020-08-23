@@ -4,21 +4,22 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
-import kmerrill285.trewrite.core.inventory.container.GuiContainerTerrariaInventory;
-import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
+import kmerrill285.trewrite.client.gui.inventory.container.GuiContainerTerrariaInventory;
+import kmerrill285.trewrite.client.sounds.TAudio;
 import kmerrill285.trewrite.entities.models.ModelRegistry;
-import kmerrill285.trewrite.entities.models.RenderPlayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedAccessoryLayer;
 import kmerrill285.trewrite.entities.models.layers.TerrariaBipedArmorLayer;
+import kmerrill285.trewrite.entities.models.player.RenderPlayer;
 import kmerrill285.trewrite.entities.monsters.EntityZombieT;
 import kmerrill285.trewrite.items.Armor;
 import kmerrill285.trewrite.items.Arrow;
 import kmerrill285.trewrite.items.Bow;
 import kmerrill285.trewrite.items.Bullet;
 import kmerrill285.trewrite.items.Gun;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
@@ -29,6 +30,8 @@ import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.TRenderInfo;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -78,6 +81,22 @@ public class OverlayEvents {
 	
 	public static float blockMiningProgress = 0.0f;
 	
+	private static boolean once = false;
+	
+	private static SimpleSound menu_music;
+	
+	
+	@SubscribeEvent
+	public static void handleScreenDraw(net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent event) {
+		if (menu_music == null) {
+			menu_music = SimpleSound.music(TAudio.SoundEvents.MENU_MUSIC.getSound());
+		}
+		if (event.getGui() instanceof net.minecraft.client.gui.screen.MainMenuScreen) {
+			MusicTicker ticker = Minecraft.getInstance().getMusicTicker();
+			
+		}
+	}
+	
 	@SubscribeEvent
 	public static void streamMusicEvent(PlayStreamingSourceEvent event) {
 		if (event.getSound() == SoundEvents.MUSIC_MENU) {
@@ -100,6 +119,8 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePlayerRenderEvent(RenderPlayerEvent event) {
+		
+		
 //		System.out.println(Models.GUIDE);
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
@@ -123,6 +144,7 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handlePrePlayerRenderEvent(RenderPlayerEvent.Pre event) {
+		
 		//      this.addLayer(new BipedArmorLayer<>(this, new BipedModel(0.5F), new BipedModel(1.0F)));
 		if (!addedLayer) {
 			event.getRenderer().addLayer(new TerrariaBipedArmorLayer<>(event.getRenderer(), new BipedModel(0.5f), new BipedModel(1.0f)));
@@ -144,6 +166,7 @@ public class OverlayEvents {
 	@SubscribeEvent
 	@OnlyIn(value=Dist.CLIENT)
 	public static void handleOverlayEvent(RenderGameOverlayEvent event) {
+		
 		
 		boolean copper_watch = false;
 		boolean silver_watch = false;

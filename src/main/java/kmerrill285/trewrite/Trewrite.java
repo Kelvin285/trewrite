@@ -5,13 +5,13 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import kmerrill285.stackeddimensions.StackedDimensions;
+import kmerrill285.stackeddimensions.configuration.DimensionConfigs;
+import kmerrill285.stackeddimensions.configuration.DimensionConfiguration;
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.commands.CommandsT;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.items.ItemStackT;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.server.SPacketSendAccessories;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.sounds.TMusicTicker;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.entities.EntityItemT;
 import kmerrill285.trewrite.entities.monsters.bosses.EntityEyeOfCthulhu;
@@ -19,24 +19,28 @@ import kmerrill285.trewrite.events.EntityEvents;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
 import kmerrill285.trewrite.items.Armor;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.accessories.Accessory;
 import kmerrill285.trewrite.items.modifiers.ItemModifier;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.commands.CommandsT;
+import kmerrill285.trewrite.network.server.SPacketSendAccessories;
 import kmerrill285.trewrite.util.Util;
 import kmerrill285.trewrite.world.DimensionTypeT;
 import kmerrill285.trewrite.world.EntitySpawner;
 import kmerrill285.trewrite.world.TerrariaDimension;
 import kmerrill285.trewrite.world.TerrariaWorldType;
 import kmerrill285.trewrite.world.WorldStateHolder;
-import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -49,7 +53,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
@@ -76,6 +79,8 @@ public class Trewrite
    
     
     public Trewrite() {
+    	
+    	
 //    	FeatureScript.load();
     	try {
     		Field f = Chunk.class.getDeclaredField("field_76634_f");
@@ -83,6 +88,9 @@ public class Trewrite
     		DEBUG = true;
     		System.out.println("DEBUG!");
     	}
+    	
+    	new StackedDimensions();
+    	
     	new ItemModifier();
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -154,9 +162,24 @@ public class Trewrite
     public static boolean oncePerDay = false;
     public static boolean meteoriteAttempt = false;
     
+    private static boolean once = false;
+    
 	public static void onWorldTick(WorldTickEvent event)
 	{
 	
+		
+		if (!once) {
+			ResourceLocation overworld = new ResourceLocation("minecraft:custom_overworld");
+			DimensionConfigs.configs.clear();
+			DimensionConfigs.configs.add(new DimensionConfiguration(overworld, Dimensions.skyLocation,Dimensions.undergroundLocation, 0, 255));
+			DimensionConfigs.configs.add(new DimensionConfiguration(Dimensions.skyLocation, null,Dimensions.undergroundLocation, 0, 255));
+			DimensionConfigs.configs.add(new DimensionConfiguration(Dimensions.undergroundLocation, overworld, Dimensions.underworldLocation, 0, 255));
+			DimensionConfigs.configs.add(new DimensionConfiguration(Dimensions.underworldLocation, Dimensions.undergroundLocation, null, 0, 255));
+			once = true;
+		}
+		
+		StackedDimensions.onWorldTick(event);
+		
 //		if (DimensionManager.getWorld(event.world.getServer(), t, true, true) == null) {
 //			DimensionManager.initWorld(event.world.getServer(), t);
 //		}
@@ -167,6 +190,7 @@ public class Trewrite
 		holder.update(world, world.getDimension().getType());
 		
 		if (world.getDayTime() % 24000 >= 18000) {
+			if (holder.meteoriteSpawn == true)
 			if (!meteoriteAttempt) {
 				meteoriteAttempt = true;
 				int x = (world.getRandom().nextInt(2) * 2 - 1) * (world.getRandom().nextInt(3000) + 1000);
@@ -175,23 +199,18 @@ public class Trewrite
 		    	world.getServer().getPlayerList().sendMessage(new StringTextComponent("A meteorite has landed around [" + (x + world.getRandom().nextInt(200) - 100) + ", " + (z + world.getRandom().nextInt(200) - 100) + "]!").applyTextStyles(TextFormatting.GREEN, TextFormatting.BOLD));
 		    	
 		    	holder.meteoritePositions.add(new BlockPos(x, 0, z));
+		    	holder.meteoriteSpawn = false;
 			}
 		} else {
 			meteoriteAttempt = false;
 		}
 		
-		
-		
-		DimensionType sky = DimensionManager.registerOrGetDimension(Dimensions.skyLocation, DimensionRegistry.skyDimension, null, true);
-		DimensionType underground = DimensionManager.registerOrGetDimension(Dimensions.undergroundLocation, DimensionRegistry.undergroundDimension, null, true);
-		DimensionType underworld = DimensionManager.registerOrGetDimension(Dimensions.underworldLocation, DimensionRegistry.underworldDimension, null, true);
-
 		world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, world.getServer());
 
 		for (PlayerEntity player : world.getPlayers()) {
 			
 			for (BlockPos pos : holder.meteoritePositions) {
-				System.out.println(pos.getX() + ", " + pos.getZ());
+//				System.out.println(pos.getX() + ", " + pos.getZ());
 				if (player.getPositionVec().distanceTo(new Vec3d(pos.getX(), player.getPositionVec().y, pos.getZ())) <= 100) {
 					BlockPos p = world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos);
 					BlockPos.MutableBlockPos mp = new BlockPos.MutableBlockPos(p);
@@ -234,36 +253,6 @@ public class Trewrite
 			}
 			
 			InventoryTerraria inventory = WorldEvents.getOrLoadInventory(player);
-			if (player.getPosition().getY() < 0) {
-				if (player.dimension == sky) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
-					return;
-				}
-				if (player.dimension == DimensionType.OVERWORLD) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, underground, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
-					return;
-				}
-				if (player.dimension == underground) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, underworld, new BlockPos(player.getPosition().getX(), 255, player.getPosition().getZ()));
-					return;
-				}
-			}
-			
-			
-			if (player.getPosition().getY() > 255) {
-				if (player.dimension == DimensionType.OVERWORLD) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, sky, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
-					return;
-				}
-				if (player.dimension == underground) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, DimensionType.OVERWORLD, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
-					return;
-				}
-				if (player.dimension == underworld) {
-					Dimensions.teleportPlayer((ServerPlayerEntity)player, underground, new BlockPos(player.getPosition().getX(), player.getPosition().getY() - 256, player.getPosition().getZ()));
-					return;
-				}
-			}
 
 			int defense = 0;
 			
@@ -421,7 +410,14 @@ public class Trewrite
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
-    	ResourcePackInfo info;
+    	
+    	try {
+			Field musicTicker = Minecraft.class.getDeclaredField(DEBUG ? "musicTicker" : "field_147126_aw");
+			musicTicker.setAccessible(true);
+			musicTicker.set(Minecraft.getInstance(), new TMusicTicker(Minecraft.getInstance()));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

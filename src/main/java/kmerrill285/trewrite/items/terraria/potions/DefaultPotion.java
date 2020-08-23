@@ -1,8 +1,8 @@
 package kmerrill285.trewrite.items.terraria.potions;
 
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.client.CPacketChangeScore;
 import kmerrill285.trewrite.events.ScoreboardEvents;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketChangeScore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.world.World;

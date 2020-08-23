@@ -189,9 +189,7 @@ public class BlocksT {
 	public static BlockT OBSIDIAN_CANDELABRA;
 	public static BlockT OBSIDIAN_CANDLE;
 	public static BlockT OBSIDIAN_LANTERN;
-	
-	public static BlockT DIMENSION_BLOCK;
-	
+		
 	public static BlockT OBSIDIAN_BED;
 	public static BlockT OBSIDIAN_CLOCK;
 	public static BlockT OBSIDIAN_WORKBENCH;
@@ -318,7 +316,7 @@ public class BlocksT {
 					LIVING_WOOD_PLATFORM = new Platform(Properties.create(Material.EARTH).sound(SoundType.WOOD), true, "living_wood_platform"),
 					CLAY_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.STONE), GROUND_HARDNESS, 15, true, false, false, false, "clay_block", "clay_block"),
 					RED_SAND = new FallingBlock(Properties.create(Material.EARTH).sound(SoundType.SAND), GROUND_HARDNESS, 15, true, false, false, true, "red_sand", "red_sand"),
-					PODZOL = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.WET_GRASS), GROUND_HARDNESS, 15, true, false, false, false, "podzol", "dirt_block"),
+					PODZOL = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.GROUND), GROUND_HARDNESS, 15, true, false, false, false, "podzol", "dirt_block"),
 					CACTUS_BLOCK = new BasicBlock(Properties.create(Material.EARTH).sound(SoundType.CLOTH), GROUND_HARDNESS, 15, true, false, false, false, "cactus_block", "cactus_block"),
 					CACTUS = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "cactus", "cactus_block").addAllowed("cactus", "sand"),
 					CORRUPT_CACTUS = (Tree) new Tree(Properties.create(Material.WOOD).sound(SoundType.WOOD), ORE_HARDNESS * 3, 15, false, true, false, false, "corrupt_cactus", "cactus_block").addAllowed("corrupt_cactus", "sand"),
@@ -356,7 +354,6 @@ public class BlocksT {
 					OBSIDIAN_LANTERN = new CeilingCrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_lantern", "obsidian_lantern").setShape(Shape.BLOCK),
 					OBSIDIAN_CANDELABRA = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candelabra", "obsidian_candelabra").setShape(Shape.BLOCK),
 					OBSIDIAN_CANDLE = new CrossedBlock(Properties.create(Material.EARTH).sound(SoundType.STONE).doesNotBlockMovement().lightValue(5), 0, 0, true, false, false, true, "obsidian_candle", "obsidian_candle").setShape(Shape.BLOCK),
-					DIMENSION_BLOCK = (BlockT) new DimensionBlock(Properties.create(Material.EARTH).sound(SoundType.STONE)).setRegistryName("dimension_block"),
 					OBSIDIAN_BED = (Bed) new Bed(GROUND_HARDNESS, 15, "obsidian_bed").setSell(400),
 					OBSIDIAN_CLOCK = (GrandfatherClock) new GrandfatherClock(GROUND_HARDNESS, 15, "obsidian_clock").setSell(60),
 					OBSIDIAN_SINK = new BasicDirectional(Properties.create(Material.EARTH).sound(SoundType.STONE), STONE_HARDNESS, 15, true, false, false, true, "obsidian_sink", "obsidian_sink").setFullCube(false).setRenderLayer(BlockRenderLayer.CUTOUT).setSell(60),

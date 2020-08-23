@@ -1,9 +1,9 @@
 package kmerrill285.trewrite.world.dimension;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.server.SPacketRefreshDimensionRenderer;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.server.SPacketRefreshDimensionRenderer;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -55,7 +55,6 @@ public class Dimensions {
 		
 		double iposX = player.posX + 0;
 		double iposZ = player.posZ + 0;
-		float fallDistance = player.fallDistance;
 		ServerWorld nextWorld = player.getServer().getWorld(destinationType);
 		nextWorld.getChunk(destinationPos);	// make sure the chunk is loaded
 		
@@ -67,17 +66,7 @@ public class Dimensions {
 		if (player.getPosition().getY() == 0) {
 			player.setPositionAndUpdate(destinationPos.getX(), destinationPos.getY()+1, destinationPos.getZ());
 		}
-		BlockPos pos2 = new BlockPos(destinationPos.getX(), 0, destinationPos.getZ());
-		if (nextWorld.getBlockState(pos2) != null) {
-			if (nextWorld.getBlockState(pos2).getBlock() == BlocksT.AIR_BLOCK ||
-					nextWorld.getBlockState(pos2).getBlock() == Blocks.CAVE_AIR) {
-				if (!player.isSpectator())
-				nextWorld.setBlockState(pos2, BlocksT.DIMENSION_BLOCK.getDefaultState());
-			}
-		} else {
-			if (!player.isSpectator())
-			nextWorld.setBlockState(pos2, BlocksT.DIMENSION_BLOCK.getDefaultState());
-		}
+		
 		BlockPos A = player.getPosition();
 		if (nextWorld.getBlockState(A).getMaterial().blocksMovement()) {
 			nextWorld.setBlockState(A, BlocksT.AIR_BLOCK.getDefaultState());

@@ -14,7 +14,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,10 +24,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -220,6 +219,26 @@ public class ItemT extends Item {
 			if (worldIn.isRemote()) {
 				worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 2F);
 			}
+		}
+		
+		if (this instanceof Axe || this instanceof Pickaxe) {
+			if (worldIn.isRemote()) {
+				double reach = player.getAttribute(PlayerEntity.REACH_DISTANCE).getBaseValue();
+				
+				BlockRayTraceResult result = worldIn.rayTraceBlocks(new RayTraceContext(player.getPositionVec().add(0, player.getEyeHeight(), 0), player.getPositionVec().add(0, player.getEyeHeight(), 0).add(player.getLookVec().mul(reach, reach, reach)), RayTraceContext.BlockMode.COLLIDER, FluidMode.NONE, player));
+				boolean hit = false;
+				if (result != null) {
+					if (result.getHitVec().distanceTo(player.getPositionVec().add(0, player.getEyeHeight(), 0)) <= reach)
+					if (worldIn.getBlockState(result.getPos()).isSolid()) {
+						System.out.println(result.getPos());
+						hit = true;
+					}
+				}
+				if (!hit) {
+					worldIn.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1F, 1F);
+				}
+			}
+			
 		}
 	}
 	

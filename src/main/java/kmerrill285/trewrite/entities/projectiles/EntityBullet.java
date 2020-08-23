@@ -4,14 +4,16 @@ import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.blocks.pots.Pot;
 import kmerrill285.trewrite.entities.EntitiesT;
 import kmerrill285.trewrite.items.Bullet;
-import kmerrill285.trewrite.util.Conversions;
+import kmerrill285.trewrite.items.ItemsT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -24,6 +26,9 @@ public class EntityBullet extends SnowballEntity
 	public int piercing;
 
 	public double damage, knockback;
+	
+	public int bounces = 0;
+	public boolean once = false;
 	
 	
 	public EntityBullet(World worldIn, LivingEntity shooter) {
@@ -54,8 +59,22 @@ public class EntityBullet extends SnowballEntity
 	public boolean hasNoGravity() {
 		return true;
 	}
+	
+	double prevMotionX, prevMotionY, prevMotionZ;
+	
 	public void tick() {
 		super.tick();
+		if (once == false) {
+			if (this.bullet == ItemsT.METEOR_SHOT) {
+				this.piercing = 1;
+				this.bounces = 1;
+			}
+			this.once = true;
+		}
+		
+		
+		
+		
 		if (world.getBlockState(getPosition()).getBlock() instanceof Pot) {
 			world.setBlockState(getPosition(), BlocksT.AIR_BLOCK.getDefaultState());
 		}
@@ -88,9 +107,55 @@ public class EntityBullet extends SnowballEntity
 		        	  this.onImpact(result);
 		          }
 		   }
+		
+		prevMotionX = getMotion().x;
+		prevMotionY = getMotion().y;
+		prevMotionZ = getMotion().z;
 	}
 	
 	protected void onImpact(RayTraceResult result) {
+		
+		if (once == false) {
+			if (this.bullet == ItemsT.METEOR_SHOT) {
+				this.piercing = 1;
+				this.bounces = 1;
+			}
+			this.once = true;
+		}
+		if (result.getType() == RayTraceResult.Type.BLOCK) {
+			
+			if (bounces > 0) {
+				BlockRayTraceResult res = (BlockRayTraceResult)result;
+
+				if (res.getFace() == Direction.UP || res.getFace() == Direction.DOWN) {
+					setMotion(getMotion().x, Math.abs(getMotion().y) * (res.getFace() == Direction.UP ? 1 : -1) , getMotion().z);
+					
+					bounces--;
+					if (this.bullet == ItemsT.METEOR_SHOT) {
+						piercing--;
+					}
+					return;
+				}
+		        
+				if (res.getFace() == Direction.EAST || res.getFace() == Direction.WEST) {
+		        	this.setMotion(Math.abs(getMotion().y) * (res.getFace() == Direction.EAST ? 1 : -1), getMotion().y, getMotion().z);
+		        	bounces--;
+		        	if (this.bullet == ItemsT.METEOR_SHOT) {
+						piercing--;
+					}
+		        	return;
+				}
+		        
+				if (res.getFace() == Direction.NORTH || res.getFace() == Direction.SOUTH) {
+					setMotion(getMotion().x, getMotion().y, Math.abs(getMotion().y) * (res.getFace() == Direction.SOUTH ? 1 : -1));
+					bounces--;
+					if (this.bullet == ItemsT.METEOR_SHOT) {
+						piercing--;
+					}
+					return;
+				}
+			}
+		}
 		super.onImpact(result);
 		if (result.getType() == RayTraceResult.Type.ENTITY)
 		if (bullet != null) {
@@ -101,6 +166,9 @@ public class EntityBullet extends SnowballEntity
 				((LivingEntity)entity).knockBack(entity, (float)knockback * 0.01f, -(float)getMotion().normalize().x, -(float)getMotion().normalize().z);
 				if (this.piercing > 0) {
 					this.piercing--;
+					if (this.bullet == ItemsT.METEOR_SHOT) {
+						bounces--;
+					}
 				} else {
 					remove();
 				}

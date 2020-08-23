@@ -1,10 +1,9 @@
 package kmerrill285.trewrite.items.terraria.magic_weapons;
 
 import kmerrill285.trewrite.blocks.BlocksT;
-import kmerrill285.trewrite.core.inventory.InventorySlot;
-import kmerrill285.trewrite.core.inventory.InventoryTerraria;
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaInventory;
-import kmerrill285.trewrite.core.items.ItemStackT;
+import kmerrill285.trewrite.client.gui.inventory.InventorySlot;
+import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaInventory;
 import kmerrill285.trewrite.crafting.CraftingRecipe;
 import kmerrill285.trewrite.crafting.Recipes;
 import kmerrill285.trewrite.entities.EntitiesT;
@@ -12,6 +11,7 @@ import kmerrill285.trewrite.entities.projectiles.EntityMagicProjectile;
 import kmerrill285.trewrite.entities.projectiles.magic_projectiles.SpaceGunProjectile;
 import kmerrill285.trewrite.events.ScoreboardEvents;
 import kmerrill285.trewrite.events.WorldEvents;
+import kmerrill285.trewrite.items.ItemStackT;
 import kmerrill285.trewrite.items.ItemT;
 import kmerrill285.trewrite.items.ItemsT;
 import kmerrill285.trewrite.items.MagicWeapon;
@@ -140,8 +140,23 @@ public class SpaceGun extends MagicWeapon {
 		  if (ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.MAGIC_POWER).getScorePoints() > 0) {
 			  dmg += 0.2;
 		  }
-
 		  
+		  int meteorSet = 0;
+		  if (inventory != null) {
+	    	  for (InventorySlot slot : inventory.armor) { 
+	    		  if (slot != null) {
+	    			  if (slot.stack != null) {
+	    				  if (slot.stack.item == ItemsT.METEOR_HELMET || slot.stack.item == ItemsT.METEOR_SUIT || slot.stack.item == ItemsT.METEOR_LEGGINGS) {
+	    					  dmg *= 1.07f;
+	    					  meteorSet++;
+	    				  }
+	    				  
+	    			  }
+	    		  }
+	    	  }
+	      }
+		  
+		  if (meteorSet == 3) manaUse = 0;
 	      
 	      if (mana.getScorePoints() - manaUse < 0) return new ActionResult<>(ActionResultType.FAIL, itemstack);
 		  mana.setScorePoints(mana.getScorePoints() - (int)manaUse);
@@ -150,6 +165,8 @@ public class SpaceGun extends MagicWeapon {
 	      
 		  dmg -= 0.05 * ScoreboardEvents.getScore(playerIn.getWorldScoreboard(), playerIn, ScoreboardEvents.MANA_SICKNESS_EFFECT).getScorePoints();
 	      
+		  
+		  
 		  playerIn.getCooldownTracker().setCooldown(this, (int) ((this.useTime - this.useTime * speed) * (30.0 / 60.0)));
 		  
 	      

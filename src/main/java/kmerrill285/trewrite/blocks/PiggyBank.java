@@ -1,9 +1,9 @@
 package kmerrill285.trewrite.blocks;
 
-import kmerrill285.trewrite.core.inventory.container.ContainerTerrariaChest;
-import kmerrill285.trewrite.core.network.NetworkHandler;
-import kmerrill285.trewrite.core.network.client.CPacketOpenChestTerraria;
-import kmerrill285.trewrite.core.network.client.CPacketRequestInventoryChest;
+import kmerrill285.trewrite.client.gui.inventory.container.ContainerTerrariaChest;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketOpenChestTerraria;
+import kmerrill285.trewrite.network.client.CPacketRequestInventoryChest;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block.Properties;
 import net.minecraft.client.Minecraft;

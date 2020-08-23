@@ -22,17 +22,17 @@ import net.minecraftforge.common.DimensionManager;
 
 public class EntitySpawner {
 	
-	public static EntityType[] groundDaytime = {EntitiesT.BLUE_SLIME, EntitiesT.BUNNY};
-	public static EntityType[] groundNighttime = {EntitiesT.ZOMBIE, EntitiesT.DEMON_EYE};
-	public static EntityType[] groundWaterDaytime = {};
-	public static EntityType[] groundWaterNighttime = {EntitiesT.DROWNED};
-	public static EntityType[] skyEntities = {};
-	public static EntityType[] skyWaterEntities = {};
-	public static EntityType[] caveEntities = {EntitiesT.WORM_HEAD, EntitiesT.UNDEAD_MINER};
-	public static EntityType[] caveWaterEntities = {EntitiesT.DROWNED};
-	public static EntityType[] underworldEntities = {};
+	public static EntityType<?>[] groundDaytime = {EntitiesT.BLUE_SLIME, EntitiesT.BUNNY, EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] groundNighttime = {EntitiesT.ZOMBIE, EntitiesT.DEMON_EYE, EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] groundWaterDaytime = {EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] groundWaterNighttime = {EntitiesT.DROWNED, EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] skyEntities = {EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] skyWaterEntities = {EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] caveEntities = {EntitiesT.WORM_HEAD, EntitiesT.UNDEAD_MINER, EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] caveWaterEntities = {EntitiesT.DROWNED, EntitiesT.METEOR_HEAD};
+	public static EntityType<?>[] underworldEntities = {EntitiesT.METEOR_HEAD};
 	
-	public static EntityType[] oceanEntities = {};
+	public static EntityType<?>[] oceanEntities = {EntitiesT.METEOR_HEAD};
 	
 	public static void spawnEntities(PlayerEntity player, double x, double y, double z) {
 		World world = player.getEntityWorld();
