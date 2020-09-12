@@ -76,5 +76,5 @@ public class NetworkHandler {
 	
 	 private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer) {
 		 INSTANCE.registerMessage(id++, messageType, encoder, decoder, messageConsumer);
-	}
+	 }
 }

@@ -3,6 +3,10 @@ package kmerrill285.trewrite.client.gui.dialog;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import kmerrill285.trewrite.client.gui.inventory.container.GuiContainerTerrariaInventory;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketCloseInventoryTerraria;
+import kmerrill285.trewrite.network.client.CPacketOpenDialogGui;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -22,6 +26,8 @@ public class DialogGui extends ContainerScreen<DialogContainer> {
     public int guiWidth = 100;
     public int guiHeight = 100;
     
+    public static Dialog currentDialog;
+    
 	public DialogGui(DialogContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 	}
@@ -34,6 +40,8 @@ public class DialogGui extends ContainerScreen<DialogContainer> {
 	@Override
     public void init() {
         super.init();
+        this.guiLeft = 50;
+        this.guiTop = 50;
     }
 	
 	 @Override
@@ -48,17 +56,43 @@ public class DialogGui extends ContainerScreen<DialogContainer> {
          //this.fontRenderer.drawString(I18n.format("container.crafting"), 97, 8, 4210752);
          GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
          this.minecraft.getTextureManager().bindTexture(GuiContainerTerrariaInventory.INVENTORY_BACKGROUND);
+         
+         if (currentDialog != null) {
+        	 
+        	 if (currentDialog.gui == null) {
+        		 currentDialog.gui = this;
+        	 }
+        	 currentDialog.Update();
+        	 currentDialog.Render();
+         }
+         
+         if (Minecraft.getInstance().gameSettings.keyBindInventory.isPressed()) {
+ 			NetworkHandler.INSTANCE.sendToServer(new CPacketCloseInventoryTerraria());
+ 		}
+     }
+	 
+	 public boolean mouseClicked(double x, double y, int code) {
+		 if (currentDialog != null) {
+			 currentDialog.mouseClicked(x, y, code);
+		 }
+		 return super.mouseClicked(x, y, code);
+	 }
+	 
+	 public void DrawDialog(int x, int y, int width, int height) {
+		 this.guiLeft = 0;
+		 this.guiTop = 0;
+		 this.guiWidth = 1920;
+		 this.guiHeight = 1080;
+		 
+		 
+		 int i = x;
+         int j = y;
+         int guiWidth = width;
+         int guiHeight = height;
+         
          this.minecraft.getTextureManager().bindTexture(GUI_BACKGROUND);
-         
-         this.guiLeft = 50;
-         this.guiTop = 50;
-         
-         this.guiWidth = 200;
-         this.guiHeight = 50;
-         
-         int i = this.guiLeft;
-         int j = this.guiTop;
-         
+
+         GlStateManager.pushMatrix();
          
          GlStateManager.pushMatrix();
          
@@ -96,7 +130,8 @@ public class DialogGui extends ContainerScreen<DialogContainer> {
          GlStateManager.scalef((1.0f / 2.0f) * guiWidth, 1, 1);
          this.blit(0, 0, 2, 5, 2, 3);
          GlStateManager.popMatrix();
-     }
+         GlStateManager.popMatrix();
+	 }
 	 
 	 
 

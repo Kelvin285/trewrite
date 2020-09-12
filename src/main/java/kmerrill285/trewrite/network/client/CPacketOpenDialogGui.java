@@ -15,13 +15,10 @@ public class CPacketOpenDialogGui {
 	 	}
 	 	
 	 	public void encode(PacketBuffer buf) {
-//	        buf.writeFloat(this.oldMouseX);
-//	        buf.writeFloat(this.oldMouseY);
 	 		buf.writeString(this.playername);
 	    }
 	 	
 	 	public CPacketOpenDialogGui(PacketBuffer buf) {
-	 		//read values in the order they were sent
 	        this(buf.readString(100).trim());
 	    }
 	 	

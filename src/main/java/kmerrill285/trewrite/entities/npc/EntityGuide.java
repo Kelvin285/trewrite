@@ -1,6 +1,11 @@
 package kmerrill285.trewrite.entities.npc;
 
+import kmerrill285.trewrite.client.gui.dialog.DialogGui;
+import kmerrill285.trewrite.client.gui.dialog.GuideDialog;
 import kmerrill285.trewrite.entities.EntitiesT;
+import kmerrill285.trewrite.network.NetworkHandler;
+import kmerrill285.trewrite.network.client.CPacketOpenDialogGui;
+import kmerrill285.trewrite.world.WorldStateHolder;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -15,10 +20,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -44,10 +52,12 @@ public class EntityGuide extends CreatureEntity implements IEntityAdditionalSpaw
 	}
 
 	protected void registerGoals() {
+	    this.goalSelector.addGoal(1, new LookAtGoal(this, MobEntity.class, 8.0F));	
+	    
 		this.goalSelector.addGoal(4, new MoveTowardsRestrictionGoal(this, 1.0D));
 	    this.goalSelector.addGoal(8, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
 	    this.goalSelector.addGoal(9, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-	    this.goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));	
+
 	}
 	
 	/**
@@ -79,11 +89,18 @@ public class EntityGuide extends CreatureEntity implements IEntityAdditionalSpaw
 		return age;
 	}
 	
+	
+	public void onRemovedFromWorld() {
+		if (this.world.dimension.getType() == DimensionType.OVERWORLD) {
+			WorldStateHolder.get(world).guideInWorld = false;
+		}
+	}
+	
 	public boolean canDespawn() {
 		return true;
 	}
 	public boolean isInvulnerable() {
-		return false;
+		return true;
 	}
 	
 	public void playHurtSound(DamageSource source) {
@@ -101,6 +118,38 @@ public class EntityGuide extends CreatureEntity implements IEntityAdditionalSpaw
 	@Override
 	public void tick() {		
 		super.tick();
+		if (getAttackTarget() != null) {
+			if (getAttackTarget().getPositionVec().distanceTo(getPositionVec()) >= 5) {
+				this.setAttackTarget(null);
+			}
+			this.setPosition(prevPosX, prevPosY, prevPosZ);
+		}
+		else {
+		}
+		
+	}
+	
+	public float getAiMoveSpeed() {
+		if (getAttackTarget() instanceof PlayerEntity) {
+			return 0;
+		}
+		return super.getAIMoveSpeed();
+	}
+	
+	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+		
+		if (hand == Hand.OFF_HAND) {
+			System.out.println("true");
+			if (player.world.isRemote()) {
+				NetworkHandler.INSTANCE.sendToServer(new CPacketOpenDialogGui(player.getScoreboardName()));
+				
+				DialogGui.currentDialog = new GuideDialog(null);
+				this.setAttackTarget(player);
+			}
+		}
+		
+		return super.applyPlayerInteraction(player, vec, hand);
+		
 	}
 
 	public float lerp(float a, float b, float f) 
@@ -136,11 +185,12 @@ public class EntityGuide extends CreatureEntity implements IEntityAdditionalSpaw
 
 	@Override
 	public void readSpawnData(PacketBuffer additionalData) {
+		
 	}
 	
 	
 
-	public static EntityGuide spawnGuide(World worldIn, BlockPos pos, int type, int value) {
+	public static EntityGuide spawnGuide(World worldIn, BlockPos pos) {
 		EntityGuide guide = EntitiesT.GUIDE.create(worldIn, null, null, null, pos, SpawnReason.EVENT, false, false);
 		worldIn.addEntity(guide);
 		return guide;

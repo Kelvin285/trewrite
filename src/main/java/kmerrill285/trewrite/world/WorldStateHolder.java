@@ -8,6 +8,7 @@ import kmerrill285.trewrite.blocks.BlockT;
 import kmerrill285.trewrite.blocks.BlocksT;
 import kmerrill285.trewrite.client.gui.inventory.InventoryChestTerraria;
 import kmerrill285.trewrite.client.gui.inventory.InventoryTerraria;
+import kmerrill285.trewrite.entities.npc.EntityGuide;
 import kmerrill285.trewrite.world.dimension.DimensionRegistry;
 import kmerrill285.trewrite.world.dimension.Dimensions;
 import net.minecraft.block.AirBlock;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -65,6 +67,10 @@ public class WorldStateHolder extends WorldSavedData {
 	public int EaterOfWorldsSegments;
 
 	public HashMap<String, InventoryTerraria> inventories = new HashMap<String, InventoryTerraria>();
+	
+	public boolean guideInWorld = false;
+	
+	public boolean gamerules = false;
 
 	public class WorldState {
 		
@@ -117,6 +123,7 @@ public class WorldStateHolder extends WorldSavedData {
 		stardustEnemiesDefeated = nbt.getInt("stardustEnemiesDefeated");
 		invasionEnemiesDefeated = nbt.getInt("invasionEnemiesDefeated");
 		eaterOfWorldsDefeated = nbt.getBoolean("eaterOfWorldsDefeated");
+		gamerules = nbt.getBoolean("gamerules");
 		meteoriteSpawn = nbt.getBoolean("meteoriteSpawn");
 		
 		int size = nbt.getInt("sposLength");
@@ -208,6 +215,8 @@ public class WorldStateHolder extends WorldSavedData {
 			int z = Integer.parseInt(data[2]);
 			meteoritePositions.add(new BlockPos(x, y, z));
 		}
+		
+		guideInWorld = nbt.getBoolean("guideInWorld");
 	}
 
 	@Override
@@ -232,6 +241,7 @@ public class WorldStateHolder extends WorldSavedData {
 		compound.putInt("stardustEnemiesDefeated", stardustEnemiesDefeated);
 		compound.putInt("invasionEnemiesDefeated", invasionEnemiesDefeated);
 		compound.putBoolean("eaterOfWorldsDefeated", eaterOfWorldsDefeated);
+		compound.putBoolean("gamerules", gamerules);
 		compound.putBoolean("meteoriteSpawn", meteoriteSpawn);
 		compound.putInt("sposLength", spawnPositions.size());
 		compound.putInt("inventories", inventories.size());
@@ -303,6 +313,8 @@ public class WorldStateHolder extends WorldSavedData {
 			compound.putString("meteorites["+i+"]", pos.getX()+","+pos.getY()+","+pos.getZ());	
 		}
 		
+		compound.putBoolean("guideInWorld", guideInWorld);
+		
 		return compound;
 	}
 
@@ -325,6 +337,21 @@ public class WorldStateHolder extends WorldSavedData {
 	}
 	
 	public void update(World world, DimensionType type) {
+		if (!gamerules) {
+			ServerWorld w = (ServerWorld)world;
+			w.getServer().getCommandManager().handleCommand(w.getServer().getCommandSource(), "/setworldspawn 0 "+world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, 0, 0)+" 0");
+			w.getServer().getCommandManager().handleCommand(w.getServer().getCommandSource(), "/gamerule spawnRadius 0");
+		}
+		if (guideInWorld == false) {
+			if (!world.isRemote) {
+				int height = world.getHeight(net.minecraft.world.gen.Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, 0, 0);
+				if (world.isPlayerWithin(0, height,  0, 48)) {
+					guideInWorld = true;
+					EntityGuide.spawnGuide(world, new BlockPos(0, height, 0));
+				}
+			}
+		}
+		
 		int updated = 0;
 		HashMap<BlockPos, Integer> lights = null;
 		if (world.getWorld().getGameTime() % 5 == 0)

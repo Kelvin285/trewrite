@@ -1,8 +1,6 @@
 package kmerrill285.trewrite.world;
 
 import kmerrill285.trewrite.world.biome.provider.TerrariaBiomeProvider;
-import kmerrill285.trewrite.world.dimension.Dimensions;
-import kmerrill285.trewrite.world.dimension.TerrariaSkyChunkGenerator;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
@@ -16,6 +14,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.ChunkGeneratorType;
 import net.minecraft.world.gen.NetherGenSettings;
 import net.minecraft.world.gen.OverworldGenSettings;
+import net.minecraft.world.server.ServerWorld;
 
 public class TerrariaWorldType extends WorldType {
 
@@ -30,11 +29,12 @@ public class TerrariaWorldType extends WorldType {
 		return 180;
 	}
 	
+	public boolean gamerules = false;
 	@Override
-
     public ChunkGenerator<?> createChunkGenerator(World world)
 
     {
+		
 //		WorldEntitySpawner
     	if (world.getDimension().getType() == DimensionType.OVERWORLD)
 
@@ -98,8 +98,7 @@ public class TerrariaWorldType extends WorldType {
     }
 	
 	public void onGUICreateWorldPress() {
-		System.out.println(Minecraft.getInstance().world);
-		
+		gamerules = false;
 	}
 	
 }

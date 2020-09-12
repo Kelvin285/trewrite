@@ -52,19 +52,28 @@ public class TerrariaDimension extends OverworldDimension {
 		return MusicType.CREATIVE;
 	}
 	
+	public static int
+	corruption = 0,
+	highlands = 0,
+	dark = 0,
+	desert = 0,
+	mushroom = 0,
+	jungle = 0,
+	snow = 0,
+	beach = 0;
 	
 	public Vec3d getSkyColor(BlockPos cameraPos, float partialTicks) {
-		
+		corruption = 0;
+		highlands = 0;
+		dark = 0;
+		desert = 0;
+		mushroom = 0;
+		jungle = 0;
+		snow = 0;
+		beach = 0;
 		
 		World world = this.getWorld();
-		int corruption = 0;
-		int highlands = 0;
-		int dark = 0;
-		int desert = 0;
-		int mushroom = 0;
-		int jungle = 0;
-		int snow = 0;
-		int beach = 0;
+		
 		
 		if (world != null) {
 			
@@ -93,10 +102,12 @@ public class TerrariaDimension extends OverworldDimension {
 						if (block == BlocksT.MUSHROOM_GRASS) {
 							mushroom++;
 						}
-						if (block == BlocksT.SAND && new Vec3d(cameraPos.getX(), cameraPos.getY(), cameraPos.getZ()).distanceTo(new Vec3d(0, cameraPos.getY(), 0)) < 4500) {
-							desert++;
-						} else {
-							beach++;
+						if (block == BlocksT.SAND) {
+							if (new Vec3d(cameraPos.getX(), cameraPos.getY(), cameraPos.getZ()).distanceTo(new Vec3d(0, cameraPos.getY(), 0)) < 4500) {
+								desert++;
+							} else {
+								beach++;
+							}
 						}
 					}
 				}

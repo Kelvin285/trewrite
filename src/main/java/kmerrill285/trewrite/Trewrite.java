@@ -435,5 +435,7 @@ public class Trewrite
         CommandsT.register(event.getCommandDispatcher());
     }
     
-    
+    public static boolean IsDaytime(World world) {
+    	return !(world.getDayTime() % 24000 > 14000 && world.getDayTime() % 24000 < 22000);
+    }
 }
