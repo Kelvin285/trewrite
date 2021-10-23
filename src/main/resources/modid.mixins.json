@@ -5,11 +5,14 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "LivingEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ItemStackMixin",
+    "ItemSettingsMixin",
+    "InventoryMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
-    "client.MinecraftClientMixin"
+    "client.PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

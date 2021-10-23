@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +25,11 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(at = @At("HEAD"), method = "tick", cancellable = true)
     public void tick(CallbackInfo info) {
-        if (input.jumping && !this.isSwimming())
-        {
+        if (input.jumping && !this.isSwimming()) {
             if (this.getVelocity().length() > 0.08 && this.getVelocity().y > 0) {
                 this.addVelocity(0, 0.04, 0);
             }
         }
     }
+
 }

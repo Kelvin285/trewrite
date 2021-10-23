@@ -3,6 +3,7 @@ package kelvin285.trewrite;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.bernie.geckolib3.GeckoLib;
 
 public class Trewrite implements ModInitializer {
     // This logger is used to write text to the console and the log file.
@@ -17,5 +18,6 @@ public class Trewrite implements ModInitializer {
         // Proceed with mild caution.
 
         LOGGER.info("Hello Fabric world!");
+        GeckoLib.initialize();
     }
 }
