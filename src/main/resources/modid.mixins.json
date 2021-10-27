@@ -12,7 +12,13 @@
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
-    "client.PlayerEntityRendererMixin"
+    "client.PlayerEntityRendererMixin",
+    "client.PerspectiveMixin",
+    "client.CameraMixin",
+    "client.MouseMixin",
+    "client.InputMixin",
+    "client.GameRendererMixin",
+    "client.MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,5 +1,6 @@
 package kelvin285.trewrite;
 
+import kelvin285.trewrite.audio.AudioRegistry;
 import kelvin285.trewrite.mixin.PlayerEntityMixin;
 import kelvin285.trewrite.renderers.player.CustomPlayerModel;
 import kelvin285.trewrite.renderers.player.CustomPlayerRenderer;
@@ -34,7 +35,7 @@ public class Trewrite implements ModInitializer, ClientModInitializer {
         // Proceed with mild caution.
 
         LOGGER.info("Hello Fabric world!");
-
+        AudioRegistry.RegisterSoundEvents();
     }
 
 

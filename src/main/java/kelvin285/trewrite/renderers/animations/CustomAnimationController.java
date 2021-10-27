@@ -25,6 +25,7 @@ import java.util.function.Function;
 public class CustomAnimationController<T extends IAnimatable> extends AnimationController<T> {
 
     public double speed = 1;
+    private double ticks = 0;
     public CustomAnimationController(T animatable, String name, float transitionLengthTicks, IAnimationPredicate animationPredicate) {
         super(animatable, name, transitionLengthTicks, animationPredicate);
     }
@@ -38,6 +39,7 @@ public class CustomAnimationController<T extends IAnimatable> extends AnimationC
     }
 
     public void process(double tick, AnimationEvent<T> event, List<IBone> modelRendererList, HashMap<String, Pair<IBone, BoneSnapshot>> boneSnapshotCollection, MolangParser parser, boolean crashWhenCantFindBone) {
-        super.process(tick * speed, event, modelRendererList, boneSnapshotCollection, parser, crashWhenCantFindBone);
+        ticks += speed;
+        super.process(ticks, event, modelRendererList, boneSnapshotCollection, parser, crashWhenCantFindBone);
     }
 }
