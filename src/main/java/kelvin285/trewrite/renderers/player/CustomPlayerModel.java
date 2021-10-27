@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.builder.Animation;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 import java.io.File;
@@ -28,7 +29,6 @@ public class CustomPlayerModel<T extends LivingEntity&IAnimatable> extends Anima
 
     @Override
     public Animation getAnimation(String name, IAnimatable animatable) {
-
         return super.getAnimation(name, animatable);
     }
 }

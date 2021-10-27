@@ -1,0 +1,29 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"player.jump": {
+			"loop": true,
+			"bones": {
+				"left_arm_upper": {
+					"rotation": [-37.5, 0, 57.5]
+				},
+				"left_arm_lower": {
+					"rotation": [0, 0, 35],
+					"position": [-0.2, -0.6, 0]
+				},
+				"right_arm_upper": {
+					"rotation": [-170, 20, -97.5]
+				},
+				"left_leg_upper": {
+					"rotation": [22.5, 0, 0]
+				},
+				"right_leg_upper": {
+					"rotation": [-80, 0, 0]
+				},
+				"right_leg_lower": {
+					"rotation": [105, 0, 0]
+				}
+			}
+		}
+	}
+}

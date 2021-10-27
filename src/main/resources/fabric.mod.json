@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "kelvin285.trewrite.Trewrite"
+    ],
+    "client": [
+      "kelvin285.trewrite.Trewrite"
     ]
   },
   "mixins": [
