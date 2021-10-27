@@ -1,5 +1,7 @@
 package kelvin285.trewrite.mixin.client;
 
+import kelvin285.trewrite.options.CustomOptions;
+import kelvin285.trewrite.resources.CameraZoom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.option.GameOptions;
@@ -7,9 +9,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,6 +38,16 @@ public class CameraMixin {
     private BlockView area;
     @Shadow
     private boolean thirdPerson;
+    @Shadow
+    private Vec3d pos;
+    @Shadow
+    private BlockPos.Mutable blockPos;
+    @Shadow
+    private Vec3f horizontalPlane;
+    @Shadow
+    private Vec3f verticalPlane;
+    @Shadow
+    private Vec3f diagonalPlane;
 
     @Shadow
     public void setPos(double x, double y, double z) {
@@ -53,8 +63,14 @@ public class CameraMixin {
     }
 
     @Shadow
-    protected void moveBy(double x, double y, double z) {
+    protected void setPos(Vec3d vec) {}
 
+
+    public void moveBy(double x, double y, double z) {
+        double d = (double)this.horizontalPlane.getX() * x + (double)this.verticalPlane.getX() * y + (double)this.diagonalPlane.getX() * z;
+        double e = (double)this.horizontalPlane.getY() * x + (double)this.verticalPlane.getY() * y + (double)this.diagonalPlane.getY() * z;
+        double f = (double)this.horizontalPlane.getZ() * x + (double)this.verticalPlane.getZ() * y + (double)this.diagonalPlane.getZ() * z;
+        this.setPos(new Vec3d(this.pos.x + d, this.pos.y + e, this.pos.z + f));
     }
 
     public float custom_yaw = 0;
@@ -63,7 +79,8 @@ public class CameraMixin {
     private double last_mouse_x = -1;
     private double last_mouse_y = -1;
 
-    @Inject(at = @At("HEAD"), method = "update", cancellable = true)
+
+    @Inject(at = @At("RETURN"), method = "update", cancellable = true)
     public void update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo info) {
         this.ready = true;
         this.area = area;
@@ -75,19 +92,32 @@ public class CameraMixin {
             last_mouse_x = mouse.getX();
             last_mouse_y = mouse.getY();
         }
-
         double sensitivity = MinecraftClient.getInstance().options.mouseSensitivity;
         double delta_x = (mouse.getX() - last_mouse_x) * sensitivity;
         double delta_y = (mouse.getY() - last_mouse_y) * sensitivity;
+
+
+        if (options.keyUse.wasPressed() && MinecraftClient.getInstance().currentScreen == null) {
+            delta_x = 0;
+            delta_y = 0;
+            LockCursor();
+        }
+
         if (options.invertYMouse) delta_y *= -1;
-        if (options.keyUse.isPressed()) {
+        if (options.keyUse.isPressed() && MinecraftClient.getInstance().currentScreen == null) {
             custom_pitch += delta_y * tickDelta;
             custom_yaw += delta_x * tickDelta;
+            LockCursor();
+        } else {
+            UnlockCursor();
         }
         custom_pitch = MathHelper.clamp(custom_pitch, -90, 90);
         last_mouse_x = mouse.getX();
         last_mouse_y = mouse.getY();
-        UnlockCursor();
+
+        CameraZoom.UpdateZoom(options);
+
+        this.moveBy(-this.clipToSpace(CameraZoom.ZOOM_LERP), 0.0D, 0.0D);
     }
 
     public void LockCursor() {

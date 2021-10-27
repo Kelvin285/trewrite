@@ -18,7 +18,8 @@
     "client.MouseMixin",
     "client.InputMixin",
     "client.GameRendererMixin",
-    "client.MinecraftClientMixin"
+    "client.MinecraftClientMixin",
+    "client.GameOptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
