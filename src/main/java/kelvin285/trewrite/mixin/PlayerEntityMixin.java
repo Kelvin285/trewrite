@@ -66,7 +66,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
     private AnimationBuilder current_jump_anim;
 
     protected int attack_state = 0;
-    protected int attack_timer = 0;
+    protected float attack_timer = 0;
 
     public float look_rotation;
 
@@ -107,14 +107,26 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
     }
 
 
-
+    protected float tool_speed = 1.5f;
     @Override
     public void swingHand(Hand hand) {
         super.swingHand(hand);
+
+        if (getMainHandStack() != null) {
+            Item item = getMainHandStack().getItem();
+            if (item != null) {
+                tool_speed = 1.5f;
+                if (item instanceof TridentItem) {
+                    tool_speed = 1.0f;
+                }
+            }
+        }
+
         if (attack_timer < 5) {
             attack_state++;
             attack_state %= 2;
-            attack_timer = 30;
+            attack_timer = 30 / tool_speed;
+            this.world.playSound((PlayerEntity)(Object)this , this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, this.getSoundCategory(), 0.4F, 0.75F + (float)Math.random() * 0.1F);
         }
     }
 
@@ -227,7 +239,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
             }
         }
 
-        if (!this.isOnGround() && !swim_flag) {
+        if (!this.isOnGround() && !swim_flag && attack_timer <= 0) {
             current_anim = current_jump_anim;
             if (sword_flag) {
                 if (current_jump_anim == anim_jump) {
@@ -242,21 +254,22 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
                 if (sword_flag) {
                     current_anim = anim_sword_flip;
                 }
-                controller.speed = 2.5f;
+                controller.speed = 2.5f ;
             }
         } else {
             if (attack_timer > 0) {
+                if (sword_flag || tool_flag || trident_flag) {
+                    controller.speed = 4 * tool_speed;
+                }
                 if (sword_flag || tool_flag) {
-                    controller.speed = 4;
                     if (attack_state == 0) {
                         current_anim = anim_sword_swing;
                     } else {
                         current_anim = anim_sword_swing2;
                     }
                 } else if (trident_flag) {
-                    controller.speed = 4;
                     if (attack_state == 0) {
-                        current_anim = anim_trident;
+                        current_anim = anim_shortsword_swing;
                     } else {
                         current_anim = anim_shortsword_swing2;
                     }
@@ -276,7 +289,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
             jump_timer++;
         }
         if (attack_timer > 0) {
-            float box_width = 1;
+            float box_width = 1.25f;
             float box_height = 2;
             Vec3d dir = new Vec3d(-(float) Math.sin(Math.toRadians(180 - look_rotation)) * 0.5f, 0, -(float) Math.cos(Math.toRadians(180 - look_rotation)) * 0.5f).normalize();
             Vec3d box_pos = this.getPos().add(dir);
