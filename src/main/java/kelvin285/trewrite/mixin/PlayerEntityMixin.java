@@ -2,13 +2,18 @@ package kelvin285.trewrite.mixin;
 
 import kelvin285.trewrite.audio.AudioRegistry;
 import kelvin285.trewrite.renderers.animations.CustomAnimationController;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,6 +28,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import javax.tools.Tool;
+import java.util.List;
+
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements IAnimatable {
 
@@ -36,8 +44,31 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
     private AnimationBuilder anim_flip;
     private AnimationBuilder anim_sneak_idle;
     private AnimationBuilder anim_sneak_walk;
+    private AnimationBuilder anim_sword_idle;
+    private AnimationBuilder anim_sword_walk;
+    private AnimationBuilder anim_sword_run;
+    private AnimationBuilder anim_sword_idle_sneak;
+    private AnimationBuilder anim_sword_walk_sneak;
+    private AnimationBuilder anim_sword_jump;
+    private AnimationBuilder anim_sword_jump2;
+    private AnimationBuilder anim_sword_flip;
+    private AnimationBuilder anim_sword_swing;
+    private AnimationBuilder anim_sword_swing2;
+    private AnimationBuilder anim_swim;
+    private AnimationBuilder anim_swim_idle;
+    private AnimationBuilder anim_shortsword_swing;
+    private AnimationBuilder anim_shortsword_swing2;
+    private AnimationBuilder anim_bow;
+    private AnimationBuilder anim_trident;
+    private AnimationBuilder anim_throw;
+
     private float flip_time = 0;
     private AnimationBuilder current_jump_anim;
+
+    protected int attack_state = 0;
+    protected int attack_timer = 0;
+
+    public float look_rotation;
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -53,6 +84,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
 
     }
 
+    @Override
+    public boolean isUsingItem() {
+        if (getMainHandStack() != null) {
+            if (getMainHandStack().getItem() instanceof MiningToolItem) {
+                return false;
+            }
+        }
+        return super.isUsingItem();
+    }
+
     @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
     public void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
         if (source == DamageSource.FALL) {
@@ -62,6 +103,18 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
             } else {
                 info.setReturnValue(super.damage(source, amount));
             }
+        }
+    }
+
+
+
+    @Override
+    public void swingHand(Hand hand) {
+        super.swingHand(hand);
+        if (attack_timer < 5) {
+            attack_state++;
+            attack_state %= 2;
+            attack_timer = 30;
         }
     }
 
@@ -81,6 +134,23 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
             anim_flip = new AnimationBuilder().addAnimation("player.flip", false);
             anim_sneak_idle = new AnimationBuilder().addAnimation("player.sneak_idle", true);
             anim_sneak_walk = new AnimationBuilder().addAnimation("player.sneak_walk", true);
+            anim_sword_idle = new AnimationBuilder().addAnimation("player.sword_idle", true);
+            anim_sword_walk = new AnimationBuilder().addAnimation("player.sword_walk", true);
+            anim_sword_run = new AnimationBuilder().addAnimation("player.sword_run", true);
+            anim_sword_idle_sneak = new AnimationBuilder().addAnimation("player.sword_idle_sneak", true);
+            anim_sword_walk_sneak = new AnimationBuilder().addAnimation("player.sword_walk_sneak", true);
+            anim_sword_jump = new AnimationBuilder().addAnimation("player.sword_jump", true);
+            anim_sword_jump2 = new AnimationBuilder().addAnimation("player.sword_jump2", true);
+            anim_sword_flip = new AnimationBuilder().addAnimation("player.sword_flip", true);
+            anim_sword_swing = new AnimationBuilder().addAnimation("player.sword_swing", true);
+            anim_sword_swing2 = new AnimationBuilder().addAnimation("player.sword_swing2", true);
+            anim_shortsword_swing = new AnimationBuilder().addAnimation("player.shortsword_swing", true);
+            anim_shortsword_swing2 = new AnimationBuilder().addAnimation("player.shortsword_swing2", true);
+            anim_bow = new AnimationBuilder().addAnimation("player.bow", true);
+            anim_throw = new AnimationBuilder().addAnimation("player.throw", true);
+            anim_trident = new AnimationBuilder().addAnimation("player.trident", true);
+            anim_swim_idle = new AnimationBuilder().addAnimation("player.swim_idle", true);
+            anim_swim = new AnimationBuilder().addAnimation("player.swim", true);
             current_jump_anim = anim_jump2;
         }
         boolean moving = Math.abs(this.getVelocity().x) > 0.01 || Math.abs(this.getVelocity().z) > 0.01;
@@ -97,25 +167,104 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
             current_idle = anim_sneak_idle;
             current_walk = anim_sneak_walk;
         }
+        boolean swim_flag = isSwimming() || isTouchingWater() && !isOnGround() || isSubmergedInWater();
+        if (swim_flag) {
+            current_idle = anim_swim_idle;
+            current_walk = anim_swim;
+
+            if (isSwimming()) {
+                walking = true;
+            }
+        }
+
+        if (isInSwimmingPose() && !isTouchingWater()) {
+            swim_flag = true;
+            if (!walking) {
+                controller.speed = 0;
+            }
+            current_idle = anim_swim;
+            current_walk = anim_swim;
+        }
+
+        boolean sword_flag = false;
+        boolean trident_flag = false;
+        boolean tool_flag = false;
+        if (getMainHandStack() != null) {
+            Item item = getMainHandStack().getItem();
+            if (item != null) {
+                if (item instanceof SwordItem) {
+                    if (isSneaking()) {
+                        current_idle = anim_sword_idle_sneak;
+                        current_walk = anim_sword_walk_sneak;
+                    } else {
+                        current_idle = anim_sword_idle_sneak;
+                        current_walk = (sprinting ? anim_sword_run : anim_sword_walk_sneak);
+                    }
+                    sword_flag = true;
+                }
+                if (item instanceof ToolItem) {
+                    tool_flag = true;
+                }
+                if (item instanceof TridentItem) {
+                    trident_flag = true;
+                }
+
+            }
+        }
+
 
         var current_anim = walking ? current_walk : current_idle;
 
-        if (this.isOnGround()) {
+        if (this.isOnGround() || isSubmergedInWater() || isSwimming()) {
             if (walking && !sprinting) {
                 controller.speed = 0.75f;
+                if (sword_flag && !isSneaking()) {
+                    controller.speed = 3;
+                }
             }
             if (!walking) {
                 controller.speed = 0.25f;
             }
         }
 
-        if (!this.isOnGround()) {
+        if (!this.isOnGround() && !swim_flag) {
             current_anim = current_jump_anim;
+            if (sword_flag) {
+                if (current_jump_anim == anim_jump) {
+                    current_anim = anim_sword_jump;
+                } else {
+                    current_anim = anim_sword_jump2;
+                }
+            }
             if (this.flip_time > 0) {
                 flip_time--;
                 current_anim = anim_flip;
+                if (sword_flag) {
+                    current_anim = anim_sword_flip;
+                }
                 controller.speed = 2.5f;
             }
+        } else {
+            if (attack_timer > 0) {
+                if (sword_flag || tool_flag) {
+                    controller.speed = 4;
+                    if (attack_state == 0) {
+                        current_anim = anim_sword_swing;
+                    } else {
+                        current_anim = anim_sword_swing2;
+                    }
+                } else if (trident_flag) {
+                    controller.speed = 4;
+                    if (attack_state == 0) {
+                        current_anim = anim_trident;
+                    } else {
+                        current_anim = anim_shortsword_swing2;
+                    }
+                }
+            }
+        }
+        if (attack_timer > 0) {
+            attack_timer--;
         }
         event.getController().setAnimation(current_anim);
         return PlayState.CONTINUE;
@@ -126,7 +275,37 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
         if (this.isOnGround()) {
             jump_timer++;
         }
+        if (attack_timer > 0) {
+            float box_width = 1;
+            float box_height = 2;
+            Vec3d dir = new Vec3d(-(float) Math.sin(Math.toRadians(180 - look_rotation)) * 0.5f, 0, -(float) Math.cos(Math.toRadians(180 - look_rotation)) * 0.5f).normalize();
+            Vec3d box_pos = this.getPos().add(dir);
+            Box box = new Box(box_pos.x - box_width / 2, box_pos.y, box_pos.z - box_width / 2, box_pos.x + box_width / 2, box_pos.y + box_height, box_pos.z + box_width / 2);
+            List<Entity> entities = world.getOtherEntities(this, box);
+            var stack = this.getMainHandStack();
+            if (stack != null) {
+                var item = stack.getItem();
+                if (item != null) {
+                    float attack_damage = 0;
+                    if (item instanceof HoeItem) {
+                        attack_damage = 1;
+                    }
+                    for (var v : stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)) {
+                        if (v.getOperation() == EntityAttributeModifier.Operation.ADDITION) {
+                            attack_damage += (float) v.getValue();
+                        }
+                    }
+                    if (attack_damage > 0) {
+                        for (int i = 0; i < entities.size(); i++) {
+                            entities.get(i).damage(DamageSource.player((PlayerEntity) (Object) this), attack_damage);
+                        }
+                    }
+                }
+            }
+            attack_timer--;
+        }
     }
+
     private int jump_timer = 0;
     private int jump_integer = 0;
     private int last_jump_time = 0;

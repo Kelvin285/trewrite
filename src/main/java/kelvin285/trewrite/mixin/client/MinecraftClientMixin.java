@@ -44,9 +44,11 @@ public class MinecraftClientMixin {
 
     @Inject(at = @At("HEAD"), method = "handleInputEvents", cancellable = true)
     private void handleInputEvents(CallbackInfo info) {
-
+        Item item = player.getMainHandStack().getItem();
+        boolean flag = (item instanceof MiningToolItem || item instanceof AxeItem) && !(item instanceof HoeItem);
         if (this.player.isUsingItem()) {
-            if (!this.options.keyUse.isPressed()) {
+
+            if (!this.options.keyAttack.isPressed()) {
                 this.interactionManager.stopUsingItem(this.player);
             }
 
@@ -67,7 +69,13 @@ public class MinecraftClientMixin {
         } else {
             while(this.options.keyAttack.wasPressed()) {
                 this.doAttack();
-                this.doItemUse();
+
+                if (player.getMainHandStack() != null) {
+
+                    if (!flag) {
+                        this.doItemUse();
+                    }
+                }
             }
 
             while(this.options.keyPickItem.wasPressed()) {
@@ -76,10 +84,12 @@ public class MinecraftClientMixin {
         }
 
         if (this.options.keyAttack.isPressed() && this.itemUseCooldown == 0 && !this.player.isUsingItem()) {
-            this.doItemUse();
+            if (!flag) {
+                this.doItemUse();
+            }
         }
 
-        this.handleBlockBreaking(this.currentScreen == null && this.options.keyAttack.isPressed() && this.mouse.isCursorLocked());
+        this.handleBlockBreaking(this.currentScreen == null && this.options.keyAttack.isPressed());
     }
 
     @Shadow

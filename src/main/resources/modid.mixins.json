@@ -8,7 +8,13 @@
     "PlayerEntityMixin",
     "ItemStackMixin",
     "ItemSettingsMixin",
-    "InventoryMixin"
+    "InventoryMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "packets.PlayerMoveC2S.FullMixin",
+    "packets.PlayerMoveC2S.LookAndOnGroundMixin",
+    "packets.PlayerMoveC2S.OnGroundOnlyMixin",
+    "packets.PlayerMoveC2S.PlayerMoveC2SPacketMixin",
+    "packets.PlayerMoveC2S.PositionAndOnGroundMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",

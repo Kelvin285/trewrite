@@ -98,15 +98,20 @@ public class CameraMixin {
 
 
         if (options.keyUse.wasPressed() && MinecraftClient.getInstance().currentScreen == null) {
+            LockCursor();
             delta_x = 0;
             delta_y = 0;
+            last_mouse_x = mouse.getX();
+            last_mouse_y = mouse.getY();
             LockCursor();
         }
 
         if (options.invertYMouse) delta_y *= -1;
         if (options.keyUse.isPressed() && MinecraftClient.getInstance().currentScreen == null) {
-            custom_pitch += delta_y * tickDelta;
-            custom_yaw += delta_x * tickDelta;
+            if (!options.keyUse.wasPressed()) {
+                custom_pitch += delta_y * tickDelta;
+                custom_yaw += delta_x * tickDelta;
+            }
             LockCursor();
         } else {
             UnlockCursor();
@@ -128,6 +133,8 @@ public class CameraMixin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        last_mouse_x = mouse.getX();
+        last_mouse_y = mouse.getY();
     }
 
     public void UnlockCursor() {
@@ -137,6 +144,11 @@ public class CameraMixin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        boolean flag = mouse.isCursorLocked();
         mouse.unlockCursor();
+        if (flag) {
+            last_mouse_x = mouse.getX();
+            last_mouse_y = mouse.getY();
+        }
     }
 }
