@@ -65,7 +65,13 @@ public class GameRendererMixin {
 
                 Vec3d end = pos.add(dir.x * 15, dir.y * 15, dir.z * 15);
 
-                MinecraftClient.getInstance().crosshairTarget = client.world.raycast(new RaycastContext(pos, end, RaycastContext.ShapeType.OUTLINE, includeFluids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, entity));
+                var cast = client.world.raycast(new RaycastContext(pos, end, RaycastContext.ShapeType.OUTLINE, includeFluids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, entity));
+                MinecraftClient.getInstance().crosshairTarget = cast;
+                try {
+                    MinecraftClient.class.getDeclaredField("observed_hit").set(MinecraftClient.getInstance(), cast);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (MinecraftClient.getInstance().crosshairTarget.getPos().distanceTo(entity.getPos()) > distance || options.keyUse.isPressed()) {
                     MinecraftClient.getInstance().crosshairTarget = BlockHitResult.createMissed(end, Direction.fromVector(0, 1, 0), new BlockPos(end));
                 }

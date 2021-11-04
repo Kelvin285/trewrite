@@ -31,6 +31,10 @@ public class ServerPlayNetworkHandlerMixin {
         try {
             float look_rotation = PlayerMoveC2SPacket.class.getDeclaredField("look_rotation").getFloat(packet);
             PlayerEntity.class.getDeclaredField("look_rotation").set(this.player, look_rotation);
+
+
+            Vec3d observed_pos = (Vec3d)PlayerMoveC2SPacket.class.getDeclaredField("observed_pos").get(packet);
+            PlayerEntity.class.getDeclaredField("observed_pos").set(this.player, observed_pos);
         } catch (Exception e) {
             e.printStackTrace();
         }

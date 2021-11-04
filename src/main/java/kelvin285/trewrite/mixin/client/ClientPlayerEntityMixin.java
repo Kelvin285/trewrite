@@ -22,10 +22,8 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -122,6 +120,19 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         var mouse = MinecraftClient.getInstance().mouse;
         //    public RaycastContext(Vec3d start, Vec3d end, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling, Entity entity) {
 
+        try {
+            Vec3d observed_pos = null;
+            HitResult target = (HitResult)MinecraftClient.class.getDeclaredField("observed_hit").get(MinecraftClient.getInstance());
+            if (target != null) {
+                observed_pos = target.getPos();
+            }
+            PlayerEntity.class.getDeclaredField("observed_pos").set(this, observed_pos);
+
+            this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(this.getYaw(), this.getPitch(), this.onGround));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (options.keyForward.isPressed() || options.keyBack.isPressed() || options.keyLeft.isPressed() || options.keyRight.isPressed()) {
 
@@ -154,6 +165,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
             Field look_rotation = null;
             float LOOK_ROTATION = 0;
             try {
+
                 look_rotation = PlayerEntity.class.getDeclaredField("look_rotation");
                 LOOK_ROTATION = look_rotation.getFloat(this);
 

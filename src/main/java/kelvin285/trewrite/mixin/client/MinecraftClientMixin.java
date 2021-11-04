@@ -16,6 +16,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,6 +42,8 @@ public class MinecraftClientMixin {
     Mouse mouse;
     @Shadow
     Screen currentScreen;
+
+    public HitResult observed_hit;
 
     @Inject(at = @At("HEAD"), method = "handleInputEvents", cancellable = true)
     private void handleInputEvents(CallbackInfo info) {

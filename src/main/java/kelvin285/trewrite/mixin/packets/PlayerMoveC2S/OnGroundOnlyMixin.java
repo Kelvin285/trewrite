@@ -2,6 +2,8 @@ package kelvin285.trewrite.mixin.packets.PlayerMoveC2S;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,10 +19,12 @@ public abstract class OnGroundOnlyMixin extends PlayerMoveC2SPacket {
     @Inject(at = @At("HEAD"), method = "read", cancellable = true)
     private static void read(PacketByteBuf buf, CallbackInfoReturnable<OnGroundOnly> info) {
         float look_rotation = buf.readFloat();
+        Vec3d observed_pos = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         boolean bl = buf.readUnsignedByte() != 0;
         var packet = new OnGroundOnly(bl);
         try {
             PlayerMoveC2SPacket.class.getDeclaredField("look_rotation").set(packet, look_rotation);
+            PlayerMoveC2SPacket.class.getDeclaredField("observed_pos").set(packet, observed_pos);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,6 +35,10 @@ public abstract class OnGroundOnlyMixin extends PlayerMoveC2SPacket {
     public void write(PacketByteBuf buf, CallbackInfo info) {
         try {
             buf.writeFloat(PlayerMoveC2SPacket.class.getDeclaredField("look_rotation").getFloat(this));
+            Vec3d observed_pos = ((Vec3d)PlayerMoveC2SPacket.class.getDeclaredField("observed_pos").get(this));
+            buf.writeDouble(observed_pos.x);
+            buf.writeDouble(observed_pos.y);
+            buf.writeDouble(observed_pos.z);
         } catch (Exception e) {
             e.printStackTrace();
         }

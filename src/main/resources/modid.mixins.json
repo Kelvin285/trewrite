@@ -14,7 +14,10 @@
     "packets.PlayerMoveC2S.LookAndOnGroundMixin",
     "packets.PlayerMoveC2S.OnGroundOnlyMixin",
     "packets.PlayerMoveC2S.PlayerMoveC2SPacketMixin",
-    "packets.PlayerMoveC2S.PositionAndOnGroundMixin"
+    "packets.PlayerMoveC2S.PositionAndOnGroundMixin",
+    "items.EggItemMixin",
+    "items.SnowballItemMixin",
+    "items.BowItemMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",

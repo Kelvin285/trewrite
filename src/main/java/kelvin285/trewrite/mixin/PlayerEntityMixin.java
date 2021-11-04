@@ -12,6 +12,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -69,6 +70,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
     protected float attack_timer = 0;
 
     public float look_rotation;
+
+    public Vec3d observed_pos;
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -132,7 +135,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
     {
-
         CustomAnimationController controller = (CustomAnimationController)event.getController();
 
         controller.speed = 1;
