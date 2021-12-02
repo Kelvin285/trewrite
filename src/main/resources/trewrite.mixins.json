@@ -29,7 +29,8 @@
     "client.InputMixin",
     "client.GameRendererMixin",
     "client.MinecraftClientMixin",
-    "client.GameOptionsMixin"
+    "client.GameOptionsMixin",
+    "client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
