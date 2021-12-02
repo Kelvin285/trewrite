@@ -26,7 +26,9 @@ public class BowItemMixin extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
 
+        if (stack.getCooldown() < 1)
         if (user instanceof PlayerEntity) {
+            stack.setCooldown(20);
             PlayerEntity playerEntity = (PlayerEntity)user;
             boolean bl = playerEntity.getAbilities().creativeMode || EnchantmentHelper.getLevel(Enchantments.INFINITY, stack) > 0;
             ItemStack itemStack = playerEntity.getArrowType(stack);

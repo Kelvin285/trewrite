@@ -17,7 +17,8 @@
     "packets.PlayerMoveC2S.PositionAndOnGroundMixin",
     "items.EggItemMixin",
     "items.SnowballItemMixin",
-    "items.BowItemMixin"
+    "items.BowItemMixin",
+    "world.gen.NoiseChunkGeneratorMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",
