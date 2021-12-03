@@ -11,7 +11,8 @@
         "Color",
         "UV0",
         "UV2",
-        "Normal"
+        "Normal",
+		"Flags"
     ],
     "samplers": [
         { "name": "Sampler0" },
@@ -26,6 +27,7 @@
         { "name": "FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
         { "name": "FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
 		{ "name": "wind_time", "type": "float", "count": 1, "values": [ 0.0 ] },
-		{ "name": "wind_dir", "type": "float", "count": 3, "values": [ 0.0, 0.0, 1.0 ] }
+		{ "name": "wind_dir", "type": "float", "count": 3, "values": [ 0.0, 0.0, 1.0 ] },
+		{ "name": "wind_strength", "type": "float", "count": 1, "values": [ 0.0 ] }
     ]
 }

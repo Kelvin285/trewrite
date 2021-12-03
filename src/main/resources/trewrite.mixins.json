@@ -30,7 +30,11 @@
     "client.GameRendererMixin",
     "client.MinecraftClientMixin",
     "client.GameOptionsMixin",
-    "client.WorldRendererMixin"
+    "client.WorldRendererMixin",
+    "client.VertexFormatsMixin",
+    "client.BlockModelRendererMixin",
+    "client.BufferBuilderMixin",
+    "client.FluidRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
