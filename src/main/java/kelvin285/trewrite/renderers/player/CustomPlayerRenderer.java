@@ -30,6 +30,10 @@ import java.util.List;
 
 public class CustomPlayerRenderer<T extends LivingEntity&IAnimatable> extends GeoEntityRenderer<T> {
     public CustomPlayerModel model;
+
+
+    public static boolean CanDrawPlayer = true;
+
     public CustomPlayerRenderer(EntityRendererFactory.Context ctx) {
 
         super(ctx, new CustomPlayerModel());
@@ -37,11 +41,15 @@ public class CustomPlayerRenderer<T extends LivingEntity&IAnimatable> extends Ge
     }
 
     public void render(PlayerEntity entity, float entityYaw, float partialTicks, MatrixStack stack, VertexConsumerProvider bufferIn, int packedLightIn) {
-       super.render((T)entity, entityYaw, partialTicks * 2, stack, bufferIn, packedLightIn);
+       if (entity == MinecraftClient.getInstance().player && !CanDrawPlayer) {
+           return;
+       }
+        super.render((T)entity, entityYaw, partialTicks * 2, stack, bufferIn, packedLightIn);
     }
 
     @Override
     public void renderRecursively(GeoBone bone, MatrixStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+
         if (bone.getName().equals("right_hand")) { // rArmRuff is the name of the bone you to set the item to attach too. Please see Note
             stack.push();
             //You'll need to play around with these to get item to render in the correct orientation
@@ -62,7 +70,9 @@ public class CustomPlayerRenderer<T extends LivingEntity&IAnimatable> extends Ge
 
     public void applyRotations(T entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw,
                                   float partialTicks) {
-
+        if (entityLiving == MinecraftClient.getInstance().player && !CanDrawPlayer) {
+            return;
+        }
         float dampener = 0.5f;
         if (entityLiving.isSprinting()) {
             dampener = 1;

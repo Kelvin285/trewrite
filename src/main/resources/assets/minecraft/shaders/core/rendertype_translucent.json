@@ -28,6 +28,7 @@
         { "name": "FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
 		{ "name": "wind_time", "type": "float", "count": 1, "values": [ 0.0 ] },
 		{ "name": "wind_dir", "type": "float", "count": 3, "values": [ 0.0, 0.0, 1.0 ] },
-		{ "name": "wind_strength", "type": "float", "count": 1, "values": [ 0.0 ] }
+		{ "name": "wind_strength", "type": "float", "count": 1, "values": [ 0.0 ] },
+		{ "name": "Season", "type": "float", "count": 1, "values": [ 0.0 ] }
     ]
 }

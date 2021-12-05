@@ -23,6 +23,8 @@ out float vertexDistance;
 out vec4 vertexColor;
 out vec2 texCoord0;
 out vec4 normal;
+out vec4 out_color;
+out vec4 vertexLight;
 
 void main() {
 
@@ -43,6 +45,9 @@ void main() {
 
     vertexDistance = length((ModelViewMat * vec4(new_pos, 1.0)).xyz);
     vertexColor = Color * minecraft_sample_lightmap(Sampler2, UV2);
+	vertexLight = minecraft_sample_lightmap(Sampler2, UV2);
     texCoord0 = UV0;
     normal = ProjMat * ModelViewMat * vec4(Normal, 0.0);
+	
+	out_color = Color;
 }

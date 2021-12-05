@@ -11,6 +11,7 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.*;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.LightType;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,6 +39,8 @@ public class BlockModelRendererMixin {
         float k;
         float l;
 
+        boolean windy = world.getLightLevel(LightType.SKY, pos) > 4;
+
         if (quad.hasColor()) {
             int i = this.colors.getColor(state, world, pos, quad.getColorIndex());
             j = (float)(i >> 16 & 255) / 255.0F;
@@ -54,41 +57,43 @@ public class BlockModelRendererMixin {
         float flag2 = 0;
         float flag3 = 0;
 
-        if (state.getBlock() instanceof FluidBlock || state.getBlock() instanceof LeavesBlock || state.getBlock() instanceof AbstractPlantBlock || state.getBlock() instanceof CropBlock || state.getBlock() instanceof PlantBlock || state.getBlock() instanceof VineBlock) {
-            flag0 = 1;
-            flag1 = 1;
-            flag2 = 1;
-            flag3 = 1;
-            if (!(state.getBlock() instanceof TallPlantBlock || state.getBlock() instanceof TallFlowerBlock) && (state.getBlock() instanceof PlantBlock || state.getBlock() instanceof AbstractPlantBlock || state.getBlock() instanceof CropBlock)) {
-                float[] f = {0, 0, 0, 0};
-                int[] vertexData = quad.getVertexData();
-                int length = vertexData.length / 8;
-                MemoryStack memoryStack = MemoryStack.stackPush();
-                try {
-                    ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSize());
-                    IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        if (windy) {
+            if (state.getBlock() instanceof FluidBlock || state.getBlock() instanceof LeavesBlock || state.getBlock() instanceof AbstractPlantBlock || state.getBlock() instanceof CropBlock || state.getBlock() instanceof PlantBlock || state.getBlock() instanceof VineBlock) {
+                flag0 = 1;
+                flag1 = 1;
+                flag2 = 1;
+                flag3 = 1;
+                if (!(state.getBlock() instanceof TallPlantBlock || state.getBlock() instanceof TallFlowerBlock) && (state.getBlock() instanceof PlantBlock || state.getBlock() instanceof AbstractPlantBlock || state.getBlock() instanceof CropBlock)) {
+                    float[] f = {0, 0, 0, 0};
+                    int[] vertexData = quad.getVertexData();
+                    int length = vertexData.length / 8;
+                    MemoryStack memoryStack = MemoryStack.stackPush();
+                    try {
+                        ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSize());
+                        IntBuffer intBuffer = byteBuffer.asIntBuffer();
 
-                    for (int i = 0; i < length; ++i) {
-                        intBuffer.clear();
-                        intBuffer.put(vertexData, i * 8, 8);
-                        float x = byteBuffer.getFloat(0);
-                        float y = byteBuffer.getFloat(4);
-                        float z = byteBuffer.getFloat(8);
-                        if (y > 0.5f) {
-                            f[i] = 1;
+                        for (int i = 0; i < length; ++i) {
+                            intBuffer.clear();
+                            intBuffer.put(vertexData, i * 8, 8);
+                            float x = byteBuffer.getFloat(0);
+                            float y = byteBuffer.getFloat(4);
+                            float z = byteBuffer.getFloat(8);
+                            if (y > 0.5f) {
+                                f[i] = 1;
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        memoryStack.close();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    memoryStack.close();
+                    if (memoryStack != null) {
+                        memoryStack.close();
+                    }
+                    flag0 = f[0];
+                    flag1 = f[1];
+                    flag2 = f[2];
+                    flag3 = f[3];
                 }
-                if (memoryStack != null) {
-                    memoryStack.close();
-                }
-                flag0 = f[0];
-                flag1 = f[1];
-                flag2 = f[2];
-                flag3 = f[3];
             }
         }
 
