@@ -55,7 +55,7 @@ public abstract class DefaultBiomeCreatorMixin {
             DefaultBiomeFeatures.addDefaultVegetation(builder2);
         }
 
-        var ret = (new Biome.Builder()).precipitation(Biome.Precipitation.RAIN).category(Biome.Category.PLAINS).depth(0.125F).scale(0.5F).temperature(0.8F).downfall(0.4F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(12638463).skyColor(getSkyColor(0.8F)).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder.build()).generationSettings(builder2.build()).build();
+        var ret = (new Biome.Builder()).precipitation(Biome.Precipitation.RAIN).category(Biome.Category.PLAINS).depth(0.125F).scale(0.5F).temperature(0.8F).downfall(0.4F).effects((new BiomeEffects.Builder()).waterColor(0x093dbf).waterFogColor(0x08289f).skyColor(0x4447ea).fogColor(12638463).grassColor(0x5f9f35).skyColor(getSkyColor(0.8F)).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder.build()).generationSettings(builder2.build()).build();
         info.setReturnValue(ret);
     }
 }
