@@ -15,7 +15,7 @@ public class CameraZoom {
             ZOOM++;
         }
 
-        ZOOM = MathHelper.clamp(ZOOM, 0, 4);
+        ZOOM = MathHelper.clamp(ZOOM, -4, 4);
         ZOOM_LERP = MathHelper.lerp(0.25f, ZOOM_LERP, ZOOM);
     }
 }

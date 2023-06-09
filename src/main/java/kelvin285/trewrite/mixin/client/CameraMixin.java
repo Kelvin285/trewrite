@@ -1,6 +1,7 @@
 package kelvin285.trewrite.mixin.client;
 
 import kelvin285.trewrite.options.CustomOptions;
+import kelvin285.trewrite.renderers.player.CustomPlayerRenderer;
 import kelvin285.trewrite.resources.CameraZoom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -8,6 +9,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
@@ -79,50 +81,86 @@ public class CameraMixin {
     private double last_mouse_x = -1;
     private double last_mouse_y = -1;
 
+    private double mouse_x, mouse_y;
 
-    @Inject(at = @At("RETURN"), method = "update", cancellable = true)
+    private boolean cursor_locked = false;
+
+    private int lock_ticks = 0;
+
+    @Inject(at = @At("HEAD"), method = "update", cancellable = true)
     public void update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo info) {
+        Vec3d last_pos = new Vec3d(this.pos.x, this.pos.y, this.pos.z);
+
         this.ready = true;
         this.area = area;
         this.focusedEntity = focusedEntity;
         this.thirdPerson = thirdPerson;
+        this.setRotation(focusedEntity.getYaw(tickDelta), focusedEntity.getPitch(tickDelta));
+        this.setPos(MathHelper.lerp((double)tickDelta, focusedEntity.prevX, focusedEntity.getX()), MathHelper.lerp((double)tickDelta, focusedEntity.prevY, focusedEntity.getY()) + (double)MathHelper.lerp(tickDelta, this.lastCameraY, this.cameraY), MathHelper.lerp((double)tickDelta, focusedEntity.prevZ, focusedEntity.getZ()));
+
         var mouse = MinecraftClient.getInstance().mouse;
         GameOptions options = MinecraftClient.getInstance().options;
+
+        last_mouse_x = mouse_x;
+        last_mouse_y = mouse_y;
+        mouse_x = mouse.getX();
+        mouse_y = mouse.getY();
+
         if (last_mouse_x == -1) {
-            last_mouse_x = mouse.getX();
-            last_mouse_y = mouse.getY();
+            last_mouse_x = mouse_x;
+            last_mouse_y = mouse_y;
         }
         double sensitivity = MinecraftClient.getInstance().options.mouseSensitivity;
         double delta_x = (mouse.getX() - last_mouse_x) * sensitivity;
         double delta_y = (mouse.getY() - last_mouse_y) * sensitivity;
 
-
         if (options.keyUse.wasPressed() && MinecraftClient.getInstance().currentScreen == null) {
-            LockCursor();
             delta_x = 0;
             delta_y = 0;
-            last_mouse_x = mouse.getX();
-            last_mouse_y = mouse.getY();
+            last_mouse_x = mouse_x;
+            last_mouse_y = mouse_y;
+            lock_ticks = 5;
+
             LockCursor();
         }
 
         if (options.invertYMouse) delta_y *= -1;
         if (options.keyUse.isPressed() && MinecraftClient.getInstance().currentScreen == null) {
+            if (!cursor_locked) {
+                delta_x = 0;
+                delta_y = 0;
+                lock_ticks = 5;
+            }
             if (!options.keyUse.wasPressed()) {
-                custom_pitch += delta_y * tickDelta;
-                custom_yaw += delta_x * tickDelta;
+                if (lock_ticks > 0) {
+                    lock_ticks--;
+                } else {
+                    custom_pitch += delta_y * tickDelta;
+                    custom_yaw += delta_x * tickDelta;
+                }
             }
             LockCursor();
         } else {
             UnlockCursor();
         }
         custom_pitch = MathHelper.clamp(custom_pitch, -90, 90);
-        last_mouse_x = mouse.getX();
-        last_mouse_y = mouse.getY();
 
         CameraZoom.UpdateZoom(options);
 
-        this.moveBy(-this.clipToSpace(CameraZoom.ZOOM_LERP), 0.0D, 0.0D);
+        if (CameraZoom.ZOOM > -4) {
+            this.moveBy(-this.clipToSpace(4.0 + CameraZoom.ZOOM_LERP), 0.0D, 0.0D);
+        }
+
+        double distance = this.pos.distanceTo(focusedEntity.getEyePos());
+        if (distance <= 1.5f || CameraZoom.ZOOM <= -4) {
+            CustomPlayerRenderer.CanDrawPlayer = false;
+            this.thirdPerson = false;
+        } else {
+            CustomPlayerRenderer.CanDrawPlayer = true;
+            this.thirdPerson = true;
+        }
+
+        info.cancel();
     }
 
     public void LockCursor() {
@@ -135,6 +173,7 @@ public class CameraMixin {
         }
         last_mouse_x = mouse.getX();
         last_mouse_y = mouse.getY();
+        cursor_locked = true;
     }
 
     public void UnlockCursor() {
@@ -150,5 +189,6 @@ public class CameraMixin {
             last_mouse_x = mouse.getX();
             last_mouse_y = mouse.getY();
         }
+        cursor_locked = false;
     }
 }

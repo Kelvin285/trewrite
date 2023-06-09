@@ -9,16 +9,28 @@
     "ItemStackMixin",
     "ItemSettingsMixin",
     "InventoryMixin",
+
     "ServerPlayNetworkHandlerMixin",
+
     "packets.PlayerMoveC2S.FullMixin",
     "packets.PlayerMoveC2S.LookAndOnGroundMixin",
     "packets.PlayerMoveC2S.OnGroundOnlyMixin",
     "packets.PlayerMoveC2S.PlayerMoveC2SPacketMixin",
     "packets.PlayerMoveC2S.PositionAndOnGroundMixin",
+
     "items.EggItemMixin",
     "items.SnowballItemMixin",
     "items.BowItemMixin",
-    "world.gen.NoiseChunkGeneratorMixin"
+
+    "world.gen.NoiseChunkGeneratorMixin",
+    "world.gen.VanillaLayeredBiomeSourceMixin",
+    "world.gen.BiomeLayerSamplerMixin",
+    "world.gen.DefaultBiomeCreatorMixin",
+    "world.gen.DefaultBiomeFeaturesMixin",
+
+    "world.gen.feature.TrunkPlacerMixin",
+
+    "entity.SlimeEntityMixin"
   ],
   "client": [
     "client.ClientPlayerEntityMixin",

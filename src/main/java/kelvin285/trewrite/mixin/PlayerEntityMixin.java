@@ -230,8 +230,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IAnimata
         var current_anim = walking ? current_walk : current_idle;
 
         if (this.isOnGround() || isSubmergedInWater() || isSwimming()) {
+            controller.speed = 0.5f;
             if (walking && !sprinting) {
-                controller.speed = 0.75f;
                 if (sword_flag && !isSneaking()) {
                     controller.speed = 3;
                 }
